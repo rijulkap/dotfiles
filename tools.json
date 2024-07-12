@@ -53,6 +53,16 @@
             "sudo apt-get install -y llvm"
         ]
     },
+    "rusty": {
+        "Windows": [
+            "Invoke-WebRequest -Uri \"https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe\" -OutFile \"rustup-init.exe\"",
+            "Start-Process -FilePath \"rustup-init.exe\" -NoNewWindow -Wait",
+            "rm -r rustup-init.exe"
+        ],
+        "Linux": [
+            "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --help"
+        ]
+    },
     "vscode": {
         "Windows": [
             "choco install vscode -y"
