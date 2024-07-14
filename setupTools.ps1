@@ -1,5 +1,5 @@
 # Define the path to the JSON file
-$jsonPath = "tools_copy.json"
+$jsonPath = "tools.json"
 
 # Read the JSON file
 if (Test-Path $jsonPath) {
