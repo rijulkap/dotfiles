@@ -17,6 +17,8 @@ bindings =[
     { key = "Q", mods = "Control|Shift", action = "Quit" },
     { key = "W", mods = "Control|Shift", action = "CreateNewWindow" },
     { key = "N", mods = "Control|Shift", action = "SpawnNewInstance" },
+    { key = "Enter", mods = "Control|Shift", action = "ToggleFullscreen" },
+		
 ]
 
 
