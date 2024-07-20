@@ -6,10 +6,10 @@ return {
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>l'] = { name = '[l]sp Stuff', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>b'] = { name = '[b]uffer menu', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>l', group = '[l]sp Stuff' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>b', group = '[b]uffer menu' },
       }
     end,
   },
