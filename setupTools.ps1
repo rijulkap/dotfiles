@@ -22,22 +22,38 @@ function Install-Tool {
         [array]$installCmds
     )
     
-    if ($installCmds){
+    if ($installCmds) {
         foreach ($cmd in $installCmds) {
             Invoke-Expression $cmd
         }
-    }
-    else{
+    } else {
         Write-Output "No installation instructions found for $tool on this OS."
     }
 }
 
-# Install tools
-foreach ($tool in $tools.PSObject.Properties.Name) {
-    $installCmds = $tools.$tool.Windows
-    Install-Tool -tool $tool -installCmds $installCmds
-    Write-Output "---------------------------------------------------------------------------------------"
+# Check for command line argument for a specific tool
+param (
+    [string]$single
+)
+
+if ($singleTool) {
+    if ($tools.PSObject.Properties.Name -contains $single) {
+        $installCmds = $tools.$single.Windows
+        Install-Tool -tool $single -installCmds $installCmds
+    } else {
+        Write-Error "Tool '$single' not found in the list."
+        exit 1
+    }
+} else {
+    # Install all tools
+    foreach ($tool in $tools.PSObject.Properties.Name) {
+        $installCmds = $tools.$tool.Windows
+        Install-Tool -tool $tool -installCmds $installCmds
+        Write-Output "---------------------------------------------------------------------------------------"
+    }
 }
 
-# Keep the terminal open
-Read-Host -Prompt "Press Enter to exit"
+# Keep the terminal open if no specific tool was installed
+if (-Not $single) {
+    Read-Host -Prompt "Press Enter to exit"
+}

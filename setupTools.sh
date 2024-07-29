@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Define the path to the JSON file
 json_path="tools.json"
 
@@ -22,13 +24,33 @@ install_tool() {
     fi
 }
 
-# Install tools
-tools=$(jq -r 'keys[]' "$json_path")
-for tool in $tools; do
-    mapfile -t install_cmds < <(jq -r --arg tool "$tool" '.[$tool].Linux[]?' "$json_path")
-    install_tool "$tool" "${install_cmds[@]}"
-    echo "---------------------------------------------------------------------------------------"
-done
+# Parse command line argument for a specific tool
+single_tool=""
+if [ $# -gt 0 ]; then
+    single_tool=$1
+fi
 
-# Keep the terminal open
-read -p "Press Enter to exit"
+# Install specific tool or all tools
+if [ -n "$single_tool" ]; then
+    # Install a specific tool
+    mapfile -t install_cmds < <(jq -r --arg tool "$single_tool" '.[$tool].Linux[]?' "$json_path")
+    if [ ${#install_cmds[@]} -eq 0 ]; then
+        echo "Tool '$single_tool' not found or no installation instructions for this OS."
+        exit 1
+    else
+        install_tool "$single_tool" "${install_cmds[@]}"
+    fi
+else
+    # Install all tools
+    tools=$(jq -r 'keys[]' "$json_path")
+    for tool in $tools; do
+        mapfile -t install_cmds < <(jq -r --arg tool "$tool" '.[$tool].Linux[]?' "$json_path")
+        install_tool "$tool" "${install_cmds[@]}"
+        echo "---------------------------------------------------------------------------------------"
+    done
+fi
+
+# Keep the terminal open if no specific tool was installed
+if [ -z "$single_tool" ]; then
+    read -p "Press Enter to exit"
+fi
