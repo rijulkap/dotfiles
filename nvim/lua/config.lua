@@ -7,7 +7,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Set up lazy, and load my `lua/custom/plugins/` folder
-require('lazy').setup({ import = 'plugins' }, {
+require('lazy').setup {
+  spec = { { import = 'plugins' }, { import = 'plugins.Extras' } },
   change_detection = {
     notify = false,
   },
@@ -30,4 +31,4 @@ require('lazy').setup({ import = 'plugins' }, {
       lazy = '💤 ',
     },
   },
-})
+}

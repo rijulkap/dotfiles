@@ -14,8 +14,6 @@ return {
 
       local auto_select = false
 
-      local cmp_src = {}
-
       local icons = {
         Array = ' ',
         Boolean = '󰨙 ',
@@ -60,13 +58,10 @@ return {
 
       local defaults = require 'cmp.config.default'()
 
-      if opts.sources ~= nil then
-        cmp_src = opts.sources
-        table.insert(cmp_src, 1, { name = 'path' })
-        table.insert(cmp_src, 1, { name = 'nvim_lsp' })
-      else
-        cmp_src = { { name = 'path' }, { name = 'nvim_lsp' } }
-      end
+      local cmp_src = {
+        { name = 'path' },
+        { name = 'nvim_lsp' },
+      }
 
       return {
         completion = { completeopt = 'menu,menuone,noinsert' .. (auto_select and '' or ',noselect') },
@@ -81,7 +76,7 @@ return {
           ['<C-Space>'] = cmp.mapping.complete {},
         },
 
-        sources = cmp.config.sources(cmp_src),
+        sources = cmp_src,
         formatting = {
           format = function(entry, item)
             if icons[item.kind] then
