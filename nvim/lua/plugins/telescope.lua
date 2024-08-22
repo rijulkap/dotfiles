@@ -27,7 +27,7 @@ return {
           },
         },
         defaults = {
-          path_display = { 'truncate' },
+          path_display = { 'smart' },
           mappings = {
             n = {
               ['<c-c>'] = require('telescope.actions').delete_buffer,
