@@ -74,7 +74,7 @@ return {
 
           map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
           map('gr', function()
-            require('telescope.builtin').lsp_references { line_width = 90 }
+            require('telescope.builtin').lsp_references { show_line = false }
           end, '[G]oto [R]eferences')
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
           map('<leader>lD', require('telescope.builtin').lsp_type_definitions, '[l]sp Type [D]efinition')

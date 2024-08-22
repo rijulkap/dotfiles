@@ -18,7 +18,6 @@ vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
-vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.opt.hidden = true
 vim.opt.wrap = false
