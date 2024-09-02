@@ -18,7 +18,13 @@ return {
             exportPdf = 'never', -- Choose onType, onSave or never.
           },
         },
-        basedpyright = {},
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              typeCheckingMode = 'standard',
+            },
+          },
+        },
         ruff_lsp = {},
         jsonls = {
           -- lazy-load schemastore when needed
