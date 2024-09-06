@@ -165,12 +165,33 @@ return {
         ensure_installed = {
           -- Update this to ensure that you have the debuggers for the langs you want
           'codelldb',
+          'netcoredbg',
+        },
+      }
+
+      local netcoredbg = require('mason-registry').get_package 'netcoredbg'
+      local netcoredbg_path = netcoredbg:get_install_path() .. '/netcoredbg/netcoredbg.exe'
+
+      dap.adapters.coreclr = {
+        type = 'executable',
+        command = netcoredbg_path,
+        args = { '--interpreter=vscode' },
+      }
+
+      dap.configurations.cs = {
+        {
+          type = 'coreclr',
+          name = 'launch - netcoredbg',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+          end,
         },
       }
 
       local codelldb = require('mason-registry').get_package 'codelldb'
-      local extension_path = codelldb:get_install_path() .. '/extension/'
-      local codelldb_path = extension_path .. 'adapter/codelldb'
+      local codelldb_extension_path = codelldb:get_install_path() .. '/extension/'
+      local codelldb_path = codelldb_extension_path .. 'adapter/codelldb'
 
       dap.adapters.codelldb = {
         type = 'server',
