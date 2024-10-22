@@ -27,7 +27,20 @@ return {
           },
         },
         defaults = {
+          prompt_prefix = ' ',
+          selection_caret = ' ',
           path_display = { 'smart' },
+          get_selection_window = function()
+            local wins = vim.api.nvim_list_wins()
+            table.insert(wins, 1, vim.api.nvim_get_current_win())
+            for _, win in ipairs(wins) do
+              local buf = vim.api.nvim_win_get_buf(win)
+              if vim.bo[buf].buftype == '' then
+                return win
+              end
+            end
+            return 0
+          end,
           mappings = {
             n = {
               ['<c-c>'] = require('telescope.actions').delete_buffer,
@@ -70,7 +83,7 @@ return {
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[o] Fuzzily search in current buffer' })
+      end, { desc = 'Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
       vim.keymap.set('n', '<leader>so', function()
@@ -84,6 +97,11 @@ return {
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      vim.keymap.set('n', '<leader>sv', '<cmd>Telescope vim_options<cr>', { desc = '[S]earch [V]im Options' })
+      vim.keymap.set('n', '<leader>s:', '<cmd>Telescope command_history<cr>', { desc = '[S]earch [C]ommand History' })
+      vim.keymap.set('n', '<leader>gc', '<cmd>Telescope git_commits<CR>', { desc = 'Search [G]it [C]ommits' })
+      vim.keymap.set('n', '<leader>gs', '<cmd>Telescope git_status<CR>', { desc = 'Search [G]it [S]tatus' })
     end,
   },
 }
