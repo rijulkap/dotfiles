@@ -22,11 +22,12 @@ return {
       -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       -- adjusts spacing to ensure icons are aligned
       nerd_font_variant = 'normal',
-
       keymap = {
         accept = '<CR>',
         select_prev = { '<c-p>' },
         select_next = { '<c-n>' },
+        show_documentation = '<c-Tab>',
+        hide_documentation = '<c-Tab>',
       },
 
       -- experimental auto-brackets support
