@@ -19,7 +19,7 @@ return {
     config = function()
       local open_with_trouble = require('trouble.sources.telescope').open
       -- local add_to_trouble = require('trouble.sources.telescope').add
-
+      --
       require('telescope').setup {
         extensions = {
           ['ui-select'] = {
@@ -32,10 +32,15 @@ return {
             n = {
               ['<c-c>'] = require('telescope.actions').delete_buffer,
               ['<c-t>'] = open_with_trouble,
+              ['<tab>'] = require('telescope.actions').toggle_selection,
+              ['<c-tab>'] = require('telescope.actions').toggle_selection + require('telescope.actions').move_selection_next,
             }, -- n
             i = {
+              ['<C-h>'] = 'which_key',
               ['<c-c>'] = require('telescope.actions').delete_buffer,
               ['<c-t>'] = open_with_trouble,
+              ['<tab>'] = require('telescope.actions').toggle_selection,
+              ['<c-tab>'] = require('telescope.actions').toggle_selection + require('telescope.actions').move_selection_next,
             }, -- i
           },
         },
