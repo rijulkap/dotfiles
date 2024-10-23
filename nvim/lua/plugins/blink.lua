@@ -11,7 +11,6 @@ return {
     -- build = 'cargo build --release',
     -- On musl libc based systems you need to add this flag
     -- build = 'RUSTFLAGS="-C target-feature=-crt-static" cargo build --release',
-
     opts = {
       highlight = {
         -- sets the fallback highlight groups to nvim-cmp's highlight groups
@@ -21,13 +20,14 @@ return {
       },
       -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       -- adjusts spacing to ensure icons are aligned
+
       nerd_font_variant = 'normal',
       keymap = {
         accept = '<CR>',
         select_prev = { '<c-p>' },
         select_next = { '<c-n>' },
-        show_documentation = '<c-Tab>',
-        hide_documentation = '<c-Tab>',
+        show_documentation = '<Tab>',
+        hide_documentation = '<Tab>',
       },
 
       -- experimental auto-brackets support
