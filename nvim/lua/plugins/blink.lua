@@ -29,6 +29,7 @@ return {
         show_documentation = '<Tab>',
         hide_documentation = '<Tab>',
       },
+      windows = { autocomplete = { selection = 'auto_insert' } },
       kind_icons = {
         Array = ' ',
         Boolean = '󰨙 ',
