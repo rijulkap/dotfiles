@@ -23,11 +23,8 @@ return {
 
       nerd_font_variant = 'normal',
       keymap = {
-        accept = '<CR>',
-        select_prev = { '<c-p>' },
-        select_next = { '<c-n>' },
-        show_documentation = '<Tab>',
-        hide_documentation = '<Tab>',
+        preset = 'enter',
+        ['<C-K>'] = { 'show', 'show_documentation', 'hide_documentation' },
       },
       windows = { autocomplete = { selection = 'auto_insert' } },
       kind_icons = {

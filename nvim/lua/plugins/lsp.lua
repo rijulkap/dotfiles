@@ -5,10 +5,11 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+			'saghen/blink.cmp'
     },
+
     config = function()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
-      -- capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
         clangd = {},
@@ -66,6 +67,7 @@ return {
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            server.capabilities = vim.tbl_deep_extend('force', server.capabilities,require('blink.cmp').get_lsp_capabilities(server.config))
             require('lspconfig')[server_name].setup(server)
           end,
         },
