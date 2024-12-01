@@ -28,4 +28,4 @@ vim.keymap.set('n', '<leader>bb', function()
   end
 end, { silent = true, desc = 'Close unused buffers' })
 
-vim.keymap.set('n', '<leader>bd', '<cmd>bd<CR>', { silent = true, desc = 'Close buffers' })
+-- vim.keymap.set('n', '<leader>bd', '<cmd>bd<CR>', { silent = true, desc = 'Close buffers' })
