@@ -7,6 +7,9 @@ return {
     opts = {
       terminal = {
         win = { position = 'float' },
+        keys = {
+          term_normal = {},
+        },
       },
       bigfile = { enabled = true },
       notifier = {
@@ -103,9 +106,22 @@ return {
       {
         '<A-1>',
         function()
-          Snacks.terminal()
+          Snacks.terminal.toggle(_, {
+            env = { NAME = 'FloatTerm1' },
+          })
         end,
         desc = 'Toggle Terminal',
+        mode = { 'n', 't', 'i' },
+      },
+      {
+        '<A-2>',
+        function()
+          Snacks.terminal.toggle(_, {
+            env = { NAME = 'FloatTerm2' },
+          })
+        end,
+        desc = 'Toggle Terminal',
+        mode = { 'n', 't', 'i' },
       },
       {
         ']]',
@@ -125,6 +141,8 @@ return {
       },
     },
     init = function()
+      vim.keymap.set({ 't' }, '<esc><esc>', '<C-\\><C-n>')
+
       vim.api.nvim_create_autocmd('User', {
         pattern = 'VeryLazy',
         callback = function()

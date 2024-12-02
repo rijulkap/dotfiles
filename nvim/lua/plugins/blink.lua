@@ -24,7 +24,7 @@ return {
       nerd_font_variant = 'normal',
       keymap = {
         preset = 'enter',
-        ['<C-K>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<c-Tab>'] = { 'show', 'show_documentation', 'hide_documentation' },
       },
       windows = { autocomplete = { selection = 'auto_insert' } },
       kind_icons = {
