@@ -108,9 +108,14 @@ return {
         function()
           Snacks.terminal.toggle(_, {
             env = { NAME = 'FloatTerm1' },
+            win = {
+              wo = {
+                winbar = 'FloatTerm1',
+              },
+            },
           })
         end,
-        desc = 'Toggle Terminal',
+        desc = 'Toggle Terminal1',
         mode = { 'n', 't', 'i' },
       },
       {
@@ -118,9 +123,14 @@ return {
         function()
           Snacks.terminal.toggle(_, {
             env = { NAME = 'FloatTerm2' },
+            win = {
+              wo = {
+                winbar = 'FloatTerm2',
+              },
+            },
           })
         end,
-        desc = 'Toggle Terminal',
+        desc = 'Toggle Terminal2',
         mode = { 'n', 't', 'i' },
       },
       {
