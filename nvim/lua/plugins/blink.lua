@@ -20,11 +20,20 @@ return {
       },
       -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       -- adjusts spacing to ensure icons are aligned
-
+      completion = {
+        menu = {
+          winblend = vim.o.pumblend,
+          draw = { treesitter = true },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+      },
       nerd_font_variant = 'normal',
       keymap = {
         preset = 'enter',
-        ['<c-Tab>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<c-K>'] = { 'show', 'show_documentation', 'hide_documentation' },
       },
       windows = { autocomplete = { selection = 'auto_insert' } },
       kind_icons = {
