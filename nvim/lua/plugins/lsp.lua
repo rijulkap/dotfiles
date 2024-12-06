@@ -13,11 +13,8 @@ return {
 
       local servers = {
         clangd = {},
-        typst_lsp = {
+        tinymist = {
           filetypes = { 'typst' },
-          settings = {
-            exportPdf = 'never', -- Choose onType, onSave or never.
-          },
         },
         basedpyright = {
           settings = {
