@@ -24,6 +24,6 @@ vim.opt.wrap = false
 vim.opt.showcmd = false
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.shortmess = 'I'
-vim.opt.confirm = true
 vim.opt.cursorline = true
 vim.opt.smoothscroll = true
+-- vim.opt.confirm = true
