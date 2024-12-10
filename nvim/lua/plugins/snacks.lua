@@ -17,7 +17,7 @@ return {
         timeout = 3000,
       },
       quickfile = { enabled = true },
-      statuscolumn = { enabled = true },
+      statuscolumn = { enabled = false },
       words = { enabled = true },
       styles = {
         notification = {
