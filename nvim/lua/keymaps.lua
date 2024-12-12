@@ -18,8 +18,8 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
-vim.keymap.set({'n','i'}, '<leader>q', '<cmd>confirm q<CR>')
-vim.keymap.set({'n','i'}, '<leader>w', '<cmd>confirm w<CR>')
+-- vim.keymap.set({'n','i'}, '<leader>q', '<cmd>confirm q<CR>')
+-- vim.keymap.set({'n','i'}, '<leader>w', '<cmd>confirm w<CR>')
 
 vim.keymap.set('n', '<leader>bb', function()
   local curbufnr = vim.api.nvim_get_current_buf()
