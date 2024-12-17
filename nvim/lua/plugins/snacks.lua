@@ -12,6 +12,7 @@ return {
         },
       },
       bigfile = { enabled = true },
+      indent = { enabled = true, animate ={enabled = false} },
       notifier = {
         enabled = true,
         timeout = 3000,
