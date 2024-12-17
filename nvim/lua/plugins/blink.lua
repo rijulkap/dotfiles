@@ -29,13 +29,16 @@ return {
           auto_show = true,
           auto_show_delay_ms = 200,
         },
+        list = {
+          selection = 'auto_insert',
+        },
       },
       nerd_font_variant = 'normal',
       keymap = {
         preset = 'enter',
         ['<c-K>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<esc>'] = { 'cancel', 'fallback' },
       },
-      windows = { autocomplete = { selection = 'auto_insert' } },
       kind_icons = {
         Array = ' ',
         Boolean = '󰨙 ',
