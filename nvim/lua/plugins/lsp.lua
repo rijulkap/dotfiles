@@ -77,14 +77,10 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-          map('gr', function()
-            require('telescope.builtin').lsp_references { show_line = false }
-          end, '[G]oto [R]eferences')
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          map('<leader>lD', require('telescope.builtin').lsp_type_definitions, '[l]sp Type [D]efinition')
-          map('<leader>ld', require('telescope.builtin').lsp_document_symbols, '[l]sp [D]ocument Symbols')
-          map('<leader>lw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[l]sp [W]orkspace Symbols')
+          map('gd', "<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [D]efinition')
+          map('gr', "<cmd>FzfLua lsp_references      jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [R]eferences')
+          map('gI', "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [I]mplementation')
+          map('<leader>lD', "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>", '[l]sp Type [D]efinition')
           map('<leader>lq', vim.diagnostic.setloclist, 'Open diagnostic [l]sp [q]uickfix list')
           map('<leader>lr', vim.lsp.buf.rename, '[l]sp [R]ename')
           map('<leader>lc', vim.lsp.buf.code_action, '[l]sp [C]ode Action')

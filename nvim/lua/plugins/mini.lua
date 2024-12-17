@@ -35,9 +35,9 @@ return {
         items = {
           { name = 'New file', action = 'enew', section = 'Actions' },
           { name = 'Quit', action = 'qa', section = 'Actions' },
-          { name = 'Recent files', action = 'Telescope oldfiles', section = 'Telescope' },
-          { name = 'Find file', action = 'Telescope find_files', section = 'Telescope' },
-          { name = 'Grep', action = 'Telescope live_grep', section = 'Telescope' },
+          { name = 'Recent files', action = 'FzfLua oldfiles', section = 'FuzzyFind' },
+          { name = 'Find file', action = 'FzfLua files', section = 'FuzzyFind' },
+          { name = 'Grep', action = 'FzfLua live_grep', section = 'FuzzyFind' },
         },
         content_hooks = {
           starter.gen_hook.adding_bullet(pad .. '░ ', false),
