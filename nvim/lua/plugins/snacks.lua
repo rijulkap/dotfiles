@@ -121,7 +121,7 @@ return {
       {
         '<A-1>',
         function()
-          Snacks.terminal.toggle(_, {
+          Snacks.terminal(nil, {
             env = { NAME = 'FloatTerm1' },
             win = {
               wo = {
@@ -136,7 +136,7 @@ return {
       {
         '<A-2>',
         function()
-          Snacks.terminal.toggle(_, {
+          Snacks.terminal(nil, {
             env = { NAME = 'FloatTerm2' },
             win = {
               wo = {
