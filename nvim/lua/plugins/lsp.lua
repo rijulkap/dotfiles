@@ -5,14 +5,20 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-			'saghen/blink.cmp'
+      'saghen/blink.cmp',
     },
 
     config = function()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
 
       local servers = {
-        clangd = {},
+        clangd = {
+          cmd = {
+            '/home/rk-dev/.espressif/tools/esp-clang/16.0.1-fe4f10a809/esp-clang/bin/clangd',
+            '--background-index',
+            '--query-driver=**',
+          },
+        },
         tinymist = {
           filetypes = { 'typst' },
         },
@@ -64,7 +70,7 @@ return {
           function(server_name)
             local server = servers[server_name] or {}
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            server.capabilities = vim.tbl_deep_extend('force', server.capabilities,require('blink.cmp').get_lsp_capabilities(server.config))
+            server.capabilities = vim.tbl_deep_extend('force', server.capabilities, require('blink.cmp').get_lsp_capabilities(server.config))
             require('lspconfig')[server_name].setup(server)
           end,
         },
@@ -77,10 +83,10 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          map('gd', "<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [D]efinition')
-          map('gr', "<cmd>FzfLua lsp_references      jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [R]eferences')
-          map('gI', "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>", '[G]oto [I]mplementation')
-          map('<leader>lD', "<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>", '[l]sp Type [D]efinition')
+          map('gd', '<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [D]efinition')
+          map('gr', '<cmd>FzfLua lsp_references      jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [R]eferences')
+          map('gI', '<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [I]mplementation')
+          map('<leader>lD', '<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>', '[l]sp Type [D]efinition')
           map('<leader>lq', vim.diagnostic.setloclist, 'Open diagnostic [l]sp [q]uickfix list')
           map('<leader>lr', vim.lsp.buf.rename, '[l]sp [R]ename')
           map('<leader>lc', vim.lsp.buf.code_action, '[l]sp [C]ode Action')
