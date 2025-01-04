@@ -58,7 +58,7 @@ config.keys = {
 	{ key = "[", mods = "LEADER", action = act.ActivateTabRelative(-1) },
 	{ key = "]", mods = "LEADER", action = act.ActivateTabRelative(1) },
 	{ key = "n", mods = "LEADER", action = act.ShowTabNavigator },
-	{ key = "Enter", mods = "CTRL", action = act.ToggleFullScreen },
+	{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 }
 
 for i = 1, 9 do

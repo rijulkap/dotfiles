@@ -1,9 +1,11 @@
 # Define source and target directories
 $alacrittySource = Join-Path -Path $PSScriptRoot -ChildPath "alacritty"
 $neovimSource = Join-Path -Path $PSScriptRoot -ChildPath "nvim"
+$weztermSource = Join-Path -Path $PSScriptRoot -ChildPath "wezterm\\.wezterm.lua"
 
 $alacrittyTarget = "$env:APPDATA\alacritty"
 $neovimTarget = "$env:LOCALAPPDATA\nvim"
+$weztermTarget = "$env:HOME\.wezterm.lua"
 
 # Function to create a symbolic link
 function Create-SymbolicLink {
@@ -26,6 +28,7 @@ function Create-SymbolicLink {
 # Create symbolic links for Alacritty and Neovim configuration folders
 Create-SymbolicLink -source $alacrittySource -target $alacrittyTarget
 Create-SymbolicLink -source $neovimSource -target $neovimTarget
+Create-SymbolicLink -source $weztermSource -target $weztermTarget
 
 # Keep the terminal open
 Read-Host -Prompt "Press Enter to exit"
