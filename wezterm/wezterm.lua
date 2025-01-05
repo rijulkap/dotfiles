@@ -11,7 +11,7 @@ end
 
 -- Settings
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-	config.default_prog = { "pwsh.exe", "-NoLogo","-ExecutionPolicy","RemoteSigned"}
+	config.default_prog = { "pwsh.exe", "-NoLogo", "-ExecutionPolicy", "RemoteSigned" }
 	-- config.default_prog = { "powershell.exe" }
 end
 
@@ -94,7 +94,6 @@ config.tab_bar_at_bottom = false
 -- Disable dynamic tab naming by not setting foreground process as tab name
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
 	-- Use a static title or base it on the tab index
-	-- wezterm.log_info (tab:get_title())
 	return string.format(" Tab %d |", tab.tab_index + 1)
 end)
 
@@ -102,7 +101,6 @@ wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
 	-- Use a static title or base it on the tab index
 	return string.format(" Tab %d ", tab.tab_index + 1)
 end)
-
 
 -- Optional: Disable foreground process info in the right status bar
 wezterm.on("update-status", function(window, pane)
@@ -118,12 +116,8 @@ wezterm.on("update-status", function(window, pane)
 		stat_color = "#bb9af7"
 	end
 
-	-- Current working directory
-	-- local cwd = pane:get_current_working_dir()
-	-- cwd = cwd and cwd.file_path or ""
-
-	-- wezterm.log_info (cwd)
-
+	local tab_id = window:active_tab():tab_id()
+	window:active_tab():set_title(string.format("Tab %d ", tab_id + 1))
 
 	-- Time
 	local time = wezterm.strftime("%H:%M:%S")
