@@ -23,7 +23,7 @@ return {
           auto_show_delay_ms = 200,
         },
         list = {
-          selection = 'auto_insert',
+          selection = { preselect = false, auto_insert = true },
         },
       },
       keymap = {
@@ -76,6 +76,12 @@ return {
         },
       },
 
+      sources = {
+        -- Remove 'buffer' if you don't want text completions, by default it's only enabled when LSP returns no items
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        -- Disable cmdline completions
+        cmdline = {},
+      },
       -- experimental auto-brackets support
       -- accept = { auto_brackets = { enabled = true } }
 
