@@ -29,7 +29,7 @@ return {
       keymap = {
         preset = 'enter',
         ['<c-K>'] = { 'show', 'show_documentation', 'hide_documentation' },
-        ['<esc>'] = { 'cancel', 'fallback' },
+        -- ['<esc>'] = { 'cancel', 'fallback' },
       },
       appearance = {
         nerd_font_variant = 'normal',
