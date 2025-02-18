@@ -75,12 +75,11 @@ return {
           Variable = '󰀫 ',
         },
       },
+			cmdline = {enabled = false},
 
       sources = {
         -- Remove 'buffer' if you don't want text completions, by default it's only enabled when LSP returns no items
         default = { 'lsp', 'path', 'snippets', 'buffer' },
-        -- Disable cmdline completions
-        cmdline = {},
       },
       -- experimental auto-brackets support
       -- accept = { auto_brackets = { enabled = true } }
