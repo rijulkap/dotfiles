@@ -13,11 +13,12 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-vim.opt.inccommand = 'split'
+vim.opt.inccommand = 'nosplit'
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
+vim.opt.splitkeep = "screen"
 vim.opt.sidescrolloff = 8
 vim.opt.hidden = true
 vim.opt.wrap = false

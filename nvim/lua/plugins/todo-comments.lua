@@ -2,7 +2,7 @@ return {
   {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = { 'nvim-lua/plenary.nvim', 'folke/snacks.nvim' },
     opts = { signs = false },
     keys = {
       {
@@ -22,14 +22,14 @@ return {
       {
         '<leader>st',
         function()
-          require('todo-comments.fzf').todo()
+          require('snacks').picker.todo_comments()
         end,
         desc = 'Todo',
       },
       {
         '<leader>sT',
         function()
-          require('todo-comments.fzf').todo { keywords = { 'TODO', 'FIX', 'FIXME' } }
+          require('snacks').picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } }
         end,
         desc = 'Todo/Fix/Fixme',
       },

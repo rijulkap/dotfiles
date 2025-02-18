@@ -6,6 +6,7 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'saghen/blink.cmp',
+			'folke/snacks.nvim'
     },
 
     config = function()
@@ -83,10 +84,11 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          map('gd', '<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [D]efinition')
-          map('gr', '<cmd>FzfLua lsp_references      jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [R]eferences')
-          map('gI', '<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>', '[G]oto [I]mplementation')
-          map('<leader>lD', '<cmd>FzfLua lsp_implementations jump_to_single_result=true ignore_current_line=true<cr>', '[l]sp Type [D]efinition')
+					local Snacks = require('snacks')
+
+          map('gd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+          map('gr',function() Snacks.picker.lsp_references() end, '[G]oto [R]eferences')
+          map('gI',function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
           map('<leader>lq', vim.diagnostic.setloclist, 'Open diagnostic [l]sp [q]uickfix list')
           map('<leader>lr', vim.lsp.buf.rename, '[l]sp [R]ename')
           map('<leader>lc', vim.lsp.buf.code_action, '[l]sp [C]ode Action')

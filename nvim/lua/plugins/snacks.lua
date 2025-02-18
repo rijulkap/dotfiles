@@ -11,8 +11,43 @@ return {
           term_normal = {},
         },
       },
+      dashboard = {
+        enabled = true,
+        preset = {
+          keys = {
+            { icon = ' ', key = 'f', desc = 'Find File', action = ":lua Snacks.dashboard.pick('files')" },
+            { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
+            { icon = ' ', key = 'g', desc = 'Find Text', action = ":lua Snacks.dashboard.pick('live_grep')" },
+            { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+            { icon = '󰒲 ', key = 'L', desc = 'Lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
+            { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
+          },
+          -- Used by the `header` section
+          header = table.concat({
+            [[NEO-VIM]],
+            [[                                                ]],
+            [[                                          _.oo. ]],
+            [[                  _.u[[/;:,.         .odMMMMMM' ]],
+            [[               .o888UU[[[/;:-.  .o@P^    MMM^   ]],
+            [[              oN88888UU[[[/;::-.        dP^     ]],
+            [[             dNMMNN888UU[[[/;:--.   .o@P^       ]],
+            [[            ,MMMMMMN888UU[[/;::-. o@^           ]],
+            [[            NNMMMNN888UU[[[/~.o@P^              ]],
+            [[            888888888UU[[[/o@^-..               ]],
+            [[           oI8888UU[[[/o@P^:--..                ]],
+            [[        .@^  YUU[[[/o@^;::---..                 ]],
+            [[      oMP     ^/o@P^;:::---..                   ]],
+            [[   .dMMM    .o@^ ^;::---...                     ]],
+            [[  dMMMMMMM@^`       `^^^^                       ]],
+            [[ YMMMUP^                                        ]],
+            [[  ^^                                            ]],
+            [[                                                ]],
+          }, '\n'),
+        },
+      },
       bigfile = { enabled = true },
-      indent = { enabled = true, animate ={enabled = false} },
+      indent = { enabled = true, animate = { enabled = false } },
       notifier = {
         enabled = true,
         timeout = 3000,
@@ -25,6 +60,7 @@ return {
           wo = { wrap = true }, -- Wrap notifications
         },
       },
+      picker = { enabled = true },
     },
     keys = {
       {
@@ -163,6 +199,185 @@ return {
         end,
         desc = 'Prev Reference',
         mode = { 'n', 't' },
+      },
+
+      {
+        '<leader><leader>',
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = 'Switch Buffer',
+      },
+      {
+        '<leader>sg',
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = 'Grep (Root Dir)',
+      },
+      {
+        '<leader>:',
+        function()
+          Snacks.picker.command_history()()
+        end,
+        desc = 'Command History',
+      },
+      {
+        '<leader>sf',
+        function()
+          Snacks.picker.files()
+        end,
+        desc = 'Find Files (Root Dir)',
+      },
+      -- find
+      {
+        '<leader>sn',
+        function()
+          Snacks.picker.files { cwd = vim.fn.stdpath 'config' }
+        end,
+        desc = 'Find Config File',
+      },
+      {
+        '<leader>s.',
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = 'Recent',
+      },
+      -- git
+      {
+        '<leader>gc',
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = 'Commits',
+      },
+      {
+        '<leader>gs',
+        function()
+          Snacks.picker.git_status()
+        end,
+        desc = 'Status',
+      },
+      -- search
+      {
+        '<leader>s"',
+        function()
+          Snacks.picker.registers()
+        end,
+        desc = 'Registers',
+      },
+      {
+        '<leader>sa',
+        function()
+          Snacks.picker.autocmds()
+        end,
+        desc = 'Auto Commands',
+      },
+      {
+        '<leader>sb',
+        function()
+          Snacks.picker.lines()
+        end,
+        desc = 'Buffer',
+      },
+      {
+        '<leader>sc',
+        function()
+          Snacks.picker.commands()
+        end,
+        desc = 'Commands',
+      },
+      {
+        '<leader>sd',
+        function()
+          Snacks.picker.diagnostics_buffer()
+        end,
+        desc = 'Document Diagnostics',
+      },
+      {
+        '<leader>sD',
+        function()
+          Snacks.picker.diagnostics()
+        end,
+        desc = 'Workspace Diagnostics',
+      },
+      {
+        '<leader>sh',
+        function()
+          Snacks.picker.help()
+        end,
+        desc = 'Help Pages',
+      },
+      {
+        '<leader>sH',
+        function()
+          Snacks.picker.highlights()
+        end,
+        desc = 'Search Highlight Groups',
+      },
+      {
+        '<leader>sj',
+        function()
+          Snacks.picker.jumps()
+        end,
+        desc = 'Jumplist',
+      },
+      {
+        '<leader>sk',
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = 'Key Maps',
+      },
+      {
+        '<leader>sl',
+        function()
+          Snacks.picker.loclist()
+        end,
+        desc = 'Location List',
+      },
+      {
+        '<leader>sM',
+        function()
+          Snacks.picker.man()
+        end,
+        desc = 'Man Pages',
+      },
+      {
+        '<leader>sm',
+        function()
+          Snacks.picker.marks()
+        end,
+        desc = 'Jump to Mark',
+      },
+      {
+        '<leader>sR',
+        function()
+          Snacks.picker.resume()
+        end,
+        desc = 'Resume',
+      },
+      {
+        '<leader>sq',
+        function()
+          Snacks.picker.qflist()
+        end,
+        desc = 'Quickfix List',
+      },
+      {
+        '<leader>ss',
+        function()
+          Snacks.picker.lsp_symbols()
+        end,
+        desc = 'Goto Symbol',
+      },
+      {
+        '<leader>sS',
+        function()
+          Snacks.picker.lsp_workspace_symbols()
+        end,
+        desc = 'Goto Symbol (Workspace)',
       },
     },
     init = function()
