@@ -6,7 +6,7 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'saghen/blink.cmp',
-			'folke/snacks.nvim'
+      'folke/snacks.nvim',
     },
 
     config = function()
@@ -84,11 +84,17 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-					local Snacks = require('snacks')
+          local Snacks = require 'snacks'
 
-          map('gd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
-          map('gr',function() Snacks.picker.lsp_references() end, '[G]oto [R]eferences')
-          map('gI',function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
+          map('gd', function()
+            Snacks.picker.lsp_definitions()
+          end, '[G]oto [D]efinition')
+          map('gr', function()
+            Snacks.picker.lsp_references()
+          end, '[G]oto [R]eferences')
+          map('gI', function()
+            Snacks.picker.lsp_implementations()
+          end, '[G]oto [I]mplementation')
           map('<leader>lq', vim.diagnostic.setloclist, 'Open diagnostic [l]sp [q]uickfix list')
           map('<leader>lr', vim.lsp.buf.rename, '[l]sp [R]ename')
           map('<leader>lc', vim.lsp.buf.code_action, '[l]sp [C]ode Action')
@@ -96,22 +102,62 @@ return {
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client.name == 'ruff' then
-            -- Disable hover in favor of Pyright
-            client.server_capabilities.hoverProvider = false
-          end
 
-          -- When you move your cursor, the highlights will be cleared (the second autocommand).
-          if client and client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              callback = vim.lsp.buf.document_highlight,
-            })
+          vim.g.lsp_bsdk = {}
 
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              callback = vim.lsp.buf.clear_references,
-            })
+          if client then
+            -- Initialize an empty table if no clients are associated with this buffer yet
+            vim.g.lsp_bsdk[1] = 'test'
+
+            -- Add the client's name to the list for the current buffer
+            -- table.insert(vim.g.lsp_name[event.buf], client.name)
+
+            -- Print the updated table to inspect
+            print(vim.inspect(vim.g.lsp_bsdk[1]))
+
+            -- if vim.g.lsp_name == nil then
+            -- 	vim.g.lsp_name = {}
+            -- end
+            --       -- LSPAttach autocommand function
+            --       if vim.g.lsp_name[event.buf] == nil then
+            --         -- Initialize an empty table if no clients are associated with this buffer yet
+            -- 	vim.g.lsp_name[event.buf] = {"test"}
+            --         vim.g.lsp_name = table.concat(vim.g.lsp_name[event.buf], client.name)
+            --
+            -- 	print(vim.inspect(vim.g.lsp_name))
+            --       else
+            --         local exists = false
+            --         -- Check if the client name is already in the list for this buffer
+            --         for _, v in ipairs(vim.g.lsp_name[event.buf]) do
+            --           if v == client.name then
+            --             exists = true
+            --             break
+            --           end
+            --         end
+            --
+            --         -- If the client name is not already in the list, add it
+            --         if not exists then
+            --           table.insert(vim.g.lsp_names[event.buf], {client.name})
+            --         end
+            --       end
+            --
+            if client.name == 'ruff' then
+              -- Disable hover in favor of Pyright
+              client.server_capabilities.hoverProvider = false
+            end
+
+            -- When you move your cursor, the highlights will be cleared (the second autocommand).
+            if client.server_capabilities.documentHighlightProvider then
+              vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                buffer = event.buf,
+                callback = vim.lsp.buf.document_highlight,
+              })
+
+              vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+                buffer = event.buf,
+                callback = vim.lsp.buf.clear_references,
+              })
+            end
           end
         end,
       })

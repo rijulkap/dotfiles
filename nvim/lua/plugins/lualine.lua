@@ -14,6 +14,7 @@ return {
       end
     end,
     opts = {
+
       options = {
         icons_enabled = true,
         theme = 'auto',
@@ -35,7 +36,27 @@ return {
         lualine_a = { 'mode' },
         lualine_b = { 'branch' },
         lualine_c = {
-          'filename',
+          {
+            function()
+              local cwd = vim.fn.getcwd()
+              local sep = package.config:sub(1, 1)
+              local parts = vim.split(cwd, sep, { trimempty = true }) -- Split path by "/"
+
+              -- Get last two parts or just return full path if <=2 parts
+              if #parts > 2 then
+                return '…/' .. parts[#parts - 1] .. '/' .. parts[#parts]
+              else
+                return cwd
+              end
+            end,
+            icon = { ' ', color = 'Directory' },
+            separator = '->',
+            padding = { left = 1, right = 0 },
+          },
+          {
+            'filename',
+            padding = { left = 0, right = 1 },
+          },
           {
             'diagnostics',
             symbols = {
@@ -45,7 +66,6 @@ return {
               hint = ' ',
             },
           },
-          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
         },
         lualine_x = {
           {
@@ -103,6 +123,16 @@ return {
         end
       end
 
+      -- local lsp_name = function()
+      --   if next(vim.g.lsp_names) ~= nil then
+      --     local lsp = vim.g.lsp_names[vim.api.nvim_get_current_buf()]
+      --     if lsp then
+      --       return lsp
+      --     end
+      --   end
+      --   return ''
+      -- end
+
       local trouble = require 'trouble'
       local symbols = trouble.statusline {
         mode = 'lsp_document_symbols',
@@ -122,6 +152,12 @@ return {
       table.insert(opts.sections.lualine_c, {
         symbols.get,
         cond = symbols.has,
+      })
+
+      table.insert(opts.sections.lualine_x, { 'filetype', icon_only = true, padding = { left = 1, right = 1 } })
+
+      table.insert(opts.sections.lualine_x, {
+        lsp_name,
       })
 
       require('lualine').setup(opts)
