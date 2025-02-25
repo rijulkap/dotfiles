@@ -103,44 +103,7 @@ return {
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-          vim.g.lsp_bsdk = {}
-
           if client then
-            -- Initialize an empty table if no clients are associated with this buffer yet
-            vim.g.lsp_bsdk[1] = 'test'
-
-            -- Add the client's name to the list for the current buffer
-            -- table.insert(vim.g.lsp_name[event.buf], client.name)
-
-            -- Print the updated table to inspect
-            print(vim.inspect(vim.g.lsp_bsdk[1]))
-
-            -- if vim.g.lsp_name == nil then
-            -- 	vim.g.lsp_name = {}
-            -- end
-            --       -- LSPAttach autocommand function
-            --       if vim.g.lsp_name[event.buf] == nil then
-            --         -- Initialize an empty table if no clients are associated with this buffer yet
-            -- 	vim.g.lsp_name[event.buf] = {"test"}
-            --         vim.g.lsp_name = table.concat(vim.g.lsp_name[event.buf], client.name)
-            --
-            -- 	print(vim.inspect(vim.g.lsp_name))
-            --       else
-            --         local exists = false
-            --         -- Check if the client name is already in the list for this buffer
-            --         for _, v in ipairs(vim.g.lsp_name[event.buf]) do
-            --           if v == client.name then
-            --             exists = true
-            --             break
-            --           end
-            --         end
-            --
-            --         -- If the client name is not already in the list, add it
-            --         if not exists then
-            --           table.insert(vim.g.lsp_names[event.buf], {client.name})
-            --         end
-            --       end
-            --
             if client.name == 'ruff' then
               -- Disable hover in favor of Pyright
               client.server_capabilities.hoverProvider = false

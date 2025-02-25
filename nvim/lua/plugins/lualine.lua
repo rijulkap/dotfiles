@@ -18,8 +18,9 @@ return {
       options = {
         icons_enabled = true,
         theme = 'auto',
-        component_separators = { left = '', right = '' },
-        section_separators = { left = '', right = '' },
+        component_separators = { left = '|', right = '|' },
+        -- section_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
         disabled_filetypes = {
           statusline = { 'snacks_dashboard' },
         },
@@ -34,48 +35,17 @@ return {
       },
       sections = {
         lualine_a = { 'mode' },
-        lualine_b = { 'branch' },
-        lualine_c = {
+        lualine_b = {
           {
-            function()
-              local cwd = vim.fn.getcwd()
-              local sep = package.config:sub(1, 1)
-              local parts = vim.split(cwd, sep, { trimempty = true }) -- Split path by "/"
-
-              -- Get last two parts or just return full path if <=2 parts
-              if #parts > 2 then
-                return '…/' .. parts[#parts - 1] .. '/' .. parts[#parts]
-              else
-                return cwd
-              end
-            end,
-            icon = { ' ', color = 'Directory' },
-            separator = '->',
+            'filetype',
+            icon_only = true,
             padding = { left = 1, right = 0 },
+            separator = '',
           },
-          {
-            'filename',
-            padding = { left = 0, right = 1 },
-          },
-          {
-            'diagnostics',
-            symbols = {
-              error = ' ',
-              warn = ' ',
-              info = ' ',
-              hint = ' ',
-            },
-          },
+          { 'filename', hl_group = 'lualine_b_normal' },
         },
-        lualine_x = {
-          {
-            function()
-              return '  ' .. require('dap').status()
-            end,
-            cond = function()
-              return package.loaded['dap'] and require('dap').status() ~= ''
-            end,
-          },
+        lualine_c = {
+          { 'branch' },
           {
             'diff',
             symbols = {
@@ -95,8 +65,26 @@ return {
             end,
           },
         },
+        lualine_x = {
+          {
+            function()
+              return '  ' .. require('dap').status()
+            end,
+            cond = function()
+              return package.loaded['dap'] and require('dap').status() ~= ''
+            end,
+          },
+        },
         lualine_y = {
-          { 'progress', separator = ' ', padding = { left = 1, right = 1 } },
+          {
+            'diagnostics',
+            symbols = {
+              error = ' ',
+              warn = ' ',
+              info = ' ',
+              hint = ' ',
+            },
+          },
         },
         lualine_z = { 'location' },
       },
@@ -123,42 +111,24 @@ return {
         end
       end
 
-      -- local lsp_name = function()
-      --   if next(vim.g.lsp_names) ~= nil then
-      --     local lsp = vim.g.lsp_names[vim.api.nvim_get_current_buf()]
-      --     if lsp then
-      --       return lsp
-      --     end
-      --   end
-      --   return ''
-      -- end
+      -- local trouble = require 'trouble'
+      -- local symbols = trouble.statusline {
+      --   mode = 'lsp_document_symbols',
+      --   groups = {},
+      --   title = false,
+      --   filter = { range = true },
+      --   format = '{kind_icon}{symbol.name:Normal}',
+      --   -- The following line is needed to fix the background color
+      --   -- Set it to the lualine section you want to use
+      --   hl_group = 'lualine_c_normal',
+      -- }
 
-      local trouble = require 'trouble'
-      local symbols = trouble.statusline {
-        mode = 'lsp_document_symbols',
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = '{kind_icon}{symbol.name:Normal}',
-        -- The following line is needed to fix the background color
-        -- Set it to the lualine section you want to use
-        hl_group = 'lualine_c_normal',
-      }
+      table.insert(opts.sections.lualine_b, virtual_env)
 
-      table.insert(opts.sections.lualine_c, {
-        virtual_env,
-      })
-
-      table.insert(opts.sections.lualine_c, {
-        symbols.get,
-        cond = symbols.has,
-      })
-
-      table.insert(opts.sections.lualine_x, { 'filetype', icon_only = true, padding = { left = 1, right = 1 } })
-
-      table.insert(opts.sections.lualine_x, {
-        lsp_name,
-      })
+      -- table.insert(opts.sections.lualine_c, {
+      --   symbols.get,
+      --   cond = symbols.has,
+      -- })
 
       require('lualine').setup(opts)
     end,

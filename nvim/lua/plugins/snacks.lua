@@ -204,7 +204,7 @@ return {
       {
         '<leader><leader>',
         function()
-          Snacks.picker.buffers()
+          Snacks.picker.buffers({current = false})
         end,
         desc = 'Switch Buffer',
       },
