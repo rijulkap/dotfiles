@@ -16,13 +16,13 @@ return {
     },
     opts = {
       options = {
-				-- stylua: ignore
-				close_command = function(n) Snacks.bufdelete(n) end,
-				-- stylua: ignore
-				right_mouse_command = function(n) Snacks.bufdelete(n) end,
+        -- stylua: ignore
+        close_command = function(n) Snacks.bufdelete(n) end,
+        -- stylua: ignore
+        right_mouse_command = function(n) Snacks.bufdelete(n) end,
         separator_style = 'slant',
         diagnostics = 'nvim_lsp',
-        always_show_bufferline = true,
+        always_show_bufferline = false,
         diagnostics_indicator = function(_, _, diag)
           local ret = (diag.error and ' ' .. diag.error .. ' ' or '') .. (diag.warning and ' ' .. diag.warning or '')
           return vim.trim(ret)
