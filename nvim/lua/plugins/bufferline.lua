@@ -16,10 +16,12 @@ return {
     },
     opts = {
       options = {
-        -- stylua: ignore
-        close_command = function(n) Snacks.bufdelete(n) end,
-        -- stylua: ignore
-        right_mouse_command = function(n) Snacks.bufdelete(n) end,
+        close_command = function(n)
+          Snacks.bufdelete(n)
+        end,
+        right_mouse_command = function(n)
+          Snacks.bufdelete(n)
+        end,
         separator_style = 'slant',
         diagnostics = 'nvim_lsp',
         always_show_bufferline = false,
