@@ -11,8 +11,8 @@ end, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', '<cmd>botright copen<CR>', { desc = 'Open [Q]uickfix list' })
 
-vim.keymap.set('n', 'H', '^', { silent = true, noremap = true })
-vim.keymap.set('n', 'L', '$', { silent = true, noremap = true })
+-- vim.keymap.set('n', 'H', '^', { silent = true, noremap = true })
+-- vim.keymap.set('n', 'L', '$', { silent = true, noremap = true })
 
 vim.keymap.set('n', '<leader>xr', '*``cgn', { desc = 'Replace word' })
 
