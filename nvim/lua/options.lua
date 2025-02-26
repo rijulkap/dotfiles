@@ -16,8 +16,11 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'nosplit'
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 vim.opt.splitkeep = "screen"
 vim.opt.sidescrolloff = 8
 vim.opt.hidden = true
