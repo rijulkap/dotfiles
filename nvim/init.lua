@@ -3,11 +3,11 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 if vim.g.vscode then
-  require 'vsc'
+    require 'vsc'
 else
-  require 'win_bootstrap'
-  require 'options'
-  require 'autocmds'
-  require 'config'
-  require 'keymaps'
+    require 'win_bootstrap'
+    require 'options'
+    require 'autocmds'
+    require 'config'
+    require 'keymaps'
 end
