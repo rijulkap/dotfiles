@@ -1,12 +1,13 @@
 return {
-    { -- Useful plugin to show you pending keybinds.
+    {
+        -- Useful plugin to show you pending keybinds.
         'folke/which-key.nvim',
-        event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+        event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
         opts = {
-            delay = 0,
+            preset = "helix",
         },
-        config = function() -- This is the function that runs, AFTER loading
-            require('which-key').setup()
+        config = function(_, opts) -- This is the function that runs, AFTER loading
+            require('which-key').setup(opts)
 
             -- Document existing key chains
             require('which-key').add {
