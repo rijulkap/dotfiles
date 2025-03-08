@@ -1,108 +1,118 @@
 {
-	"alacritty": {
-		"Windows": [
-			"choco install alacritty -y"
-		],
-		"Linux": [
-			"cargo install alacritty"
-		]
-	},
-	"neovim": {
-		"Windows": [
-			"choco install neovim -y"
-		],
-		"Linux": [
-			"curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz",
-			"sudo rm -rf /opt/nvim",
-			"sudo tar -C /opt -xzf nvim-linux64.tar.gz",
-			"echo 'export PATH=/$PATH:/opt/nvim-linux64/bin/' >> ~/.bashrc",
-			"source ~/.bashrc",
-			"rm -r nvim-linux64.tar.gz"
-		]
-	},
-	"lazygit": {
-		"Windows": [
-			"choco install lazygit -y"
-		],
-		"Linux": [
-			"LAZYGIT_VERSION=$(curl -s \"https://api.github.com/repos/jesseduffield/lazygit/releases/latest\" | grep -Po '\"tag_name\": \"v\\K[^\"]*')",
-			"curl -Lo lazygit.tar.gz \"https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz\"",
-			"tar xf lazygit.tar.gz lazygit",
-			"sudo install lazygit /usr/local/bin",
-			"rm -r lazygit.tar.gz"
-		]
-	},
-	"ripgrep": {
-		"Windows": [
-			"choco install ripgrep -y"
-		],
-		"Linux": [
-			"sudo apt-get install -y ripgrep"
-		]
-	},
-	"cpp": {
-		"Windows": [
-			"choco install mingw -y",
-			"choco install make -y",
-			"choco install cmake -y",
-			"choco install llvm -y"
-		],
-		"Linux": [
-			"sudo apt-get install -y build-essential",
-			"sudo apt-get install make",
-			"sudo apt-get install -y llvm"
-		]
-	},
-	"rusty": {
-		"Windows": [
-			"Invoke-WebRequest -Uri \"https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe\" -OutFile \"rustup-init.exe\"",
-			"Start-Process -FilePath \"rustup-init.exe\" -NoNewWindow -Wait",
-			"rm -r rustup-init.exe"
-		],
-		"Linux": [
-			"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --help"
-		]
-	},
-	"vscode": {
-		"Windows": [
-			"choco install vscode -y"
-		],
-		"Linux": [
-			"sudo apt-get install wget gpg",
-			"wget -qO- https: //packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg",
-			"sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg",
-			"echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https: //packages.microsoft.com/repos/code stable main\" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null",
-			"rm -f packages.microsoft.gpg",
-			"sudo apt install apt-transport-https",
-			"sudo apt update",
-			"sudo apt install code # or code-insiders"
-		]
-	},
-	"JetBrains-mono": {
-		"Windows": [
-			"Write-Output \"INSTALL NERDFONT MANUALLY\""
-		],
-		"Linux": [
-			"wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip && cd ~/.local/share/fonts && unzip JetBrainsMono.zip && rm JetBrainsMono.zip && fc-cache -fv"
-		]
-	},
-	"fzf": {
-		"Windows": [
-			"choco install fzf"
-		],
-		"Linux": [
-			"sudo apt install fzf"
-		]
-	},
-	"wezterm": {
-		"Windows": [
-			"choco install wezterm"
-		],
-		"Linux": [
-			"curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg",
-			"echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list",
-			"sudo apt update",
-			"sudo apt install wezterm"
-		]
-	}
+    "alacritty": {
+        "Windows": [
+            "choco install alacritty -y"
+        ],
+        "Linux": [
+            "cargo install alacritty"
+        ]
+    },
+    "neovim": {
+        "Windows": [
+            "choco install neovim -y"
+        ],
+        "Linux": [
+            "curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz",
+            "sudo rm -rf /opt/nvim",
+            "sudo tar -C /opt -xzf nvim-linux64.tar.gz",
+            "echo 'export PATH=/$PATH:/opt/nvim-linux64/bin/' >> ~/.bashrc",
+            "source ~/.bashrc",
+            "rm -r nvim-linux64.tar.gz"
+        ]
+    },
+    "lazygit": {
+        "Windows": [
+            "choco install lazygit -y"
+        ],
+        "Linux": [
+            "LAZYGIT_VERSION=$(curl -s \"https://api.github.com/repos/jesseduffield/lazygit/releases/latest\" | grep -Po '\"tag_name\": \"v\\K[^\"]*')",
+            "curl -Lo lazygit.tar.gz \"https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz\"",
+            "tar xf lazygit.tar.gz lazygit",
+            "sudo install lazygit /usr/local/bin",
+            "rm -r lazygit.tar.gz"
+        ]
+    },
+    "ripgrep": {
+        "Windows": [
+            "choco install ripgrep -y"
+        ],
+        "Linux": [
+            "sudo apt-get install -y ripgrep"
+        ]
+    },
+    "cpp": {
+        "Windows": [
+            "choco install mingw -y",
+            "choco install make -y",
+            "choco install cmake -y",
+            "choco install llvm -y"
+        ],
+        "Linux": [
+            "sudo apt-get install -y build-essential",
+            "sudo apt-get install make",
+            "sudo apt-get install -y llvm"
+        ]
+    },
+    "rusty": {
+        "Windows": [
+            "Invoke-WebRequest -Uri \"https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe\" -OutFile \"rustup-init.exe\"",
+            "Start-Process -FilePath \"rustup-init.exe\" -NoNewWindow -Wait",
+            "rm -r rustup-init.exe"
+        ],
+        "Linux": [
+            "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --help"
+        ]
+    },
+    "vscode": {
+        "Windows": [
+            "choco install vscode -y"
+        ],
+        "Linux": [
+            "sudo apt-get install wget gpg",
+            "wget -qO- https: //packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg",
+            "sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg",
+            "echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https: //packages.microsoft.com/repos/code stable main\" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null",
+            "rm -f packages.microsoft.gpg",
+            "sudo apt install apt-transport-https",
+            "sudo apt update",
+            "sudo apt install code # or code-insiders"
+        ]
+    },
+    "JetBrains-mono": {
+        "Windows": [
+            "Write-Output \"INSTALL NERDFONT MANUALLY\""
+        ],
+        "Linux": [
+            "wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip && cd ~/.local/share/fonts && unzip JetBrainsMono.zip && rm JetBrainsMono.zip && fc-cache -fv"
+        ]
+    },
+    "fzf": {
+        "Windows": [
+            "choco install fzf"
+        ],
+        "Linux": [
+            "sudo apt install fzf"
+        ]
+    },
+    "zoxide": {
+        "Windows": [
+            "cargo install zoxide --locked",
+            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (& { (zoxide init powershell | Out-String) })\""
+        ],
+        "Linux": [
+            "cargo install zoxide --locked",
+            "echo \"eval '$(zoxide init bash)'\" >> ~/.bashrc"
+        ]
+    },
+    "wezterm": {
+        "Windows": [
+            "choco install wezterm"
+        ],
+        "Linux": [
+            "curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg",
+            "echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list",
+            "sudo apt update",
+            "sudo apt install wezterm"
+        ]
+    }
 }
