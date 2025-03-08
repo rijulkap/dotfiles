@@ -101,7 +101,7 @@
         ],
         "Linux": [
             "cargo install zoxide --locked",
-            "echo \"eval '$(zoxide init bash)'\" >> ~/.bashrc"
+            "echo \\\"eval \\\"\\$(zoxide init bash)\\\"\\\" >> ~/.bashrc"
         ]
     },
     "wezterm": {
