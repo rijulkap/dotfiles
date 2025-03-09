@@ -1,9 +1,17 @@
+param (
+    [string]$single
+)
+
 # Define the path to the JSON file
 $jsonPath = "tools.json"
 
 # Read the JSON file
 if (Test-Path $jsonPath) {
     $tools = Get-Content $jsonPath | ConvertFrom-Json
+    if (-Not $tools) {
+        Write-Error "JSON file is empty or invalid."
+        exit 1
+    }
 } else {
     Write-Error "JSON file not found."
     exit 1
@@ -12,7 +20,11 @@ if (Test-Path $jsonPath) {
 # Ensure Chocolatey is installed
 if (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Write-Output "Chocolatey is not installed. Installing Chocolatey..."
-    Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+    # Refresh session to recognize Chocolatey
+    $env:Path += ";C:\ProgramData\chocolatey\bin"
 }
 
 # Function to install a tool using Chocolatey
@@ -31,12 +43,8 @@ function Install-Tool {
     }
 }
 
-# Check for command line argument for a specific tool
-param (
-    [string]$single
-)
-
-if ($singleTool) {
+# Install tools
+if ($single) {
     if ($tools.PSObject.Properties.Name -contains $single) {
         $installCmds = $tools.$single.Windows
         Install-Tool -tool $single -installCmds $installCmds
