@@ -54,3 +54,37 @@ vim.api.nvim_create_autocmd({ 'VimResized' }, {
         vim.cmd('tabnext ' .. current_tab)
     end,
 })
+
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "qf", -- Matches both quickfix and location lists
+    callback = function()
+        vim.bo.buflisted = false
+    end,
+})
+
+-- close some filetypes with <q>
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = {
+        "checkhealth",
+        "dbout",
+        "gitsigns-blame",
+        "help",
+        "lspinfo",
+        "notify",
+        "qf",
+    },
+    callback = function(event)
+        vim.bo[event.buf].buflisted = false
+        vim.schedule(function()
+            vim.keymap.set("n", "q", function()
+                vim.cmd("close")
+                pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+            end, {
+                buffer = event.buf,
+                silent = true,
+                desc = "Quit buffer",
+            })
+        end)
+    end,
+})

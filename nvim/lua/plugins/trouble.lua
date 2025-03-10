@@ -42,6 +42,11 @@ return {
                 function()
                     if require('trouble').is_open() then
                         require('trouble').prev { skip_groups = true, jump = true }
+                    elseif vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
+                        local ok, err = pcall(vim.cmd.lprev)
+                        if not ok then
+                            vim.notify(err, vim.log.levels.ERROR)
+                        end
                     else
                         local ok, err = pcall(vim.cmd.cprev)
                         if not ok then
@@ -56,6 +61,11 @@ return {
                 function()
                     if require('trouble').is_open() then
                         require('trouble').next { skip_groups = true, jump = true }
+                    elseif vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
+                        local ok, err = pcall(vim.cmd.lnext)
+                        if not ok then
+                            vim.notify(err, vim.log.levels.ERROR)
+                        end
                     else
                         local ok, err = pcall(vim.cmd.cnext)
                         if not ok then

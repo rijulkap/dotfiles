@@ -30,4 +30,5 @@ vim.opt.clipboard = 'unnamedplus'
 vim.opt.shortmess = 'I'
 vim.opt.cursorline = true
 vim.opt.smoothscroll = true
+vim.opt.termguicolors = true  -- Enable true colors
 -- vim.opt.confirm = true
