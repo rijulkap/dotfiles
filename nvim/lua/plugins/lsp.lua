@@ -73,14 +73,17 @@ return {
                     function(server_name)
                         local server = servers[server_name] or {}
                         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-                        server.capabilities = vim.tbl_deep_extend('force', server.capabilities, require('blink.cmp').get_lsp_capabilities(server.config))
+                        server.capabilities = vim.tbl_deep_extend('force', server.capabilities,
+                            require('blink.cmp').get_lsp_capabilities(server.config))
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
             }
 
+            local lsp_attach_group = vim.api.nvim_create_augroup('lsp-attach', { clear = false })
+
             vim.api.nvim_create_autocmd('LspAttach', {
-                group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
+                group = lsp_attach_group,
                 callback = function(event)
                     local map = function(keys, func, desc)
                         vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -116,12 +119,20 @@ return {
                         if client.server_capabilities.documentHighlightProvider then
                             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                                 buffer = event.buf,
-                                callback = vim.lsp.buf.document_highlight,
+                                callback = function()
+                                    if vim.api.nvim_buf_is_valid(event.buf) then
+                                        vim.lsp.buf.document_highlight()
+                                    end
+                                end,
                             })
 
                             vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                                 buffer = event.buf,
-                                callback = vim.lsp.buf.clear_references,
+                                callback = function()
+                                    if vim.api.nvim_buf_is_valid(event.buf) then
+                                        vim.lsp.buf.clear_references()
+                                    end
+                                end,
                             })
                         end
                     end

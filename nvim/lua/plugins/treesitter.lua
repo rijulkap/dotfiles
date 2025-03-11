@@ -7,8 +7,8 @@ return {
             "nvim-treesitter/nvim-treesitter-context"
         },
         opts = {
-            ensure_installed = { 'bash', 'c', 'cpp', 'c_sharp', 'python', 'rust', 'json', 'markdown', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
-            auto_install = true,
+            ensure_installed = { 'bash', 'c', 'cpp', 'c_sharp', 'python', 'rust', 'json', 'markdown', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' , 'javascript', 'typescript', "tsx"},
+            -- auto_install = true,
             highlight = {
                 enable = true,
             },

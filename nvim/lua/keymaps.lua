@@ -25,10 +25,19 @@ vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Pr
 vim.keymap.set('n', '<leader>bb', function()
     local curbufnr = vim.api.nvim_get_current_buf()
     local buflist = vim.api.nvim_list_bufs()
+    local to_delete = {}
+
+    -- Collect buffers to delete
     for _, bufnr in ipairs(buflist) do
         if vim.bo[bufnr].buflisted and bufnr ~= curbufnr and (vim.fn.getbufvar(bufnr, 'bufpersist') ~= 1) then
-            vim.cmd('bd ' .. tostring(bufnr))
+            table.insert(to_delete, bufnr)
         end
+    end
+
+    -- Now safely delete them
+    for _, bufnr in ipairs(to_delete) do
+        -- Use `nvim_buf_delete` instead of `bd`
+        pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
     end
 end, { silent = true, desc = 'Close unused buffers' })
 
