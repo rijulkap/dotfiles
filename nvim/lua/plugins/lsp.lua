@@ -72,18 +72,35 @@ return {
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
-                        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-                        server.capabilities = vim.tbl_deep_extend('force', server.capabilities,
+                        server.capabilities = vim.tbl_deep_extend('force', capabilities, server.capabilities or {},
                             require('blink.cmp').get_lsp_capabilities(server.config))
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
             }
 
-            local lsp_attach_group = vim.api.nvim_create_augroup('lsp-attach', { clear = false })
+
+            local function setup_document_highlight(client, bufnr)
+                if not client.server_capabilities.documentHighlightProvider then return end
+
+                local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
+
+                vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                    group = highlight_augroup,
+                    buffer = bufnr,
+                    callback = vim.lsp.buf.document_highlight,
+                })
+
+                vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+                    group = highlight_augroup,
+                    buffer = bufnr,
+                    callback = vim.lsp.buf.clear_references,
+                })
+            end
+
 
             vim.api.nvim_create_autocmd('LspAttach', {
-                group = lsp_attach_group,
+                group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
                 callback = function(event)
                     local map = function(keys, func, desc)
                         vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -104,36 +121,13 @@ return {
                     map('<leader>lq', vim.diagnostic.setqflist, 'Open diagnostic [l]sp [q]uickfix list')
                     map('<leader>lr', vim.lsp.buf.rename, '[l]sp [R]ename')
                     map('<leader>lc', vim.lsp.buf.code_action, '[l]sp [C]ode Action')
-                    -- map('K', vim.lsp.buf.hover, 'Hover Documentation')
                     map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
                     local client = vim.lsp.get_client_by_id(event.data.client_id)
-
                     if client then
+                        setup_document_highlight(client, event.buf)
                         if client.name == 'ruff' then
-                            -- Disable hover in favor of Pyright
                             client.server_capabilities.hoverProvider = false
-                        end
-
-                        -- When you move your cursor, the highlights will be cleared (the second autocommand).
-                        if client.server_capabilities.documentHighlightProvider then
-                            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-                                buffer = event.buf,
-                                callback = function()
-                                    if vim.api.nvim_buf_is_valid(event.buf) then
-                                        vim.lsp.buf.document_highlight()
-                                    end
-                                end,
-                            })
-
-                            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-                                buffer = event.buf,
-                                callback = function()
-                                    if vim.api.nvim_buf_is_valid(event.buf) then
-                                        vim.lsp.buf.clear_references()
-                                    end
-                                end,
-                            })
                         end
                     end
                 end,
