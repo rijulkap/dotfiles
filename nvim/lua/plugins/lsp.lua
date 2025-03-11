@@ -10,8 +10,6 @@ return {
         },
 
         config = function()
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-
             local servers = {
                 clangd = {
                     cmd = {
@@ -72,8 +70,9 @@ return {
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
-                        server.capabilities = vim.tbl_deep_extend('force', capabilities, server.capabilities or {},
-                            require('blink.cmp').get_lsp_capabilities(server.config))
+
+                        server.capabilities = require('blink.cmp').get_lsp_capabilities(server.capabilities, true)
+
                         require('lspconfig')[server_name].setup(server)
                     end,
                 },
