@@ -43,6 +43,7 @@ return {
                         separator = '',
                     },
                     { 'filename', hl_group = 'lualine_b_normal' },
+                    { 'fileformat' }
                 },
                 lualine_c = {
                     { 'branch' },
@@ -86,7 +87,7 @@ return {
                         },
                     },
                 },
-                lualine_z = { 'location' },
+                lualine_z = { { 'progress' }, { 'location' } },
             },
         },
         config = function(_, opts)
