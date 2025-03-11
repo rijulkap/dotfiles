@@ -79,9 +79,7 @@ return {
             }
 
 
-            local function setup_document_highlight(client, bufnr)
-                if not client.server_capabilities.documentHighlightProvider then return end
-
+            local function setup_document_highlight(bufnr)
                 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
 
                 vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -94,6 +92,14 @@ return {
                     group = highlight_augroup,
                     buffer = bufnr,
                     callback = vim.lsp.buf.clear_references,
+                })
+
+                vim.api.nvim_create_autocmd('LspDetach', {
+                    group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+                    callback = function(event2)
+                        vim.lsp.buf.clear_references()
+                        vim.api.nvim_clear_autocmds { group = 'LspDocumentHighlight', buffer = event2.buf }
+                    end,
                 })
             end
 
@@ -124,7 +130,12 @@ return {
 
                     local client = vim.lsp.get_client_by_id(event.data.client_id)
                     if client then
-                        setup_document_highlight(client, event.buf)
+                        if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+                            setup_document_highlight(event.buf)
+                        end
+                        if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+                            vim.lsp.inlay_hint.enable(true)
+                        end
                         if client.name == 'ruff' then
                             client.server_capabilities.hoverProvider = false
                         end
@@ -133,8 +144,20 @@ return {
             })
 
             local default_diagnostic_config = {
-                virtual_text = false,
-                underline = true,
+                virtual_text = {
+                    source = 'if_many',
+                    spacing = 2,
+                    format = function(diagnostic)
+                        local diagnostic_message = {
+                            [vim.diagnostic.severity.ERROR] = diagnostic.message,
+                            [vim.diagnostic.severity.WARN] = diagnostic.message,
+                            [vim.diagnostic.severity.INFO] = diagnostic.message,
+                            [vim.diagnostic.severity.HINT] = diagnostic.message,
+                        }
+                        return diagnostic_message[diagnostic.severity]
+                    end,
+                },
+                underline = {severity = vim.diagnostic.severity.ERROR },
                 severity_sort = true,
                 float = {
                     focusable = false,
@@ -144,16 +167,18 @@ return {
                     header = '',
                     prefix = '',
                 },
+                signs = {
+                    text = {
+                        [vim.diagnostic.severity.ERROR] = ' ',
+                        [vim.diagnostic.severity.WARN] = ' ',
+                        [vim.diagnostic.severity.INFO] = ' ',
+                        [vim.diagnostic.severity.HINT] = ' ',
+                    },
+                },
             }
 
             vim.diagnostic.config(default_diagnostic_config)
 
-            vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
-            vim.fn.sign_define('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
-            vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
-            vim.fn.sign_define('DiagnosticSignHint', { text = '', texthl = 'DiagnosticSignHint' })
-
-            vim.lsp.inlay_hint.enable(true)
             vim.lsp.set_log_level 'off'
         end,
     },

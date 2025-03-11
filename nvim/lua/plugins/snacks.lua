@@ -406,21 +406,6 @@ return {
                     Snacks.toggle.treesitter():map '<leader>uT'
                     Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
                     Snacks.toggle.inlay_hints():map '<leader>uh'
-
-                    Snacks.toggle.new({
-                        id = "Virtual diagnostics",
-                        name = "Virtual diagnostics",
-                        get = function()
-                            local config = vim.diagnostic.config()
-                            if not config or config.virtual_text == nil then
-                                return false -- Default to false if config is nil or virtual_text is not set
-                            end
-                            return config.virtual_text ~= false -- Returns true if enabled, false if explicitly disabled
-                        end,
-                        set = function(state)
-                            vim.diagnostic.config({ virtual_text = state })
-                        end,
-                    }):map '<leader>uv'
                 end,
             })
         end,
