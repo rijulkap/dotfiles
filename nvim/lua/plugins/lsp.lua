@@ -103,6 +103,13 @@ return {
                 })
             end
 
+            local function setup_codelens(bufnr)
+                vim.lsp.codelens.refresh()
+                vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+                    buffer = bufnr,
+                    callback = vim.lsp.codelens.refresh,
+                })
+            end
 
             vim.api.nvim_create_autocmd('LspAttach', {
                 group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
@@ -133,6 +140,9 @@ return {
                         if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
                             setup_document_highlight(event.buf)
                         end
+                        if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens, event.buf) then
+                            setup_codelens(event.buf)
+                        end
                         if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
                             vim.lsp.inlay_hint.enable(true)
                         end
@@ -144,18 +154,19 @@ return {
             })
 
             local default_diagnostic_config = {
+                update_in_insert = false,
                 virtual_text = {
                     source = 'if_many',
                     spacing = 4,
-                    format = function(diagnostic)
-                        local diagnostic_message = {
-                            [vim.diagnostic.severity.ERROR] = diagnostic.message,
-                            [vim.diagnostic.severity.WARN] = diagnostic.message,
-                            [vim.diagnostic.severity.INFO] = diagnostic.message,
-                            [vim.diagnostic.severity.HINT] = diagnostic.message,
-                        }
-                        return diagnostic_message[diagnostic.severity]
-                    end,
+                    -- format = function(diagnostic)
+                    --     local diagnostic_message = {
+                    --         [vim.diagnostic.severity.ERROR] = diagnostic.message,
+                    --         [vim.diagnostic.severity.WARN] = diagnostic.message,
+                    --         [vim.diagnostic.severity.INFO] = diagnostic.message,
+                    --         [vim.diagnostic.severity.HINT] = diagnostic.message,
+                    --     }
+                    --     return diagnostic_message[diagnostic.severity]
+                    -- end,
                     prefix = "● "
                 },
                 underline = true,
