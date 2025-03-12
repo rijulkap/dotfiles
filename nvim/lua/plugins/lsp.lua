@@ -167,7 +167,7 @@ return {
                     --     }
                     --     return diagnostic_message[diagnostic.severity]
                     -- end,
-                    prefix = "● "
+                    prefix = " ● "
                 },
                 underline = true,
                 severity_sort = true,
