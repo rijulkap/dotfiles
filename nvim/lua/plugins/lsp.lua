@@ -146,7 +146,7 @@ return {
             local default_diagnostic_config = {
                 virtual_text = {
                     source = 'if_many',
-                    spacing = 2,
+                    spacing = 4,
                     format = function(diagnostic)
                         local diagnostic_message = {
                             [vim.diagnostic.severity.ERROR] = diagnostic.message,
@@ -156,8 +156,9 @@ return {
                         }
                         return diagnostic_message[diagnostic.severity]
                     end,
+                    prefix = "● "
                 },
-                underline = {severity = vim.diagnostic.severity.ERROR },
+                underline = true,
                 severity_sort = true,
                 float = {
                     focusable = false,
