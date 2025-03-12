@@ -188,7 +188,10 @@ return {
             }
 
             local def_virtual_lines = {
-                isTrue = true,
+                isTrue = {format =
+                    function(diagnostic)
+                        return " ● " .. diagnostic.message
+                    end},
                 isFalse = false
             }
 
