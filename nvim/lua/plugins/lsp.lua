@@ -153,43 +153,6 @@ return {
                 end,
             })
 
-            local default_diagnostic_config = {
-                update_in_insert = false,
-                virtual_text = {
-                    source = 'if_many',
-                    spacing = 4,
-                    -- format = function(diagnostic)
-                    --     local diagnostic_message = {
-                    --         [vim.diagnostic.severity.ERROR] = diagnostic.message,
-                    --         [vim.diagnostic.severity.WARN] = diagnostic.message,
-                    --         [vim.diagnostic.severity.INFO] = diagnostic.message,
-                    --         [vim.diagnostic.severity.HINT] = diagnostic.message,
-                    --     }
-                    --     return diagnostic_message[diagnostic.severity]
-                    -- end,
-                    prefix = " ● "
-                },
-                underline = true,
-                severity_sort = true,
-                float = {
-                    focusable = false,
-                    style = 'minimal',
-                    border = 'rounded',
-                    source = 'always',
-                    header = '',
-                    prefix = '',
-                },
-                signs = {
-                    text = {
-                        [vim.diagnostic.severity.ERROR] = ' ',
-                        [vim.diagnostic.severity.WARN] = ' ',
-                        [vim.diagnostic.severity.INFO] = ' ',
-                        [vim.diagnostic.severity.HINT] = ' ',
-                    },
-                },
-            }
-
-            vim.diagnostic.config(default_diagnostic_config)
 
             vim.lsp.set_log_level 'off'
 
@@ -212,6 +175,87 @@ return {
                     max_width = math.floor(vim.o.columns * 0.4),
                 }
             end
+
+
+            -- wrappers to allow for toggling
+            local def_virtual_text = {
+                isTrue = {
+                    source = 'if_many',
+                    spacing = 4,
+                    prefix = " ● "
+                },
+                isFalse = false
+            }
+
+            local def_virtual_lines = {
+                isTrue = true,
+                isFalse = false
+            }
+
+            local default_diagnostic_config = {
+                update_in_insert = false,
+                virtual_lines = def_virtual_lines.isFalse,
+                virtual_text = def_virtual_text.isTrue,
+                underline = true,
+                severity_sort = true,
+                float = {
+                    focusable = false,
+                    style = 'minimal',
+                    border = 'rounded',
+                    source = 'always',
+                    header = '',
+                    prefix = '',
+                },
+                signs = {
+                    text = {
+                        [vim.diagnostic.severity.ERROR] = ' ',
+                        [vim.diagnostic.severity.WARN] = ' ',
+                        [vim.diagnostic.severity.INFO] = ' ',
+                        [vim.diagnostic.severity.HINT] = ' ',
+                    },
+                },
+            }
+
+            vim.diagnostic.config(default_diagnostic_config)
+
+            -- Set Toggles
+            Snacks.toggle.new({
+                id = "Virtual diagnostics (Lines)",
+                name = "Virtual diagnostics (Lines)",
+                get = function()
+                    if vim.diagnostic.config().virtual_lines then
+                        return true
+                    else
+                        return false
+                    end
+                end,
+                set = function(state)
+                    if state == true then
+                        vim.diagnostic.config({ virtual_lines = def_virtual_lines.isTrue })
+                    else
+                        vim.diagnostic.config({ virtual_lines = def_virtual_lines.isFalse })
+                    end
+                end,
+            }):map '<leader>uvl'
+
+            Snacks.toggle.new({
+                id = "Virtual diagnostics (Text)",
+                name = "Virtual diagnostics (Text)",
+                get = function()
+                    if vim.diagnostic.config().virtual_text then
+                        return true
+                    else
+                        return false
+                    end
+                end,
+                set = function(state)
+                    if state == true then
+                        vim.diagnostic.config({ virtual_text = def_virtual_text.isTrue })
+                    else
+                        vim.diagnostic.config({ virtual_text = def_virtual_text.isFalse })
+                    end
+                end,
+            }):map '<leader>uvt'
         end,
     },
 }
