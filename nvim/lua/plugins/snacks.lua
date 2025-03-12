@@ -218,7 +218,7 @@ return {
             {
                 '<leader>:',
                 function()
-                    Snacks.picker.command_history()()
+                    Snacks.picker.command_history()
                 end,
                 desc = 'Command History',
             },
