@@ -9,15 +9,13 @@
     },
     "neovim": {
         "Windows": [
-            "choco install neovim -y"
+            "choco install neovim --pre -y"
         ],
         "Linux": [
-            "curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz",
-            "sudo rm -rf /opt/nvim",
-            "sudo tar -C /opt -xzf nvim-linux64.tar.gz",
-            "echo 'export PATH=/$PATH:/opt/nvim-linux64/bin/' >> ~/.bashrc",
-            "source ~/.bashrc",
-            "rm -r nvim-linux64.tar.gz"
+            "curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage",
+            "sudo rm -rf /usr/local/bin/nvim",
+            "sudo chmod a+x ./nvim-linux-x86_64.appimage",
+            "sudo mv ./nvim-linux-x86_64.appimage /usr/local/bin/nvim"
         ]
     },
     "lazygit": {
