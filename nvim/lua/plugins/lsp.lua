@@ -24,7 +24,11 @@ return {
                 basedpyright = {
                     settings = {
                         basedpyright = {
+                            disableOrganizeImports = true,
                             typeCheckingMode = 'standard',
+                            analysis = {
+                                ignore = { '*' },
+                            },
                         },
                     },
                 },
@@ -188,10 +192,12 @@ return {
             }
 
             local def_virtual_lines = {
-                isTrue = {format =
-                    function(diagnostic)
-                        return " ● " .. diagnostic.message
-                    end},
+                isTrue = {
+                    format =
+                        function(diagnostic)
+                            return " ● " .. diagnostic.message
+                        end
+                },
                 isFalse = false
             }
 
