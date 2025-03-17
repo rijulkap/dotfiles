@@ -19,8 +19,8 @@ return {
                 icons_enabled = true,
                 theme = 'auto',
                 component_separators = { left = '|', right = '|' },
-                -- section_separators = { left = '', right = '' },
-                section_separators = { left = '', right = '' },
+                section_separators = { left = '', right = '' },
+                -- section_separators = { left = '', right = '' },
                 disabled_filetypes = {
                     statusline = { 'snacks_dashboard' },
                 },
@@ -42,8 +42,8 @@ return {
                         padding = { left = 1, right = 0 },
                         separator = '',
                     },
-                    { 'filename', hl_group = 'lualine_b_normal' },
-                    { 'fileformat' }
+                    { 'filename' },
+                    { 'fileformat' },
                 },
                 lualine_c = {
                     { 'branch' },
@@ -67,6 +67,9 @@ return {
                     },
                 },
                 lualine_x = {
+                    {
+                        'lsp_status',
+                    },
                     {
                         function()
                             return '  ' .. require('dap').status()

@@ -197,8 +197,8 @@ return {
 
             local default_diagnostic_config = {
                 update_in_insert = false,
-                virtual_lines = def_virtual_lines.isFalse,
-                virtual_text = def_virtual_text.isTrue,
+                virtual_lines = def_virtual_lines.isTrue,
+                virtual_text = def_virtual_text.isFalse,
                 underline = true,
                 severity_sort = true,
                 float = {

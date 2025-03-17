@@ -379,6 +379,20 @@ return {
                 end,
                 desc = 'Goto Symbol (Workspace)',
             },
+            {
+                '<leader>su',
+                function()
+                    Snacks.picker.undo()
+                end,
+                desc = 'Undo History',
+            },
+            {
+                '<leader>sC',
+                function()
+                    Snacks.picker.colorschemes()
+                end,
+                desc = 'Colorschemes',
+            },
         },
         init = function()
             vim.keymap.set({ 't' }, '<esc><esc>', '<C-\\><C-n>')
