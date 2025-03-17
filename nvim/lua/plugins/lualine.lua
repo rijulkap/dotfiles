@@ -68,6 +68,17 @@ return {
                 },
                 lualine_x = {
                     {
+                        'diagnostics',
+                        symbols = {
+                            error = ' ',
+                            warn = ' ',
+                            info = ' ',
+                            hint = ' ',
+                        },
+                    },
+                },
+                lualine_y = {
+                    {
                         'lsp_status',
                     },
                     {
@@ -77,17 +88,6 @@ return {
                         cond = function()
                             return package.loaded['dap'] and require('dap').status() ~= ''
                         end,
-                    },
-                },
-                lualine_y = {
-                    {
-                        'diagnostics',
-                        symbols = {
-                            error = ' ',
-                            warn = ' ',
-                            info = ' ',
-                            hint = ' ',
-                        },
                     },
                 },
                 lualine_z = { { 'progress' }, { 'location' } },
