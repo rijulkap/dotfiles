@@ -101,6 +101,28 @@ wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
     return string.format(" Tab %d ", tab.tab_id + 1)
 end)
 
+-- local basename = function(s)
+--     -- Nothing a little regex can't fix
+--     return string.gsub(s, "(.*[/\\])(.*)", "%2")
+-- end
+
+local reduce_filepath = function(filepath)
+    -- Split the file path into its components
+    local parts = {}
+    for part in string.gmatch(filepath, "[^/\\]+") do
+        table.insert(parts, part)
+    end
+
+    -- Check if the path has more than 3 parts (2 parents + 1 file/folder)
+    if #parts > 3 then
+        -- Keep only the last 3 parts and add double dots before the outermost folder
+        parts = { "..", parts[#parts - 2], parts[#parts - 1], parts[#parts] }
+    end
+
+    -- Reconstruct the reduced file path
+    return table.concat(parts, "/")
+end
+
 -- Optional: Disable foreground process info in the right status bar
 wezterm.on("update-status", function(window, pane)
     -- Workspace name
@@ -114,6 +136,14 @@ wezterm.on("update-status", function(window, pane)
         stat = "LDR"
         stat_color = "#bb9af7"
     end
+
+    -- Current working directory
+    local cwd = pane:get_current_working_dir()
+    cwd = cwd and reduce_filepath(cwd.file_path)
+
+    -- -- Current command
+    -- local cmd = pane:get_foreground_process_name()
+    -- cmd = cmd and basename(cmd) or ""
 
     local tab_id = window:active_tab():tab_id()
     window:active_tab():set_title(string.format("Tab %d ", tab_id + 1))
@@ -131,8 +161,11 @@ wezterm.on("update-status", function(window, pane)
 
     -- Right status
     window:set_right_status(wezterm.format({
-        -- { Text = wezterm.nerdfonts.md_folder .. "  " .. cwd },
+        { Text = wezterm.nerdfonts.md_folder .. "  " .. cwd },
         -- { Text = " | " },
+        -- { Text = wezterm.nerdfonts.fa_code .. "  " .. cmd },
+        -- "ResetAttributes",
+        { Text = " | " },
         { Foreground = { Color = "#e0af68" } },
         { Text = wezterm.nerdfonts.md_clock .. "  " .. time },
         { Text = "  " },
