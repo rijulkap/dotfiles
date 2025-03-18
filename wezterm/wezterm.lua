@@ -14,6 +14,7 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 end
 
 config.color_scheme = "Catppuccin Macchiato"
+local scheme = wezterm.get_builtin_color_schemes()["Catppuccin Macchiato"]
 
 config.font = wezterm.font_with_fallback({
     { family = "JetBrainsMono Nerd Font", scale = 1.0, weight = "Medium" },
@@ -26,16 +27,6 @@ config.scrollback_lines = 3000
 config.default_workspace = "main"
 
 config.max_fps = 240
-
--- local last_cwd = wezterm.home_dir
-
--- wezterm.on("spawn-new-tab", function(tab)
--- 	tab:set_cwd(last_cwd)
--- end)
-
--- wezterm.on("spawn-new-pane", function(pane)
--- 	pane:set_cwd(last_cwd)
--- end)
 
 -- Keys
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -94,14 +85,46 @@ config.key_tables = {
 config.use_fancy_tab_bar = false
 config.status_update_interval = 1000
 config.tab_bar_at_bottom = false
+config.show_new_tab_button_in_tab_bar = false
+
+local SOLID_LEFT_ARROW = wezterm.nerdfonts.ple_lower_right_triangle
+local SOLID_RIGHT_ARROW = wezterm.nerdfonts.ple_upper_left_triangle
+local SLASH = wezterm.nerdfonts.fae_slash
 
 -- Disable dynamic tab naming by not setting foreground process as tab name
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-    -- Use a static title or base it on the tab index
-    return string.format("| Tab %d |", tab.tab_id + 1)
+wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
+    local background = ""
+    local foreground = ""
+    if tab.is_active then
+        background = scheme.tab_bar.active_tab.bg_color
+        foreground = scheme.tab_bar.active_tab.fg_color
+    else
+        background = scheme.tab_bar.inactive_tab.bg_color
+        foreground = scheme.tab_bar.inactive_tab.fg_color
+    end
+
+    local edge_background = scheme.tab_bar.background
+    local edge_foreground = background
+
+    return {
+        { Background = { Color = scheme.tab_bar.background } },
+        { Foreground = { Color = edge_foreground } },
+        { Text = SOLID_LEFT_ARROW },
+        { Background = { Color = background } },
+        { Foreground = { Color = foreground } },
+        {
+            Text = string.format(" Tab %d ", tab.tab_id + 1),
+        },
+        { Background = { Color = edge_foreground } },
+        { Foreground = { Color = "#909090" } },
+        { Text = SLASH },
+        { Background = { Color = edge_background } },
+        { Foreground = { Color = edge_foreground } },
+        { Text = SOLID_RIGHT_ARROW },
+    }
 end)
 
-wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+wezterm.on("format-window-title", function(tab, _, _, _, _)
     -- Use a static title or base it on the tab index
     return string.format(" Tab %d ", tab.tab_id + 1)
 end)
@@ -158,10 +181,14 @@ wezterm.on("update-status", function(window, pane)
 
     -- Left status
     window:set_left_status(wezterm.format({
+        { Background = { Color = "#000000" } },
         { Foreground = { Color = stat_color } },
         { Text = "  " },
         { Text = wezterm.nerdfonts.oct_table .. "  " .. stat },
         { Text = " " },
+        { Background = { Color = scheme.tab_bar.background } },
+        { Foreground = { Color = "#000000" } },
+        { Text = wezterm.nerdfonts.ple_upper_left_triangle },
     }))
 
     -- Right status
