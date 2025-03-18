@@ -40,24 +40,31 @@ config.max_fps = 240
 -- Keys
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
+    -- System Keys
     { key = "a", mods = "LEADER|CTRL", action = act.SendKey({ key = "a", mods = "CTRL" }) },
     { key = "c", mods = "LEADER", action = act.ActivateCopyMode },
     { key = "phys:Space", mods = "LEADER", action = act.ActivateCommandPalette },
+    { key = "Q", mods = "LEADER", action = act.QuitApplication },
+    { key = "Enter", mods = "LEADER", action = act.ToggleFullScreen },
+
+    --Panes
     { key = "s", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
     { key = "v", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
     { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
     { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
     { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
     { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
-    { key = "w", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
-    { key = "q", mods = "LEADER", action = act.QuitApplication },
+    { key = "q", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
     { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
     { key = "o", mods = "LEADER", action = act.RotatePanes("Clockwise") },
+    { key = "r", mods = "LEADER", action = act.ActivateKeyTable({ name = "resize_pane", one_shot = false }) },
+
+    -- Tabs
     { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
     { key = "[", mods = "LEADER", action = act.ActivateTabRelative(-1) },
     { key = "]", mods = "LEADER", action = act.ActivateTabRelative(1) },
     { key = "n", mods = "LEADER", action = act.ShowTabNavigator },
-    { key = "Enter", mods = "LEADER", action = act.ToggleFullScreen },
+    { key = "m", mods = "LEADER", action = act.ActivateKeyTable({ name = "move_tab", one_shot = false }) },
 }
 
 for i = 1, 9 do
@@ -75,13 +82,11 @@ config.key_tables = {
         { key = "k", action = act.AdjustPaneSize({ "Up", 1 }) },
         { key = "l", action = act.AdjustPaneSize({ "Right", 1 }) },
         { key = "Escape", action = "PopKeyTable" },
-        { key = "Enter", action = "PopKeyTable" },
     },
     move_tab = {
         { key = "h", action = act.MoveTabRelative(-1) },
         { key = "l", action = act.MoveTabRelative(1) },
         { key = "Escape", action = "PopKeyTable" },
-        { key = "Enter", action = "PopKeyTable" },
     },
 }
 
@@ -93,7 +98,7 @@ config.tab_bar_at_bottom = false
 -- Disable dynamic tab naming by not setting foreground process as tab name
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
     -- Use a static title or base it on the tab index
-    return string.format(" Tab %d |", tab.tab_id + 1)
+    return string.format("| Tab %d |", tab.tab_id + 1)
 end)
 
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
@@ -156,7 +161,7 @@ wezterm.on("update-status", function(window, pane)
         { Foreground = { Color = stat_color } },
         { Text = "  " },
         { Text = wezterm.nerdfonts.oct_table .. "  " .. stat },
-        { Text = " |" },
+        { Text = " " },
     }))
 
     -- Right status

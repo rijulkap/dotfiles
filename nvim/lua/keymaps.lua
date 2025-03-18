@@ -1,5 +1,8 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+vim.keymap.set("n", "H", "^", { noremap = true })
+vim.keymap.set("n", "L", "$", { noremap = true })
+
 vim.keymap.set('n', '<leader>p', '"0p', { desc = 'Paste last yanked text' })
 
 vim.api.nvim_set_keymap('n', 'q:', '<Nop>', { noremap = true, silent = true })
