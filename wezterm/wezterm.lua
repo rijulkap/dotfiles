@@ -151,6 +151,7 @@ local reduce_filepath = function(filepath)
     return table.concat(parts, "/")
 end
 
+local cwd = ""
 -- Optional: Disable foreground process info in the right status bar
 wezterm.on("update-status", function(window, pane)
     -- Workspace name
@@ -166,8 +167,10 @@ wezterm.on("update-status", function(window, pane)
     end
 
     -- Current working directory
-    local cwd = pane:get_current_working_dir()
-    cwd = cwd and reduce_filepath(cwd.file_path)
+    local local_cwd = pane:get_current_working_dir()
+    if local_cwd ~= nil then
+        cwd = local_cwd and reduce_filepath(local_cwd.file_path)
+    end
 
     -- -- Current command
     -- local cmd = pane:get_foreground_process_name()
@@ -181,13 +184,13 @@ wezterm.on("update-status", function(window, pane)
 
     -- Left status
     window:set_left_status(wezterm.format({
-        { Background = { Color = "#000000" } },
+        { Background = { Color = scheme.tab_bar.background } },
         { Foreground = { Color = stat_color } },
         { Text = "  " },
         { Text = wezterm.nerdfonts.oct_table .. "  " .. stat },
         { Text = " " },
         { Background = { Color = scheme.tab_bar.background } },
-        { Foreground = { Color = "#000000" } },
+        { Foreground = { Color = scheme.tab_bar.background } },
         { Text = wezterm.nerdfonts.ple_upper_left_triangle },
     }))
 
