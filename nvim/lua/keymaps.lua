@@ -1,11 +1,11 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-vim.keymap.set("n", "H", "^", { noremap = true })
-vim.keymap.set("n", "L", "$", { noremap = true })
+vim.keymap.set('n', 'H', '^', { noremap = true })
+vim.keymap.set('n', 'L', '$', { noremap = true })
 
 vim.keymap.set('n', '<leader>p', '"0p', { desc = 'Paste last yanked text' })
 
-vim.api.nvim_set_keymap('n', 'q:', '<Nop>', { noremap = true, silent = true })
+vim.keymap.set('n', 'q:', '<Nop>', { noremap = true, silent = true })
 
 vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump { count = -1 }
@@ -25,8 +25,8 @@ vim.keymap.set('n', '<leader>xr', '*``cgn', { desc = 'Replace word' })
 
 vim.keymap.set('n', '<C-o>', '<C-o>zz')
 
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
+-- vim.keymap.set('n', '<C-d>', '<C-d>zz')
+-- vim.keymap.set('n', '<C-u>', '<C-u>zz')
 
 vim.keymap.set('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next Search Result' })
 vim.keymap.set('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev Search Result' })
