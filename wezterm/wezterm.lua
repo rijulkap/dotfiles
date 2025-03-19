@@ -13,8 +13,8 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
     -- config.default_prog = { "powershell.exe" }
 end
 
-config.color_scheme = "Catppuccin Macchiato"
-local scheme = wezterm.get_builtin_color_schemes()["Catppuccin Macchiato"]
+config.color_scheme = "Catppuccin Mocha"
+local scheme = wezterm.get_builtin_color_schemes()["Catppuccin Mocha"]
 
 config.font = wezterm.font_with_fallback({
     { family = "JetBrainsMono Nerd Font", scale = 1.0, weight = "Medium" },
