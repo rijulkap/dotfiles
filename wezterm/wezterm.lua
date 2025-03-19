@@ -20,10 +20,13 @@ config.font = wezterm.font_with_fallback({
     { family = "JetBrainsMono Nerd Font", scale = 1.0, weight = "Medium" },
 })
 
+config.underline_thickness = 3
+
+config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.window_background_opacity = 0.95
 -- config.window_decorations = "RESIZE"
 -- config.window_close_confirmation = "AlwaysPrompt"
-config.scrollback_lines = 3000
+config.scrollback_lines = 30000
 config.default_workspace = "main"
 
 config.max_fps = 240
