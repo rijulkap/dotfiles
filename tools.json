@@ -104,13 +104,24 @@
     },
     "wezterm": {
         "Windows": [
-            "choco install wezterm"
+            "choco install wezterm -y"
         ],
         "Linux": [
             "curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg",
             "echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list",
             "sudo apt update",
             "sudo apt install wezterm"
+        ]
+    },
+    "starship": {
+        "Windows": [
+            "choco install starship -y",
+            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (&starship init powershell)\"",
+            "Add-Content -Path $PROFILE -Value \"function Invoke-Starship-PreCommand { `$current_location = `$executionContext.SessionState.Path.CurrentLocation; if (`$current_location.Provider.Name -eq \\\"FileSystem\\\") { `$ansi_escape = [char]27; `$provider_path = `$current_location.ProviderPath -replace \\\"\\\\\\\\\\\", \\\"/\\\"; `$prompt = \\\"`$ansi_escape]7;file://`${env:COMPUTERNAME}/`$provider_path`$ansi_escape\\\\\\\"; } `$host.ui.Write(`$prompt); }\""
+        ],
+        "Linux": [
+            "cargo install zoxide --locked",
+            "echo \\\"eval \\\"\\$(starship init bash)\\\"\\\" >> ~/.bashrc"
         ]
     }
 }

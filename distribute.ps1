@@ -2,10 +2,12 @@
 $alacrittySource = Join-Path -Path $PSScriptRoot -ChildPath "alacritty"
 $neovimSource = Join-Path -Path $PSScriptRoot -ChildPath "nvim"
 $weztermSource = Join-Path -Path $PSScriptRoot -ChildPath "wezterm\wezterm.lua"
+$starshipSource = Join-Path -Path $PSScriptRoot -ChildPath "starship\starship.toml"
 
 $alacrittyTarget = Join-Path -Path $env:APPDATA -ChildPath "alacritty"
 $neovimTarget = Join-Path -Path $env:LOCALAPPDATA -ChildPath "nvim"
 $weztermTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".wezterm.lua"
+$starshipTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".config\starship.toml"
 
 # Function to ensure parent directory exists
 function Ensure-ParentDirectoryExists {
@@ -42,6 +44,7 @@ function Create-SymbolicLink {
 Create-SymbolicLink -source $alacrittySource -target $alacrittyTarget
 Create-SymbolicLink -source $neovimSource -target $neovimTarget
 Create-SymbolicLink -source $weztermSource -target $weztermTarget
+Create-SymbolicLink -source $starshipSource -target $starshipTarget
 
 # Keep the terminal open
 Read-Host -Prompt "Press Enter to exit"
