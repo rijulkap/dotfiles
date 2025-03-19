@@ -78,11 +78,11 @@ format = '[[ $symbol $branch ](fg:crust bg:green)]($style)'
 style = "bg:green"
 untracked = '[ $count](bold fg:crust bg:green) '
 staged = '[ $count](bold fg:crust bg:green) '
-stashed = "[ ] (fg:crust)"
+stashed = '[](fg:crust bg:green) '
 deleted = '[ $count](bold fg:crust bg:green) '
 modified= '[ $count](bold fg:crust bg:green) '
-behind = '[ ](bold fg:crust bg:green) '
-ahead = '[ ](bold fg:crust bg:green) '
+behind = '[](bold fg:crust bg:green) '
+ahead = '[](bold fg:crust bg:green) '
 format = '[[($all_status$ahead_behind)](fg:crust bg:green)]($style)'
 
 [lua]
