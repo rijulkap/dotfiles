@@ -87,7 +87,7 @@ config.key_tables = {
 -- Tab bar configuration
 config.use_fancy_tab_bar = false
 config.status_update_interval = 1000
-config.tab_bar_at_bottom = false
+config.tab_bar_at_bottom = true
 config.show_new_tab_button_in_tab_bar = false
 
 local SOLID_LEFT_ARROW = wezterm.nerdfonts.ple_lower_right_triangle
