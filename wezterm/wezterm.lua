@@ -20,7 +20,7 @@ config.font = wezterm.font_with_fallback({
     { family = "JetBrainsMono Nerd Font", scale = 1.0, weight = "Medium" },
 })
 
-config.underline_thickness = 3
+config.underline_thickness = 2
 
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.window_background_opacity = 0.95
