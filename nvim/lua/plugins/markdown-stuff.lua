@@ -8,13 +8,12 @@ return {
     --     end,
     -- },
     {
-        'OXY2DEV/markview.nvim',
-        lazy = false, -- Recommended
-        -- ft = "markdown" -- If you decide to lazy-load anyway
-
+        'MeanderingProgrammer/render-markdown.nvim',
         dependencies = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-tree/nvim-web-devicons',
         },
+        opts = {},
+        ft = { 'markdown' },
     },
 }
