@@ -47,7 +47,7 @@ return {
                 },
             },
             bigfile = { enabled = true },
-            scroll = { enabled = true },
+            scroll = { enabled = false },
             indent = { enabled = true, animate = { enabled = false } },
             notifier = {
                 enabled = true,
