@@ -15,8 +15,8 @@ $golang\
 $php\
 $python\
 $dotnet\
-[](fg:mauve bg:peach)\
 $package\
+[](fg:mauve bg:peach)\
 $battery\
 $time\
 [ ](fg:peach)\
@@ -123,8 +123,8 @@ format = '[[ ${symbol} (${version})(\($virtualenv\)) ](fg:crust bg:mauve)]($styl
 
 [package]
 symbol = "󰏗"
-style = "bg:peach"
-format = '[[ $symbol $version ](bold fg:crust bg:peach)[|](fg:crust bg:peach)]($style)'
+style = "bg:mauve"
+format = '[[|](fg:crust bg:mauve)[ $symbol $version ](bold fg:crust bg:mauve)]($style)'
 
 [battery]
 full_symbol = '🔋'
