@@ -9,8 +9,8 @@ end
 
 -- Settings
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    config.default_prog = { "pwsh.exe", "-NoLogo", "-ExecutionPolicy", "RemoteSigned" }
-    -- config.default_prog = { "powershell.exe" }
+    -- config.default_prog = { "pwsh.exe", "-NoLogo", "-ExecutionPolicy", "RemoteSigned" }
+    config.default_prog = { "powershell.exe", "-NoLogo", "-ExecutionPolicy", "RemoteSigned" }
 end
 
 config.color_scheme = "Catppuccin Mocha"
