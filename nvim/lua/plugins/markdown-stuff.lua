@@ -8,12 +8,11 @@ return {
     --     end,
     -- },
     {
-        'MeanderingProgrammer/render-markdown.nvim',
+        "MeanderingProgrammer/render-markdown.nvim",
         dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-tree/nvim-web-devicons',
+            "nvim-treesitter/nvim-treesitter",
         },
         opts = {},
-        ft = { 'markdown' },
+        ft = { "markdown" },
     },
 }

@@ -1,18 +1,16 @@
 return {
     {
-        'nvim-lualine/lualine.nvim',
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
-        event = 'VeryLazy',
+        "nvim-lualine/lualine.nvim",
+        event = "VeryLazy",
         opts = {
-
             options = {
                 icons_enabled = true,
-                theme = 'auto',
-                component_separators = { left = '|', right = '|' },
-                section_separators = { left = '', right = '' },
+                theme = "auto",
+                component_separators = { left = "|", right = "|" },
+                section_separators = { left = "", right = "" },
                 -- section_separators = { left = '', right = '' },
                 disabled_filetypes = {
-                    statusline = { 'snacks_dashboard' },
+                    statusline = { "snacks_dashboard" },
                 },
                 ignore_focus = {},
                 always_divide_middle = false,
@@ -24,25 +22,25 @@ return {
                 },
             },
             sections = {
-                lualine_a = { 'mode' },
+                lualine_a = { "mode" },
                 lualine_b = {
                     {
-                        'filetype',
+                        "filetype",
                         icon_only = true,
                         padding = { left = 1, right = 0 },
-                        separator = '',
+                        separator = "",
                     },
-                    { 'filename' },
-                    { 'fileformat' },
+                    { "filename" },
+                    { "fileformat" },
                 },
                 lualine_c = {
-                    { 'branch' },
+                    { "branch" },
                     {
-                        'diff',
+                        "diff",
                         symbols = {
-                            added = ' ',
-                            modified = ' ',
-                            removed = ' ',
+                            added = " ",
+                            modified = " ",
+                            removed = " ",
                         },
                         source = function()
                             local gitsigns = vim.b.gitsigns_status_dict
@@ -58,49 +56,49 @@ return {
                 },
                 lualine_x = {
                     {
-                        'diagnostics',
+                        "diagnostics",
                         symbols = {
-                            error = ' ',
-                            warn = ' ',
-                            info = ' ',
-                            hint = ' ',
+                            error = " ",
+                            warn = " ",
+                            info = " ",
+                            hint = " ",
                         },
                     },
                 },
                 lualine_y = {
                     {
-                        'lsp_status',
+                        "lsp_status",
                     },
                     {
                         function()
-                            return '  ' .. require('dap').status()
+                            return "  " .. require("dap").status()
                         end,
                         cond = function()
-                            return package.loaded['dap'] and require('dap').status() ~= ''
+                            return package.loaded["dap"] and require("dap").status() ~= ""
                         end,
                     },
                 },
-                lualine_z = { { 'progress' }, { 'location' } },
+                lualine_z = { { "progress" }, { "location" } },
             },
         },
         config = function(_, opts)
-            local lualine_require = require 'lualine_require'
+            local lualine_require = require("lualine_require")
             lualine_require.require = require
 
-            if vim.bo.filetype == 'python' then
+            if vim.bo.filetype == "python" then
                 local virtual_env = function()
-                    local conda_env = os.getenv 'CONDA_DEFAULT_ENV'
-                    local venv_path = os.getenv 'VIRTUAL_ENV'
+                    local conda_env = os.getenv("CONDA_DEFAULT_ENV")
+                    local venv_path = os.getenv("VIRTUAL_ENV")
 
                     if venv_path == nil then
                         if conda_env == nil then
-                            return ''
+                            return ""
                         else
-                            return string.format('%s (conda)', conda_env)
+                            return string.format("%s (conda)", conda_env)
                         end
                     else
-                        local venv_name = vim.fn.fnamemodify(venv_path, ':t')
-                        return string.format('%s (venv)', venv_name)
+                        local venv_name = vim.fn.fnamemodify(venv_path, ":t")
+                        return string.format("%s (venv)", venv_name)
                     end
                 end
 
@@ -119,7 +117,7 @@ return {
             --   hl_group = 'lualine_c_normal',
             -- }
 
-            require('lualine').setup(opts)
+            require("lualine").setup(opts)
         end,
     },
 }
