@@ -20,7 +20,7 @@ return {
                 right_mouse_command = function(n)
                     Snacks.bufdelete(n)
                 end,
-                separator_style = "slant",
+                separator_style = "thick",
                 diagnostics = "nvim_lsp",
                 always_show_bufferline = false,
                 diagnostics_indicator = function(_, _, diag)
