@@ -27,8 +27,9 @@ vim.opt.hidden = true
 vim.opt.wrap = false
 vim.opt.showcmd = false
 vim.opt.clipboard = 'unnamedplus'
-vim.opt.shortmess = 'I'
+vim.opt.shortmess:append { W = true, I = true, c = true, C = true, F = true }
+vim.opt.showmode = false -- Dont show mode since we have a statusline
 vim.opt.cursorline = true
 vim.opt.smoothscroll = true
-vim.opt.termguicolors = true  -- Enable true colors
--- vim.opt.confirm = true
+vim.opt.termguicolors = true -- Enable true colors
+vim.opt.confirm = true
