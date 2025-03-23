@@ -1,15 +1,15 @@
 return {
     { -- Autoformat
-        'stevearc/conform.nvim',
-        lazy = false,
+        "stevearc/conform.nvim",
+        event = { "BufWritePre" },
         keys = {
             {
-                '<leader>f',
+                "<leader>f",
                 function()
-                    require('conform').format { async = true, lsp_fallback = true }
+                    require("conform").format({ async = true, lsp_fallback = true })
                 end,
-                mode = '',
-                desc = '[F]ormat buffer',
+                mode = "",
+                desc = "[F]ormat buffer",
             },
         },
         opts = {
@@ -19,9 +19,9 @@ return {
                 local disable_filetypes = {}
                 local lsp_format_opt
                 if disable_filetypes[vim.bo[bufnr].filetype] then
-                    lsp_format_opt = 'never'
+                    lsp_format_opt = "never"
                 else
-                    lsp_format_opt = 'fallback'
+                    lsp_format_opt = "fallback"
                 end
                 return {
                     timeout_ms = 500,
@@ -29,11 +29,11 @@ return {
                 }
             end,
             formatters_by_ft = {
-                lua = { 'stylua' },
+                lua = { "stylua" },
             },
             formatters = {
                 stylua = {
-                    prepend_args = { '--indent-type', 'Spaces', '--indent-width', '4' },
+                    prepend_args = { "--indent-type", "Spaces", "--indent-width", "4" },
                 },
             },
         },
