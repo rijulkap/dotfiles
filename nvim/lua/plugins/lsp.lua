@@ -190,10 +190,18 @@ return {
                 isFalse = false,
             }
 
+            local function truncate_message(message, max_length)
+                if #message > max_length then
+                    return message:sub(1, max_length) .. "..."
+                end
+                return message
+            end
+
             local def_virtual_lines = {
                 isTrue = {
                     format = function(diagnostic)
-                        return " ● " .. diagnostic.message
+                        local max_length = 100 -- Set your preferred max length
+                        return " ● " .. truncate_message(diagnostic.message, max_length)
                     end,
                 },
                 isFalse = false,
