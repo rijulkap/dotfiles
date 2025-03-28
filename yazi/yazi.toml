@@ -1,0 +1,5 @@
+[opener]
+edit = [
+	{ run = 'nvim "$@"', desc = "OpenProg", block = true, for = "unix" },
+	{ run = 'nvim -w %*', block = true,  desc = "OpenProg",   for = "windows" },
+]

@@ -1,15 +1,7 @@
 {
-    "alacritty": {
-        "Windows": [
-            "choco install alacritty -y"
-        ],
-        "Linux": [
-            "cargo install alacritty"
-        ]
-    },
     "neovim": {
         "Windows": [
-            "choco install neovim --pre -y"
+            "choco install neovim -y"
         ],
         "Linux": [
             "curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage",
@@ -86,20 +78,29 @@
     },
     "fzf": {
         "Windows": [
-            "choco install fzf"
+            "choco install fzf -y"
         ],
         "Linux": [
             "sudo apt install fzf"
         ]
     },
-    "zoxide": {
+    "fd": {
         "Windows": [
-            "cargo install zoxide --locked",
-            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (& { (zoxide init powershell | Out-String) })\""
+            "choco install fd -y"
+        ],
+        "Linux": [
+            "sudo apt install fd-find"
+        ]
+    },
+    "starship": {
+        "Windows": [
+            "choco install starship -y",
+            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (&starship init powershell)\"",
+            "Add-Content -Path $PROFILE -Value \"function Invoke-Starship-PreCommand { `$current_location = `$executionContext.SessionState.Path.CurrentLocation; if (`$current_location.Provider.Name -eq \\\"FileSystem\\\") { `$ansi_escape = [char]27; `$provider_path = `$current_location.ProviderPath -replace \\\"\\\\\\\\\\\", \\\"/\\\"; `$prompt = \\\"`$ansi_escape]7;file://`${env:COMPUTERNAME}/`$provider_path`$ansi_escape\\\\\\\"; } `$host.ui.Write(`$prompt); }\""
         ],
         "Linux": [
             "cargo install zoxide --locked",
-            "echo \\\"eval \\\"\\$(zoxide init bash)\\\"\\\" >> ~/.bashrc"
+            "echo \\\"eval \\\"\\$(starship init bash)\\\"\\\" >> ~/.bashrc"
         ]
     },
     "wezterm": {
@@ -113,15 +114,22 @@
             "sudo apt install wezterm"
         ]
     },
-    "starship": {
+    "zoxide": {
         "Windows": [
-            "choco install starship -y",
-            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (&starship init powershell)\"",
-            "Add-Content -Path $PROFILE -Value \"function Invoke-Starship-PreCommand { `$current_location = `$executionContext.SessionState.Path.CurrentLocation; if (`$current_location.Provider.Name -eq \\\"FileSystem\\\") { `$ansi_escape = [char]27; `$provider_path = `$current_location.ProviderPath -replace \\\"\\\\\\\\\\\", \\\"/\\\"; `$prompt = \\\"`$ansi_escape]7;file://`${env:COMPUTERNAME}/`$provider_path`$ansi_escape\\\\\\\"; } `$host.ui.Write(`$prompt); }\""
+            "cargo install zoxide --locked",
+            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (& { (zoxide init powershell | Out-String) })\""
         ],
         "Linux": [
             "cargo install zoxide --locked",
-            "echo \\\"eval \\\"\\$(starship init bash)\\\"\\\" >> ~/.bashrc"
+            "echo \\\"eval \\\"\\$(zoxide init bash)\\\"\\\" >> ~/.bashrc"
+        ]
+    },
+    "yazi": {
+        "Windows": [
+            "choco install yazi -y"
+        ],
+        "Linux": [
+            "cargo install --locked yazi-fm yazi-cli"
         ]
     }
 }

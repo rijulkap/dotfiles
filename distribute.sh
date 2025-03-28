@@ -1,13 +1,23 @@
 # Define source and target directories
-alacrittySource="$(pwd)/alacritty"
-neovimSource="$(pwd)/nvim"
-weztermSource="$(pwd)/wezterm/wezterm.lua"
-starshipSource="$(pwd)/starship/starship.toml"
 
-alacrittyTarget="$HOME/.config/alacritty"
+# alacrittySource="$(pwd)/alacritty"
+# alacrittyTarget="$HOME/.config/alacritty"
+
+neovimSource="$(pwd)/nvim"
 neovimTarget="$HOME/.config/nvim"
+
+weztermSource="$(pwd)/wezterm/wezterm.lua"
 weztermTarget="$HOME/.config/wezterm/wezterm.lua"
+
+starshipSource="$(pwd)/starship/starship.toml"
 starshipTarget="$HOME/.config/starship.toml"
+
+yaziMainSource="$(pwd)/yazi/yazi.toml"
+yaziMainTarget="$HOME/.config/yazi/yazi.toml"
+yaziThemeSource="$(pwd)/yazi/theme.toml"
+yaziThemeTarget="$HOME/.config/yazi/theme.toml"
+yaziKeymapSource="$(pwd)/yazi/keymap.toml"
+yaziKeymapTarget="$HOME/.config/yazi/keymap.toml"
 
 # Function to create a symbolic link
 create_symbolic_link() {
@@ -29,10 +39,13 @@ create_symbolic_link() {
 }
 
 # Create symbolic links for Alacritty, Neovim, and WezTerm configurations
-create_symbolic_link "$alacrittySource" "$alacrittyTarget"
+# create_symbolic_link "$alacrittySource" "$alacrittyTarget"
 create_symbolic_link "$neovimSource" "$neovimTarget"
 create_symbolic_link "$weztermSource" "$weztermTarget"
 create_symbolic_link "$starshipSource" "$starshipTarget"
+create_symbolic_link "$yaziMainSource" "$yaziMainTarget"
+create_symbolic_link "$yaziThemeSource" "$yaziThemeTarget"
+create_symbolic_link "$yaziKeymapSource" "$yaziKeymapTarget"
 
 # Keep the terminal open
 read -p "Press Enter to exit"
