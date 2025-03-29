@@ -12,8 +12,12 @@ $weztermTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".wezterm.lua"
 $starshipSource = Join-Path -Path $PSScriptRoot -ChildPath "starship\starship.toml"
 $starshipTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".config\starship.toml"
 
-$yaziSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\yazi.toml"
-$yaziTarget = Join-Path -Path $env:USERPROFILE -ChildPath "yazi\config\yazi.toml"
+$yaziMainSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\yazi.toml"
+$yaziMainTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\yazi.toml"
+$yaziThemeSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\theme.toml"
+$yaziThemeTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\theme.toml"
+$yaziKeymapSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\keymap.toml"
+$yaziKeymapTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\keymap.toml"
 
 # Function to ensure parent directory exists
 function Ensure-ParentDirectoryExists {
@@ -51,7 +55,9 @@ function Create-SymbolicLink {
 Create-SymbolicLink -source $neovimSource -target $neovimTarget
 Create-SymbolicLink -source $weztermSource -target $weztermTarget
 Create-SymbolicLink -source $starshipSource -target $starshipTarget
-Create-SymbolicLink -source $yaziSource -target $yaziTarget
+Create-SymbolicLink -source $yaziMainSource -target $yaziMainTarget
+Create-SymbolicLink -source $yaziThemeSource -target $yaziThemeTarget
+Create-SymbolicLink -source $yaziKeymapSource -target $yaziKeymapTarget
 
 # Keep the terminal open
 Read-Host -Prompt "Press Enter to exit"

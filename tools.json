@@ -126,7 +126,8 @@
     },
     "yazi": {
         "Windows": [
-            "choco install yazi -y"
+            "choco install yazi -y",
+            "Add-Content -Path $PROFILE -Value '$env:YAZI_FILE_ONE = \"C:\\Program Files\\Git\\usr\\bin\\file.exe\"'"
         ],
         "Linux": [
             "cargo install --locked yazi-fm yazi-cli"
