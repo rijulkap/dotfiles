@@ -20,6 +20,11 @@ config.font = wezterm.font_with_fallback({
     { family = "JetBrainsMono Nerd Font", scale = 1.0, weight = "Medium" },
 })
 
+config.inactive_pane_hsb = {
+    saturation = 0.7,
+    brightness = 0.6,
+}
+
 config.font_size = 11
 config.underline_thickness = 2
 
