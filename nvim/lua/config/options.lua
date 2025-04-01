@@ -39,3 +39,5 @@ vim.opt.confirm = true
 
 -- -- Open all folds by default, zm is not available
 vim.opt.foldlevelstart = 99
+
+vim.opt.statuscolumn = " %l %s"

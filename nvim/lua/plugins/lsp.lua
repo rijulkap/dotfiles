@@ -3,7 +3,7 @@ return {
         "neovim/nvim-lspconfig",
         dependencies = {
             "saghen/blink.cmp",
-            "williamboman/mason.nvim",
+            { "williamboman/mason.nvim", cmd = "Mason" },
             "williamboman/mason-lspconfig.nvim",
             "WhoIsSethDaniel/mason-tool-installer.nvim",
         },
@@ -183,6 +183,8 @@ return {
             -- wrappers to allow for toggling
             local def_virtual_text = {
                 isTrue = {
+                    severity = { max = "WARN" },
+                    current_line = false,
                     source = "if_many",
                     spacing = 4,
                     prefix = " ● ",
@@ -199,6 +201,8 @@ return {
 
             local def_virtual_lines = {
                 isTrue = {
+                    current_line = true,
+                    severity = { min = "ERROR" },
                     format = function(diagnostic)
                         local max_length = 100 -- Set your preferred max length
                         return " ● " .. truncate_message(diagnostic.message, max_length)
@@ -209,7 +213,7 @@ return {
 
             local default_diagnostic_config = {
                 update_in_insert = false,
-                virtual_lines = def_virtual_lines.isFalse,
+                virtual_lines = def_virtual_lines.isTrue,
                 virtual_text = def_virtual_text.isTrue,
                 underline = true,
                 severity_sort = true,
@@ -223,10 +227,20 @@ return {
                 },
                 signs = {
                     text = {
-                        [vim.diagnostic.severity.ERROR] = " ",
-                        [vim.diagnostic.severity.WARN] = " ",
-                        [vim.diagnostic.severity.INFO] = " ",
-                        [vim.diagnostic.severity.HINT] = " ",
+                        -- [vim.diagnostic.severity.ERROR] = " ",
+                        -- [vim.diagnostic.severity.WARN] = " ",
+                        -- [vim.diagnostic.severity.INFO] = " ",
+                        -- [vim.diagnostic.severity.HINT] = " ",
+                        [vim.diagnostic.severity.ERROR] = "",
+                        [vim.diagnostic.severity.WARN] = "",
+                        [vim.diagnostic.severity.INFO] = "",
+                        [vim.diagnostic.severity.HINT] = "",
+                    },
+                    numhl = {
+                        [vim.diagnostic.severity.ERROR] = "ErrorMsg",
+                        [vim.diagnostic.severity.WARN] = "WarningMsg",
+                        [vim.diagnostic.severity.INFO] = "InfoMsg",
+                        [vim.diagnostic.severity.HINT] = "HintMsg",
                     },
                 },
             }

@@ -80,7 +80,7 @@ return {
                 timeout = 3000,
             },
             quickfile = { enabled = true },
-            statuscolumn = { enabled = false },
+            statuscolumn = { enabled = false, left = { "mark", "sign" }, right = { "fold", "git" } },
             words = { enabled = true },
             styles = {
                 notification = {

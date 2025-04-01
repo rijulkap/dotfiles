@@ -41,6 +41,7 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {
+        "vim",
         "oil",
         "checkhealth",
         "dbout",
