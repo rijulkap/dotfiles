@@ -237,10 +237,10 @@ return {
                         [vim.diagnostic.severity.HINT] = "",
                     },
                     numhl = {
-                        [vim.diagnostic.severity.ERROR] = "ErrorMsg",
-                        [vim.diagnostic.severity.WARN] = "WarningMsg",
-                        [vim.diagnostic.severity.INFO] = "InfoMsg",
-                        [vim.diagnostic.severity.HINT] = "HintMsg",
+                        [vim.diagnostic.severity.ERROR] = "ErrorMsg", -- Just cause its also bold
+                        [vim.diagnostic.severity.WARN] = "DiagnosticWarn",
+                        [vim.diagnostic.severity.INFO] = "DiagnosticInfo",
+                        [vim.diagnostic.severity.HINT] = "DiagnosticHint",
                     },
                 },
             }
