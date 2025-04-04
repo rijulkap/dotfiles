@@ -264,6 +264,13 @@ return {
                 end,
                 desc = "Find Files (Root Dir)",
             },
+            {
+                "<leader>sF",
+                function()
+                    Snacks.picker.files({ hidden = true, ignored = true })
+                end,
+                desc = "Find All Files (Root Dir)",
+            },
             -- find
             {
                 "<leader>sn",
