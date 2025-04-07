@@ -190,7 +190,7 @@ return {
                 desc = "Dismiss All Notifications",
             },
             {
-                "<A-1>",
+                "<c-\\>",
                 function()
                     Snacks.terminal(nil, {
                         env = { NAME = "FloatTerm1" },
@@ -204,21 +204,21 @@ return {
                 desc = "Toggle Terminal1",
                 mode = { "n", "t", "i" },
             },
-            {
-                "<A-2>",
-                function()
-                    Snacks.terminal(nil, {
-                        env = { NAME = "FloatTerm2" },
-                        win = {
-                            wo = {
-                                winbar = "FloatTerm2",
-                            },
-                        },
-                    })
-                end,
-                desc = "Toggle Terminal2",
-                mode = { "n", "t", "i" },
-            },
+            -- {
+            --     "<A-2>",
+            --     function()
+            --         Snacks.terminal(nil, {
+            --             env = { NAME = "FloatTerm2" },
+            --             win = {
+            --                 wo = {
+            --                     winbar = "FloatTerm2",
+            --                 },
+            --             },
+            --         })
+            --     end,
+            --     desc = "Toggle Terminal2",
+            --     mode = { "n", "t", "i" },
+            -- },
             {
                 "]]",
                 function()

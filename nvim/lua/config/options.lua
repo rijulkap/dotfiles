@@ -37,6 +37,8 @@ vim.opt.smoothscroll = true
 vim.opt.termguicolors = true -- Enable true colors
 vim.opt.confirm = true
 
+vim.opt.shada = [['20,<10,s5,h]]
+
 -- -- Open all folds by default, zm is not available
 vim.opt.foldlevelstart = 99
 
