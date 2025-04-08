@@ -94,7 +94,7 @@ return {
             {
                 "-",
                 function()
-                    Snacks.explorer()
+                    Snacks.explorer.open({ diagnostics = false, git_status = false })
                 end,
                 desc = "Toggle explorer",
             },
