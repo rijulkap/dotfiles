@@ -2,7 +2,8 @@
 
 format = """
 [░▒▓](blue)\
-$hostname\
+$shell\
+$username\
 $directory\
 [](fg:blue bg:green)\
 $git_branch\
@@ -52,14 +53,26 @@ base = "#1e1e2e"
 mantle = "#181825"
 crust = "#11111b"
 
-[hostname]
-ssh_symbol = " "
-style = "fg:crust bg:blue"
-format = '[$ssh_symbol]($style)[$hostname]($style) in '
+[character]
+success_symbol = '[ ➜](bold green) '
+error_symbol = '[ ✗](bold red) '
+
+
+[shell]
+style = "fg:crust bg:blue italic"
+format = '[\($indicator\)]($style)'
+pwsh_indicator = 'pwsh'
+disabled = false
+
+[username]
+show_always = false
+style_root = "fg:red bg:blue italic"
+style_user = "fg:rosewater bg:blue italic"
+format = '[  $user]($style)[ in](fg:crust bg:blue)'
 
 [directory]
 read_only = " 󰌾"
-style = "fg:crust bg:blue"
+style = "fg:crust bg:blue bold"
 format = "[ $path ]($style)[$read_only](fg:text bg:blue)"
 truncation_length = 3
 
@@ -125,6 +138,7 @@ format = '[[ ${symbol} (${version})(\($virtualenv\)) ](fg:crust bg:mauve)]($styl
 symbol = "󰏗"
 style = "bg:mauve"
 format = '[[|](fg:crust bg:mauve)[ $symbol $version ](bold fg:crust bg:mauve)]($style)'
+
 
 [battery]
 full_symbol = '🔋'
