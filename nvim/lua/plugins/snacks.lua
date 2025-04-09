@@ -11,6 +11,7 @@ return {
                     term_normal = {},
                 },
             },
+            explorer = { enabled = true },
             dashboard = {
                 enabled = true,
                 preset = {
