@@ -1,51 +1,47 @@
 return {
     {
-        'catppuccin/nvim',
+        "catppuccin/nvim",
         lazy = false,
         priority = 1000,
-        name = 'catppuccin',
+        name = "catppuccin",
         config = function()
-            require('catppuccin').setup {
+            require("catppuccin").setup({
                 integrations = {
-                    aerial = true,
-                    alpha = true,
-                    cmp = true,
                     dashboard = true,
-                    flash = true,
                     fzf = true,
-                    grug_far = true,
                     gitsigns = true,
-                    headlines = true,
-                    illuminate = true,
-                    indent_blankline = { enabled = true },
-                    leap = true,
-                    lsp_trouble = true,
                     mason = true,
                     markdown = true,
+                    render_markdown = true,
                     mini = true,
                     native_lsp = {
                         enabled = true,
+                        virtual_text = {
+                            errors = { "italic" },
+                            hints = { "italic" },
+                            warnings = { "italic" },
+                            information = { "italic" },
+                            ok = { "italic" },
+                        },
                         underlines = {
-                            errors = { 'undercurl' },
-                            hints = { 'undercurl' },
-                            warnings = { 'undercurl' },
-                            information = { 'undercurl' },
+                            errors = { "undercurl" },
+                            hints = { "undercurl" },
+                            warnings = { "undercurl" },
+                            information = { "undercurl" },
+                        },
+                        inlay_hints = {
+                            background = true,
                         },
                     },
-                    navic = { enabled = true, custom_bg = 'lualine' },
-                    neotest = true,
-                    neotree = true,
-                    noice = true,
                     notify = true,
-                    semantic_tokens = true,
                     snacks = true,
-                    telescope = true,
                     treesitter = true,
                     treesitter_context = true,
                     which_key = true,
+                    blink_cmp = true,
                 },
-            }
-            vim.cmd.colorscheme 'catppuccin'
+            })
+            vim.cmd.colorscheme("catppuccin")
         end,
     },
 }
