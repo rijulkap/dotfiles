@@ -48,7 +48,18 @@ return {
                         },
                     },
                 },
-                rust_analyzer = {},
+                rust_analyzer = {
+                    settings = {
+                        ["rust-analyzer"] = {
+                            checkOnSave = {
+                                enable = true,
+                            },
+                            diagnostics = {
+                                enable = true, -- keep LSP semantic diagnostics
+                            },
+                        },
+                    },
+                },
                 lua_ls = {
                     settings = {
                         Lua = {
@@ -184,10 +195,9 @@ return {
             local def_virtual_text = {
                 isTrue = {
                     severity = { max = "WARN" },
-                    current_line = false,
                     source = "if_many",
                     spacing = 4,
-                    prefix = " ● ",
+                    prefix = "●",
                 },
                 isFalse = false,
             }
@@ -205,7 +215,7 @@ return {
                     severity = { min = "ERROR" },
                     format = function(diagnostic)
                         local max_length = 100 -- Set your preferred max length
-                        return " ● " .. truncate_message(diagnostic.message, max_length)
+                        return "● " .. truncate_message(diagnostic.message, max_length)
                     end,
                 },
                 isFalse = false,

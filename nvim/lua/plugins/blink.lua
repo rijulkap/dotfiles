@@ -17,9 +17,6 @@ return {
             -- adjusts spacing to ensure icons are aligned
             completion = {
                 menu = {
-                    draw = {
-                        treesitter = { "lsp" },
-                    },
                     winblend = vim.o.pumblend,
                 },
                 documentation = {
