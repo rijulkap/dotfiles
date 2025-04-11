@@ -82,7 +82,7 @@ return {
             },
             quickfile = { enabled = true },
             statuscolumn = { enabled = false, left = { "mark", "sign" }, right = { "fold", "git" } },
-            words = { enabled = true },
+            words = { enabled = false },
             styles = {
                 notification = {
                     wo = { wrap = true }, -- Wrap notifications

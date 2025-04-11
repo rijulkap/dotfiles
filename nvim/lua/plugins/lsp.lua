@@ -48,7 +48,18 @@ return {
                         },
                     },
                 },
-                rust_analyzer = {},
+                rust_analyzer = {
+                    settings = {
+                        ["rust-analyzer"] = {
+                            checkOnSave = {
+                                enable = true,
+                            },
+                            diagnostics = {
+                                enable = true, -- keep LSP semantic diagnostics
+                            },
+                        },
+                    },
+                },
                 lua_ls = {
                     settings = {
                         Lua = {
