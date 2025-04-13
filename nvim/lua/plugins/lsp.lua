@@ -1,97 +1,115 @@
+vim.g.lsp_servers = {
+    clangd = {
+        cmd = {
+            "/home/rk-dev/.espressif/tools/esp-clang/16.0.1-fe4f10a809/esp-clang/bin/clangd",
+            "--background-index",
+            "--query-driver=**",
+        },
+    },
+    tinymist = {
+        filetypes = { "typst" },
+    },
+    basedpyright = {
+        settings = {
+            basedpyright = {
+                disableOrganizeImports = true,
+                typeCheckingMode = "standard",
+                analysis = {
+                    ignore = { "*" },
+                },
+            },
+        },
+    },
+    ruff = {},
+    jsonls = {
+        -- lazy-load schemastore when needed
+        on_new_config = function(new_config)
+            new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+            vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+        end,
+        settings = {
+            json = {
+                format = {
+                    enable = true,
+                },
+                validate = { enable = true },
+            },
+        },
+    },
+    rust_analyzer = {
+        settings = {
+            ["rust-analyzer"] = {
+                checkOnSave = {
+                    enable = true,
+                },
+                diagnostics = {
+                    enable = true, -- keep LSP semantic diagnostics
+                },
+            },
+        },
+    },
+    lua_ls = {
+        settings = {
+            Lua = {
+                completion = {
+                    callSnippet = "Replace",
+                },
+            },
+        },
+    },
+}
+
+vim.g.other_mason_servers = { "stylua" }
+
 return {
+
+    { "williamboman/mason.nvim", opts = {} },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = {
+            "williamboman/mason.nvim",
+        },
+        event = "VeryLazy",
+        config = function()
+            local mr = require("mason-registry")
+            mr.refresh(function()
+                for _, tool in ipairs(vim.g.other_mason_servers) do
+                    local p = mr.get_package(tool)
+                    if not p:is_installed() then
+                        p:install()
+                    end
+                end
+            end)
+
+            -- Get names of lsp servers
+            local lsp_server_names = {}
+            for name, _ in pairs(vim.g.lsp_servers) do
+                table.insert(lsp_server_names, name)
+            end
+
+            require("mason-lspconfig").setup({
+                ensure_installed = lsp_server_names,
+                automatic_installation = false,
+            })
+        end,
+    },
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         dependencies = {
-            "saghen/blink.cmp",
-            { "williamboman/mason.nvim", cmd = "Mason" },
             "williamboman/mason-lspconfig.nvim",
-            "WhoIsSethDaniel/mason-tool-installer.nvim",
+            "saghen/blink.cmp",
         },
         event = { "BufReadPre", "BufNewFile" },
-
         config = function()
-            local servers = {
-                clangd = {
-                    cmd = {
-                        "/home/rk-dev/.espressif/tools/esp-clang/16.0.1-fe4f10a809/esp-clang/bin/clangd",
-                        "--background-index",
-                        "--query-driver=**",
-                    },
-                },
-                tinymist = {
-                    filetypes = { "typst" },
-                },
-                basedpyright = {
-                    settings = {
-                        basedpyright = {
-                            disableOrganizeImports = true,
-                            typeCheckingMode = "standard",
-                            analysis = {
-                                ignore = { "*" },
-                            },
-                        },
-                    },
-                },
-                ruff = {},
-                jsonls = {
-                    -- lazy-load schemastore when needed
-                    on_new_config = function(new_config)
-                        new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-                        vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
-                    end,
-                    settings = {
-                        json = {
-                            format = {
-                                enable = true,
-                            },
-                            validate = { enable = true },
-                        },
-                    },
-                },
-                rust_analyzer = {
-                    settings = {
-                        ["rust-analyzer"] = {
-                            checkOnSave = {
-                                enable = true,
-                            },
-                            diagnostics = {
-                                enable = true, -- keep LSP semantic diagnostics
-                            },
-                        },
-                    },
-                },
-                lua_ls = {
-                    settings = {
-                        Lua = {
-                            completion = {
-                                callSnippet = "Replace",
-                            },
-                        },
-                    },
-                },
-            }
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-            require("mason").setup()
+            for lsp_server_name, lsp_server_settings in pairs(vim.g.lsp_servers) do
+                lsp_server_settings.capabilities =
+                    vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
 
-            local ensure_installed = vim.tbl_keys(servers or {})
-            vim.list_extend(ensure_installed, {
-                "stylua", -- Used to format Lua code
-            })
-            require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
-            require("mason-lspconfig").setup({
-                ensure_installed = {},
-                automatic_installation = false,
-                handlers = {
-                    function(server_name)
-                        local server = servers[server_name] or {}
-
-                        server.capabilities = require("blink.cmp").get_lsp_capabilities(server.capabilities, true)
-
-                        require("lspconfig")[server_name].setup(server)
-                    end,
-                },
-            })
+                vim.lsp.config(lsp_server_name, lsp_server_settings)
+                vim.lsp.enable(lsp_server_name)
+            end
 
             local function setup_document_highlight(bufnr)
                 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
