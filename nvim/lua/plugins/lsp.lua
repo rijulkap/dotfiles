@@ -63,13 +63,16 @@ vim.g.other_mason_servers = { "stylua" }
 
 return {
 
-    { "williamboman/mason.nvim", opts = {} },
+    {
+        "williamboman/mason.nvim",
+        opts = {},
+    },
     {
         "williamboman/mason-lspconfig.nvim",
         dependencies = {
             "williamboman/mason.nvim",
         },
-        event = "VeryLazy",
+        lazy = true,
         config = function()
             local mr = require("mason-registry")
             mr.refresh(function()
@@ -96,6 +99,7 @@ return {
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         dependencies = {
+
             "williamboman/mason-lspconfig.nvim",
             "saghen/blink.cmp",
         },
@@ -103,13 +107,23 @@ return {
         config = function()
             local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-            for lsp_server_name, lsp_server_settings in pairs(vim.g.lsp_servers) do
-                lsp_server_settings.capabilities =
-                    vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
+            require("mason-lspconfig").setup_handlers({
+                function(lsp_server_name)
+                    -- add {} as it should also handle manually installed servers
+                    local lsp_server_settings = vim.g.lsp_servers[lsp_server_name] or {}
 
-                vim.lsp.config(lsp_server_name, lsp_server_settings)
-                vim.lsp.enable(lsp_server_name)
-            end
+                    lsp_server_settings.capabilities =
+                        vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
+
+                    -- temporary omnisharp special configuration as its not upto new neovim spec
+                    if lsp_server_name == "omnisharp" then
+                        require("lspconfig")[lsp_server_name].setup(lsp_server_settings)
+                    else
+                        vim.lsp.config(lsp_server_name, lsp_server_settings)
+                        vim.lsp.enable(lsp_server_name)
+                    end
+                end,
+            })
 
             local function setup_document_highlight(bufnr)
                 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
@@ -215,7 +229,7 @@ return {
                     severity = { max = "WARN" },
                     source = "if_many",
                     spacing = 4,
-                    prefix = "●",
+                    prefix = "● ",
                 },
                 isFalse = false,
             }
