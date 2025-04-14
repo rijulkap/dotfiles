@@ -2,7 +2,7 @@ return {
     {
         "saghen/blink.cmp",
         -- lazy = false, -- lazy loading handled internally
-        event = { "BufReadPre", "BufNewFile" },
+        -- event = { "BufReadPre", "BufNewFile" },
         -- optional: provides snippets for the snippet source
         dependencies = "rafamadriz/friendly-snippets",
 
@@ -18,6 +18,12 @@ return {
             completion = {
                 menu = {
                     winblend = vim.o.pumblend,
+                    draw = {
+                        columns = {
+                            { "label", "label_description", gap = 1 },
+                            { "kind_icon", "kind" },
+                        },
+                    },
                 },
                 documentation = {
                     auto_show = true,
