@@ -73,33 +73,41 @@ return {
             "williamboman/mason.nvim",
         },
         lazy = true,
+        cmd = "LspInstallAll",
         config = function()
-            local mr = require("mason-registry")
-            mr.refresh(function()
-                for _, tool in ipairs(vim.g.other_mason_servers) do
-                    local p = mr.get_package(tool)
-                    if not p:is_installed() then
-                        p:install()
+            local setup_masonlspconfig = function()
+                local mr = require("mason-registry")
+                mr.refresh(function()
+                    for _, tool in ipairs(vim.g.other_mason_servers) do
+                        local p = mr.get_package(tool)
+                        if not p:is_installed() then
+                            p:install()
+                        end
                     end
-                end
-            end)
+                end)
 
-            -- Get names of lsp servers
-            local lsp_server_names = {}
-            for name, _ in pairs(vim.g.lsp_servers) do
-                table.insert(lsp_server_names, name)
+                -- Get names of lsp servers
+                local lsp_server_names = {}
+                for name, _ in pairs(vim.g.lsp_servers) do
+                    table.insert(lsp_server_names, name)
+                end
+
+                require("mason-lspconfig").setup({
+                    ensure_installed = lsp_server_names,
+                    automatic_installation = false,
+                })
             end
 
-            require("mason-lspconfig").setup({
-                ensure_installed = lsp_server_names,
-                automatic_installation = false,
-            })
+            vim.api.nvim_create_user_command("LspInstallAll", function(_)
+                vim.notify("Waking up mason-lspconfig and setting up Servers :)")
+            end, {})
+
+            setup_masonlspconfig()
         end,
     },
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         dependencies = {
-
             "williamboman/mason-lspconfig.nvim",
             "saghen/blink.cmp",
         },
@@ -117,7 +125,26 @@ return {
 
                     -- temporary omnisharp special configuration as its not upto new neovim spec
                     if lsp_server_name == "omnisharp" then
-                        require("lspconfig")[lsp_server_name].setup(lsp_server_settings)
+                        require("lspconfig")[lsp_server_name].setup({
+                            capabilities = capabilities,
+                            enable_roslyn_analysers = true,
+                            enable_import_completion = true,
+                            organize_imports_on_format = true,
+                            enable_decompilation_support = true,
+                            filetypes = {
+                                "cs",
+                                "vb",
+                                "csproj",
+                                "sln",
+                                "slnx",
+                                "props",
+                                "csx",
+                                "targets",
+                                "tproj",
+                                "slngen",
+                                "fproj",
+                            },
+                        })
                     else
                         vim.lsp.config(lsp_server_name, lsp_server_settings)
                         vim.lsp.enable(lsp_server_name)
