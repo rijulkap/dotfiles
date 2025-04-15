@@ -57,6 +57,7 @@ vim.g.lsp_servers = {
             },
         },
     },
+    omnisharp = {},
 }
 
 vim.g.other_mason_servers = { "stylua" }
@@ -106,7 +107,8 @@ return {
         end,
     },
     { -- LSP Configuration & Plugins
-        "neovim/nvim-lspconfig",
+        -- temporary fix for missing omnisharp config
+        "https://github.com/616b2f/nvim-lspconfig.git",
         dependencies = {
             "williamboman/mason-lspconfig.nvim",
             "saghen/blink.cmp",
@@ -122,33 +124,11 @@ return {
 
                     lsp_server_settings.capabilities =
                         vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
+                    -- print(lsp_server_name)
 
                     -- temporary omnisharp special configuration as its not upto new neovim spec
-                    if lsp_server_name == "omnisharp" then
-                        require("lspconfig")[lsp_server_name].setup({
-                            capabilities = capabilities,
-                            enable_roslyn_analysers = true,
-                            enable_import_completion = true,
-                            organize_imports_on_format = true,
-                            enable_decompilation_support = true,
-                            filetypes = {
-                                "cs",
-                                "vb",
-                                "csproj",
-                                "sln",
-                                "slnx",
-                                "props",
-                                "csx",
-                                "targets",
-                                "tproj",
-                                "slngen",
-                                "fproj",
-                            },
-                        })
-                    else
-                        vim.lsp.config(lsp_server_name, lsp_server_settings)
-                        vim.lsp.enable(lsp_server_name)
-                    end
+                    vim.lsp.config(lsp_server_name, lsp_server_settings)
+                    vim.lsp.enable(lsp_server_name)
                 end,
             })
 
