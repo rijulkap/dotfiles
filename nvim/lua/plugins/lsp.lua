@@ -57,7 +57,6 @@ vim.g.lsp_servers = {
             },
         },
     },
-    omnisharp = {},
 }
 
 vim.g.other_mason_servers = { "stylua" }
@@ -107,8 +106,7 @@ return {
         end,
     },
     { -- LSP Configuration & Plugins
-        -- temporary fix for missing omnisharp config
-        "https://github.com/616b2f/nvim-lspconfig.git",
+        "neovim/nvim-lspconfig",
         dependencies = {
             "williamboman/mason-lspconfig.nvim",
             "saghen/blink.cmp",
@@ -124,9 +122,7 @@ return {
 
                     lsp_server_settings.capabilities =
                         vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
-                    -- print(lsp_server_name)
 
-                    -- temporary omnisharp special configuration as its not upto new neovim spec
                     vim.lsp.config(lsp_server_name, lsp_server_settings)
                     vim.lsp.enable(lsp_server_name)
                 end,
