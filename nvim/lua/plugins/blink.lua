@@ -4,8 +4,8 @@ return {
         -- lazy = false, -- lazy loading handled internally
         event = { "BufReadPre", "BufNewFile" },
         -- optional: provides snippets for the snippet source
-        dependencies = "rafamadriz/friendly-snippets",
         version = "1.*",
+        dependencies = { "L3MON4D3/LuaSnip" },
         -- OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
         -- build = 'cargo build --release',
         -- On musl libc based systems you need to add this flag
@@ -90,6 +90,7 @@ return {
             -- accept = { auto_brackets = { enabled = true } }
 
             signature = { enabled = true },
+            snippets = { preset = "luasnip" },
         },
     },
 }
