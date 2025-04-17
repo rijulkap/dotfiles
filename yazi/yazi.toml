@@ -10,7 +10,7 @@ edit = [
 	{ run = 'nvim %*', block = true,  desc = "Open in Neovim",   for = "windows" },
 	{ run = 'code . %*', block = true,  desc = "Open in VSCode(Workspace)",   for = "windows" },
 	{ run = 'code %*', block = true,  desc = "Open in VSCode(File only)",   for = "windows" },
-    { run = 'nvim -O "$@"', desc = "Split files in Neovim", block = true, for = "windows" },
-    { run = 'nvim -d "$@"', desc = "Diff files in Neovim", block = true, for = "windows" },
-    { run = 'code --diff "$@"', desc = "Diff files in VSCode", block = true, for = "windows" },
+    { run = 'nvim -O %*', desc = "Split files in Neovim", block = true, for = "windows" },
+    { run = 'nvim -d %*', desc = "Diff files in Neovim", block = true, for = "windows" },
+    { run = 'code --diff %*', desc = "Diff files in VSCode", block = true, for = "windows" },
 ]
