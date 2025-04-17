@@ -1,4 +1,6 @@
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set({ "n" }, "<Esc>", function()
+    vim.cmd.nohlsearch()
+end)
 
 vim.keymap.set("n", "H", "^", { noremap = true })
 vim.keymap.set("n", "L", "$", { noremap = true })

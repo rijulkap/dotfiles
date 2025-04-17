@@ -16,11 +16,11 @@ return {
         ls.filetype_extend("lua", { "luadoc" })
         ls.filetype_extend("cs", { "csharpdoc" })
 
-        vim.keymap.set({ "i", "n", "s" }, "<esc><esc>", function()
+        vim.keymap.set({ "n", "i", "s" }, "<c-e>", function()
             if ls.expand_or_jumpable() then
                 ls.unlink_current()
             end
-        end, { desc = "Close Snippet engine" })
+        end)
 
         local types = require("luasnip.util.types")
         return {
