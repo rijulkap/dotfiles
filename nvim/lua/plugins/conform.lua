@@ -25,10 +25,20 @@ return {
                         else
                             lsp_format_opt = "fallback"
                         end
-                        return {
-                            timeout_ms = 500,
-                            lsp_format = lsp_format_opt,
-                        }
+
+                        if vim.api.nvim_buf_line_count(bufnr) >= 2000 then
+                            if vim.g.autoformat == true then
+                                vim.g.autoformat = false
+                                vim.notify("Format on save Off: Large file")
+                            end
+                            return false
+                        else
+                            vim.g.autoformat = true
+                            return {
+                                timeout_ms = 500,
+                                lsp_format = lsp_format_opt,
+                            }
+                        end
                     else
                         return
                     end
