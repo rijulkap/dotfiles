@@ -1,7 +1,11 @@
+#!/bin/bash
+
 # Define source and target directories
 
 # alacrittySource="$(pwd)/alacritty"
 # alacrittyTarget="$HOME/.config/alacritty"
+fishSource="$(pwd)/fish/config.fish"
+fishTarget="$HOME/.config/fish/config.fish"
 
 neovimSource="$(pwd)/nvim"
 neovimTarget="$HOME/.config/nvim"
@@ -43,9 +47,12 @@ create_symbolic_link() {
 create_symbolic_link "$neovimSource" "$neovimTarget"
 create_symbolic_link "$weztermSource" "$weztermTarget"
 create_symbolic_link "$starshipSource" "$starshipTarget"
+
 create_symbolic_link "$yaziMainSource" "$yaziMainTarget"
 create_symbolic_link "$yaziThemeSource" "$yaziThemeTarget"
 create_symbolic_link "$yaziKeymapSource" "$yaziKeymapTarget"
+
+create_symbolic_link "$fishSource" "$fishTarget"
 
 # Keep the terminal open
 read -p "Press Enter to exit"

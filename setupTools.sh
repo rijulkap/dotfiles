@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Ensure jq is installed
+if ! command -v jq &> /dev/null; then
+    echo "jq is not installed. Attempting to install jq..."
+    if [ -f /etc/debian_version ]; then
+        sudo apt update && sudo apt install -y jq
+    fi
+fi
+
 # Define the path to the JSON file
 json_path="tools.json"
 

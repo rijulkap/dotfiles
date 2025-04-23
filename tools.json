@@ -1,4 +1,9 @@
 {
+    "fish": {
+        "Linux": [
+            "sudo apt-get install fish"
+        ]
+    },
     "neovim": {
         "Windows": [
             "choco install neovim -y"
@@ -94,13 +99,10 @@
     },
     "starship": {
         "Windows": [
-            "choco install starship -y",
-            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (&starship init powershell)\"",
-            "Add-Content -Path $PROFILE -Value \"function Invoke-Starship-PreCommand { `$current_location = `$executionContext.SessionState.Path.CurrentLocation; if (`$current_location.Provider.Name -eq \\\"FileSystem\\\") { `$ansi_escape = [char]27; `$provider_path = `$current_location.ProviderPath -replace \\\"\\\\\\\\\\\", \\\"/\\\"; `$prompt = \\\"`$ansi_escape]7;file://`${env:COMPUTERNAME}/`$provider_path`$ansi_escape\\\\\\\"; } `$host.ui.Write(`$prompt); }\""
+            "choco install starship -y"
         ],
         "Linux": [
-            "cargo install zoxide --locked",
-            "echo \\\"eval \\\"\\$(starship init bash)\\\"\\\" >> ~/.bashrc"
+            "cargo install zoxide --locked"
         ]
     },
     "wezterm": {
@@ -116,18 +118,15 @@
     },
     "zoxide": {
         "Windows": [
-            "cargo install zoxide --locked",
-            "Add-Content -Path $PROFILE -Value \"Invoke-Expression (& { (zoxide init powershell | Out-String) })\""
+            "cargo install zoxide --locked"
         ],
         "Linux": [
-            "cargo install zoxide --locked",
-            "echo \\\"eval \\\"\\$(zoxide init bash)\\\"\\\" >> ~/.bashrc"
+            "cargo install zoxide --locked"
         ]
     },
     "yazi": {
         "Windows": [
-            "choco install yazi -y",
-            "Add-Content -Path $PROFILE -Value '$env:YAZI_FILE_ONE = \"C:\\Program Files\\Git\\usr\\bin\\file.exe\"'"
+            "choco install yazi -y"
         ],
         "Linux": [
             "cargo install --locked yazi-fm yazi-cli"
