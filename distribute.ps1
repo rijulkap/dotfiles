@@ -2,7 +2,7 @@
 
 # $alacrittySource = Join-Path -Path $PSScriptRoot -ChildPath "alacritty"
 # $alacrittyTarget = Join-Path -Path $env:APPDATA -ChildPath "alacritty"
-$pwshSource = Join-Path -Path $PSScriptRoot -ChildPath "Profile.ps1"
+$pwshSource = Join-Path -Path $PSScriptRoot -ChildPath "pwsh\Profile.ps1"
 $pwshTarget = "$PROFILE"
 
 $neovimSource = Join-Path -Path $PSScriptRoot -ChildPath "nvim"
