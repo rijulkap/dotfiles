@@ -2,6 +2,8 @@
 
 # $alacrittySource = Join-Path -Path $PSScriptRoot -ChildPath "alacritty"
 # $alacrittyTarget = Join-Path -Path $env:APPDATA -ChildPath "alacritty"
+$pwshSource = Join-Path -Path $PSScriptRoot -ChildPath "pwsh\Profile.ps1"
+$pwshTarget = "$PROFILE"
 
 $neovimSource = Join-Path -Path $PSScriptRoot -ChildPath "nvim"
 $neovimTarget = Join-Path -Path $env:LOCALAPPDATA -ChildPath "nvim"
@@ -55,9 +57,12 @@ function Create-SymbolicLink {
 Create-SymbolicLink -source $neovimSource -target $neovimTarget
 Create-SymbolicLink -source $weztermSource -target $weztermTarget
 Create-SymbolicLink -source $starshipSource -target $starshipTarget
+
 Create-SymbolicLink -source $yaziMainSource -target $yaziMainTarget
 Create-SymbolicLink -source $yaziThemeSource -target $yaziThemeTarget
 Create-SymbolicLink -source $yaziKeymapSource -target $yaziKeymapTarget
+
+Create-SymbolicLink -source $pwshSource -target $pwshTarget
 
 # Keep the terminal open
 Read-Host -Prompt "Press Enter to exit"

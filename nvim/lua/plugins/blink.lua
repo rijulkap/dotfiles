@@ -28,13 +28,23 @@ return {
                     auto_show_delay_ms = 200,
                 },
                 list = {
-                    selection = { preselect = false, auto_insert = true },
+                    selection = { preselect = false, auto_insert = false },
                 },
+                trigger = { show_in_snippet = false },
+                ghost_text = { enabled = true },
             },
             keymap = {
-                preset = "enter",
-                ["<c-K>"] = { "show", "show_documentation", "hide_documentation" },
-                -- ['<esc>'] = { 'cancel', 'fallback' },
+                ["<CR>"] = { "accept", "fallback" },
+                ["<C-e>"] = { "hide", "fallback" },
+
+                ["<C-n>"] = { "select_next", "show" },
+                ["<C-p>"] = { "select_prev" },
+
+                ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+                ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+
+                ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+                ["<C-f>"] = { "scroll_documentation_down", "fallback" },
             },
             appearance = {
                 nerd_font_variant = "normal",
