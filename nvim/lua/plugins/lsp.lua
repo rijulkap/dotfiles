@@ -72,8 +72,8 @@ return {
         dependencies = {
             "williamboman/mason.nvim",
         },
-        lazy = true,
-        cmd = "LspInstallAll",
+        ft = "lazy", -- To enable installattion on first nvim init
+        -- lazy = true,
         config = function()
             local setup_masonlspconfig = function()
                 local mr = require("mason-registry")
@@ -95,12 +95,9 @@ return {
                 require("mason-lspconfig").setup({
                     ensure_installed = lsp_server_names,
                     automatic_installation = false,
+                    automatic_enable = false,
                 })
             end
-
-            vim.api.nvim_create_user_command("LspInstallAll", function(_)
-                vim.notify("Waking up mason-lspconfig and setting up Servers :)")
-            end, {})
 
             setup_masonlspconfig()
         end,
