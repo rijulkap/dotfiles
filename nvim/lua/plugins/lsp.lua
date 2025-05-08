@@ -64,13 +64,15 @@ vim.g.other_mason_servers = { "stylua" }
 return {
 
     {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
+        version = "1.11.0",
         opts = {},
     },
     {
-        "williamboman/mason-lspconfig.nvim",
+        "mason-org/mason-lspconfig.nvim",
+        version = "1.32.0",
         dependencies = {
-            "williamboman/mason.nvim",
+            "mason-org/mason.nvim",
         },
         ft = "lazy", -- To enable installattion on first nvim init
         -- lazy = true,
@@ -105,7 +107,7 @@ return {
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         dependencies = {
-            "williamboman/mason-lspconfig.nvim",
+            "mason-org/mason-lspconfig.nvim",
             "saghen/blink.cmp",
         },
         event = { "BufReadPre", "BufNewFile" },
