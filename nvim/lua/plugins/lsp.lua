@@ -71,10 +71,11 @@ return {
         "mason-org/mason-lspconfig.nvim",
         dependencies = {
             "mason-org/mason.nvim",
+            "neovim/nvim-lspconfig",
             "saghen/blink.cmp",
         },
-        event = "VeryLazy",
-        opts = function()
+        event = { "VeryLazy", "BufReadPre", "BufNewFile" },
+        config = function(_)
             local mr = require("mason-registry")
             mr.refresh(function()
                 for _, tool in ipairs(vim.g.other_mason_servers) do
@@ -98,19 +99,11 @@ return {
             local capabilities = require("blink.cmp").get_lsp_capabilities(nil, true)
             vim.lsp.config("*", { capabilities = capabilities })
 
-            return {
+            require("mason-lspconfig").setup({
                 ensure_installed = lsp_server_names,
                 automatic_enable = true,
-            }
-        end,
-    },
-    { -- LSP Configuration & Plugins
-        "neovim/nvim-lspconfig",
-        dependencies = {
-            "mason-org/mason-lspconfig.nvim",
-        },
-        event = { "BufReadPre", "BufNewFile" },
-        config = function()
+            })
+
             local function setup_document_highlight(bufnr)
                 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
 
