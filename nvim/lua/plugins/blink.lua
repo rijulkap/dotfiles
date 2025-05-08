@@ -2,7 +2,7 @@ return {
     {
         "saghen/blink.cmp",
         -- lazy = false, -- lazy loading handled internally
-        event = { "BufReadPre", "BufNewFile" },
+        event = "VeryLazy",
         -- optional: provides snippets for the snippet source
         version = "1.*",
         dependencies = { "L3MON4D3/LuaSnip" },
@@ -23,6 +23,11 @@ return {
                         },
                     },
                 },
+                -- accept = {
+                --     auto_brackets = {
+                --         enabled = true,
+                --     },
+                -- },
                 documentation = {
                     auto_show = true,
                     auto_show_delay_ms = 200,
@@ -38,6 +43,8 @@ return {
 
                 ["<C-n>"] = { "select_next", "show" },
                 ["<C-p>"] = { "select_prev" },
+
+                ["<CR>"] = { "accept", "fallback" },
 
                 ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
                 ["<S-Tab>"] = { "snippet_backward", "fallback" },

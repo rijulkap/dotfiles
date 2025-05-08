@@ -65,68 +65,52 @@ return {
 
     {
         "mason-org/mason.nvim",
-        version = "1.11.0",
         opts = {},
     },
     {
         "mason-org/mason-lspconfig.nvim",
-        version = "1.32.0",
         dependencies = {
             "mason-org/mason.nvim",
+            "saghen/blink.cmp",
         },
-        ft = "lazy", -- To enable installattion on first nvim init
-        -- lazy = true,
-        config = function()
-            local setup_masonlspconfig = function()
-                local mr = require("mason-registry")
-                mr.refresh(function()
-                    for _, tool in ipairs(vim.g.other_mason_servers) do
-                        local p = mr.get_package(tool)
-                        if not p:is_installed() then
-                            p:install()
-                        end
+        event = "VeryLazy",
+        opts = function()
+            local mr = require("mason-registry")
+            mr.refresh(function()
+                for _, tool in ipairs(vim.g.other_mason_servers) do
+                    local p = mr.get_package(tool)
+                    if not p:is_installed() then
+                        p:install()
                     end
-                end)
-
-                -- Get names of lsp servers
-                local lsp_server_names = {}
-                for name, _ in pairs(vim.g.lsp_servers) do
-                    table.insert(lsp_server_names, name)
                 end
+            end)
 
-                require("mason-lspconfig").setup({
-                    ensure_installed = lsp_server_names,
-                    automatic_installation = false,
-                    automatic_enable = false,
-                })
+            -- Configure and get names of lsp servers
+            local lsp_server_names = {}
+            for lsp_server_name, _ in pairs(vim.g.lsp_servers) do
+                -- Add custom config settings
+                local lsp_server_settings = vim.g.lsp_servers[lsp_server_name] or {}
+                vim.lsp.config(lsp_server_name, lsp_server_settings)
+
+                table.insert(lsp_server_names, lsp_server_name)
             end
 
-            setup_masonlspconfig()
+            local capabilities = require("blink.cmp").get_lsp_capabilities(nil, true)
+            vim.lsp.config("*", { capabilities = capabilities })
+
+            return {
+                ensure_installed = lsp_server_names,
+                automatic_enable = true,
+            }
         end,
     },
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         dependencies = {
             "mason-org/mason-lspconfig.nvim",
-            "saghen/blink.cmp",
         },
         event = { "BufReadPre", "BufNewFile" },
         config = function()
-            local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-            require("mason-lspconfig").setup_handlers({
-                function(lsp_server_name)
-                    -- add {} as it should also handle manually installed servers
-                    local lsp_server_settings = vim.g.lsp_servers[lsp_server_name] or {}
-
-                    lsp_server_settings.capabilities =
-                        vim.tbl_deep_extend("force", {}, capabilities, lsp_server_settings.capabilities or {})
-
-                    vim.lsp.config(lsp_server_name, lsp_server_settings)
-                    vim.lsp.enable(lsp_server_name)
-                end,
-            })
-
             local function setup_document_highlight(bufnr)
                 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
 
