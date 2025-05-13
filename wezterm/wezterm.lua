@@ -115,6 +115,21 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
     local edge_background = scheme.tab_bar.background
     local edge_foreground = background
 
+    local pane_zoomed = false
+    local active_pane = tab.active_pane
+    if active_pane.is_zoomed then
+        pane_zoomed = true
+    else
+        pane_zoomed = false
+    end
+
+    local slash_color = ""
+    if pane_zoomed == true then
+        slash_color = "#ea76cb"
+    else
+        slash_color = "#909090"
+    end
+
     return {
         { Background = { Color = scheme.tab_bar.background } },
         { Foreground = { Color = edge_foreground } },
@@ -125,7 +140,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
             Text = string.format(" Tab %d ", tab.tab_id + 1),
         },
         { Background = { Color = edge_foreground } },
-        { Foreground = { Color = "#909090" } },
+        { Foreground = { Color = slash_color } },
         { Text = SLASH },
         { Background = { Color = edge_background } },
         { Foreground = { Color = edge_foreground } },
