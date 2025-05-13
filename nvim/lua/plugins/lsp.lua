@@ -79,7 +79,6 @@ return {
         dependencies = {
             "mason-org/mason.nvim",
             "neovim/nvim-lspconfig",
-            "saghen/blink.cmp",
         },
         event = { "VeryLazy", "BufReadPre", "BufNewFile" },
         config = function(_)
@@ -102,9 +101,6 @@ return {
 
                 table.insert(lsp_server_names, lsp_server_name)
             end
-
-            local capabilities = require("blink.cmp").get_lsp_capabilities(nil, true)
-            vim.lsp.config("*", { capabilities = capabilities })
 
             require("mason-lspconfig").setup({
                 ensure_installed = lsp_server_names,
