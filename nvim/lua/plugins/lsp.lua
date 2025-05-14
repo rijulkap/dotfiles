@@ -205,17 +205,6 @@ return {
                 })
             end
 
-            -- wrappers to allow for toggling
-            local def_virtual_text = {
-                isTrue = {
-                    severity = { max = "WARN" },
-                    source = "if_many",
-                    spacing = 4,
-                    prefix = "● ",
-                },
-                isFalse = false,
-            }
-
             local function truncate_message(message, max_length)
                 if #message > max_length then
                     return message:sub(1, max_length) .. "..."
@@ -223,13 +212,28 @@ return {
                 return message
             end
 
+            -- wrappers to allow for toggling
+            local def_virtual_text = {
+                isTrue = {
+                    -- severity = { max = "WARN" },
+                    current_line = false,
+                    source = "if_many",
+                    spacing = 4,
+                    -- prefix = "● ",
+                    format = function(diagnostic)
+                        return diagnostic.message
+                    end,
+                },
+                isFalse = false,
+            }
+
             local def_virtual_lines = {
                 isTrue = {
                     current_line = true,
-                    severity = { min = "ERROR" },
+                    -- severity = { min = "ERROR" },
                     format = function(diagnostic)
                         local max_length = 100 -- Set your preferred max length
-                        return "● " .. truncate_message(diagnostic.message, max_length)
+                        return "● " .. diagnostic.source .. ": " .. truncate_message(diagnostic.message, max_length)
                     end,
                 },
                 isFalse = false,
