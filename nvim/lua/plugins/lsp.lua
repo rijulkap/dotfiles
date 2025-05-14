@@ -220,9 +220,9 @@ return {
                     source = "if_many",
                     spacing = 4,
                     -- prefix = "● ",
-                    format = function(diagnostic)
-                        return diagnostic.message
-                    end,
+                    -- format = function(diagnostic)
+                    --     return diagnostic.message
+                    -- end,
                 },
                 isFalse = false,
             }
