@@ -219,7 +219,7 @@ return {
                     current_line = false,
                     source = "if_many",
                     spacing = 4,
-                    prefix = "● ",
+                    -- prefix = "● ",
                     format = function(diagnostic)
                         return diagnostic.message
                     end,
