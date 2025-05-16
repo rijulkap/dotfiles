@@ -1,3 +1,5 @@
+vim.g.formatters = { "stylua" }
+
 return {
     { -- Autoformat
         "stevearc/conform.nvim",

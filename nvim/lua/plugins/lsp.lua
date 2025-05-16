@@ -1,75 +1,4 @@
-vim.g.lsp_servers = {
-    clangd = {
-        cmd = {
-            "/home/rk-dev/.espressif/tools/esp-clang/16.0.1-fe4f10a809/esp-clang/bin/clangd",
-            "--background-index",
-            "--query-driver=**",
-        },
-    },
-    tinymist = {
-        filetypes = { "typst" },
-    },
-    basedpyright = {
-        settings = {
-            basedpyright = {
-                disableOrganizeImports = true,
-                typeCheckingMode = "standard",
-                analysis = {
-                    ignore = { "*" },
-                },
-            },
-        },
-    },
-    ruff = {},
-    jsonls = {
-        -- lazy-load schemastore when needed
-        on_new_config = function(new_config)
-            new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-            vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
-        end,
-        settings = {
-            json = {
-                format = {
-                    enable = true,
-                },
-                validate = { enable = true },
-            },
-        },
-    },
-    rust_analyzer = {
-        settings = {
-            ["rust-analyzer"] = {
-                checkOnSave = {
-                    enable = true,
-                },
-                diagnostics = {
-                    enable = true, -- keep LSP semantic diagnostics
-                },
-            },
-        },
-    },
-    lua_ls = {
-        settings = {
-            Lua = {
-                completion = { callSnippet = "Replace" },
-                -- Using stylua for formatting.
-                format = { enable = false },
-                hint = {
-                    enable = true,
-                    arrayIndex = "Disable",
-                },
-                runtime = {
-                    version = "LuaJIT",
-                },
-            },
-        },
-    },
-}
-
-vim.g.other_mason_servers = { "stylua" }
-
 return {
-
     {
         "mason-org/mason.nvim",
         opts = {},
@@ -83,8 +12,9 @@ return {
         event = { "VeryLazy", "BufReadPre", "BufNewFile" },
         config = function(_)
             local mr = require("mason-registry")
+            vim.g.myformatters = {}
             mr.refresh(function()
-                for _, tool in ipairs(vim.g.other_mason_servers) do
+                for _, tool in ipairs(vim.g.formatters) do
                     local p = mr.get_package(tool)
                     if not p:is_installed() then
                         p:install()
@@ -92,18 +22,17 @@ return {
                 end
             end)
 
-            -- Configure and get names of lsp servers
-            local lsp_server_names = {}
-            for lsp_server_name, _ in pairs(vim.g.lsp_servers) do
-                -- Add custom config settings
-                local lsp_server_settings = vim.g.lsp_servers[lsp_server_name] or {}
-                vim.lsp.config(lsp_server_name, lsp_server_settings)
-
-                table.insert(lsp_server_names, lsp_server_name)
-            end
+            local datapath = vim.fn.stdpath("data")
 
             require("mason-lspconfig").setup({
-                ensure_installed = lsp_server_names,
+                ensure_installed = vim.iter(vim.api.nvim_get_runtime_file("after/lsp/*.lua", true))
+                    :map(function(file)
+                        -- ignore all dynamically added lspconfig files
+                        if not vim.startswith(file, datapath) then
+                            return vim.fn.fnamemodify(file, ":t:r")
+                        end
+                    end)
+                    :totable(),
                 automatic_enable = true,
             })
 
