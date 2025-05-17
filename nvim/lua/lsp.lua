@@ -1,36 +1,50 @@
-local M = {}
+local utils = require("utils")
 
-local function setup_document_highlight(bufnr)
-    local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
+local function setup_document_highlight(client, bufnr)
+    if client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+        local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
 
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        group = highlight_augroup,
-        buffer = bufnr,
-        callback = vim.lsp.buf.document_highlight,
-    })
+        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            group = highlight_augroup,
+            buffer = bufnr,
+            callback = vim.lsp.buf.document_highlight,
+        })
 
-    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-        group = highlight_augroup,
-        buffer = bufnr,
-        callback = vim.lsp.buf.clear_references,
-    })
+        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+            group = highlight_augroup,
+            buffer = bufnr,
+            callback = vim.lsp.buf.clear_references,
+        })
 
-    vim.api.nvim_create_autocmd("LspDetach", {
-        group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
-        callback = function(event2)
-            vim.lsp.buf.clear_references()
-            vim.api.nvim_clear_autocmds({ group = "LspDocumentHighlight", buffer = event2.buf })
-        end,
-    })
+        vim.api.nvim_create_autocmd("LspDetach", {
+            group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
+            callback = function(event2)
+                vim.lsp.buf.clear_references()
+                vim.api.nvim_clear_autocmds({ group = "LspDocumentHighlight", buffer = event2.buf })
+            end,
+        })
+    end
 end
 
-local function setup_codelens(bufnr)
-    vim.lsp.codelens.refresh()
-    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-        buffer = bufnr,
-        callback = vim.lsp.codelens.refresh,
-    })
+local function setup_codelens(client, bufnr)
+    if client.supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
+        vim.lsp.codelens.refresh()
+        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+            buffer = bufnr,
+            callback = vim.lsp.codelens.refresh,
+        })
+    end
 end
+
+local function setup_inlayhint(client)
+    if client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+        vim.lsp.inlay_hint.enable(true)
+    end
+end
+
+utils.dyn_lsp_methods:add(setup_document_highlight)
+utils.dyn_lsp_methods:add(setup_codelens)
+utils.dyn_lsp_methods:add(setup_inlayhint)
 
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
@@ -40,13 +54,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         map("gd", function()
-            Snacks.picker.lsp_definitions()
+            require("snacks").picker.lsp_definitions()
         end, "[G]oto [D]efinition")
         map("gr", function()
-            Snacks.picker.lsp_references()
+            require("snacks").picker.lsp_references()
         end, "[G]oto [R]eferences")
         map("gI", function()
-            Snacks.picker.lsp_implementations()
+            require("snacks").picker.lsp_implementations()
         end, "[G]oto [I]mplementation")
         map("<leader>ll", vim.diagnostic.setloclist, "Open diagnostic [l]sp [l]oclist list")
         map("<leader>lq", vim.diagnostic.setqflist, "Open diagnostic [l]sp [q]uickfix list")
@@ -56,18 +70,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client then
-            if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-                setup_document_highlight(event.buf)
-            end
-            if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens, event.buf) then
-                setup_codelens(event.buf)
-            end
-            if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-                vim.lsp.inlay_hint.enable(true)
-            end
-            if client.name == "ruff" then
-                client.server_capabilities.hoverProvider = false
-            end
+            utils.dyn_lsp_methods:resolve(client, event.buf)
         end
     end,
 })
@@ -217,4 +220,3 @@ vim.g.lsps = vim.iter(vim.api.nvim_get_runtime_file("after/lsp/*.lua", true))
 --         end,
 --     })
 --     :map("<leader>uvt")
-return M
