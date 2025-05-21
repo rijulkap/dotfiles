@@ -4,6 +4,9 @@ set fish_greeting
 # Set vi mode
 fish_vi_key_bindings
 
+# Set editor env variable
+export EDITOR="nvim"
+
 # Starship init
 function starship_transient_prompt_func
   starship module character

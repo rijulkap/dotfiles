@@ -1,6 +1,9 @@
 # Enable Vi mode
  Set-PSReadLineOption -EditMode Vi 
 
+# Set editor env variable
+$env:EDITOR = "nvim"
+
 # Starship
 function Invoke-Starship-TransientFunction {
   &starship module character
