@@ -42,4 +42,4 @@ vim.opt.shada = [['20,<10,s5,h]]
 -- -- Open all folds by default, zm is not available
 vim.opt.foldlevelstart = 99
 
-vim.opt.statuscolumn = " %l %s"
+vim.opt.statuscolumn = " %s%l "
