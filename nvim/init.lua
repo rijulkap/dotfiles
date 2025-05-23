@@ -6,6 +6,6 @@ else
     require("config.keymaps")
     require("config.autocmds")
     require("lsp")
-    require("marks")
+    -- require("marks") --currently using snacks
     require("config.lazy")
 end

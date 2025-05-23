@@ -1,15 +1,14 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.numberwidth = 1
 vim.opt.mouse = "a"
-vim.opt.showmode = false
 vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.signcolumn = "yes"
+-- vim.opt.signcolumn = "yes:2"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
@@ -36,10 +35,8 @@ vim.opt.cursorline = true
 vim.opt.smoothscroll = true
 vim.opt.termguicolors = true -- Enable true colors
 vim.opt.confirm = true
-
 vim.opt.shada = [['20,<10,s5,h]]
 
 -- -- Open all folds by default, zm is not available
 vim.opt.foldlevelstart = 99
-
-vim.opt.statuscolumn = " %s%l "
+-- vim.opt.statuscolumn = "%s%l "

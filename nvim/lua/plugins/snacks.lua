@@ -81,7 +81,7 @@ return {
                 timeout = 3000,
             },
             quickfile = { enabled = true },
-            statuscolumn = { enabled = false, left = { "mark", "sign" }, right = { "fold", "git" } },
+            statuscolumn = { enabled = true, left = { "mark", "sign" }, right = { "fold", "git" } },
             words = { enabled = false },
             styles = {
                 notification = {

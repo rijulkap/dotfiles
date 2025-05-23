@@ -7,7 +7,7 @@ local function decor_mark(bufnr, mark)
         sign_text = mark.mark:sub(2),
         sign_hl_group = "DiagnosticSignOk",
         virt_text_pos = "right_align",
-        -- priority = 2,
+        priority = 2,
     })
 end
 
