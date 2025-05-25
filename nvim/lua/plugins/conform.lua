@@ -46,7 +46,8 @@ return {
                 },
                 formatters = {
                     stylua = {
-                        prepend_args = { "--indent-type", "Spaces", "--indent-width", "4" },
+                        -- prepend_args = { "--indent-type", "Spaces", "--indent-width", "4" },
+                        prepend_args = { "--indent-type", "Spaces" },
                     },
                 },
             }
