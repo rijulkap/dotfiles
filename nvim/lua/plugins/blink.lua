@@ -25,7 +25,7 @@ return {
                 },
                 accept = {
                     auto_brackets = {
-                        enabled = false,
+                        enabled = true,
                     },
                 },
                 documentation = {
