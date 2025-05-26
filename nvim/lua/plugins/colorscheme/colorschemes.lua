@@ -4,8 +4,8 @@ return {
         lazy = false,
         priority = 1000,
         name = "catppuccin",
-        config = function()
-            require("catppuccin").setup({
+        opts = function(_)
+            return {
                 integrations = {
                     dashboard = true,
                     fzf = true,
@@ -40,7 +40,9 @@ return {
                     which_key = true,
                     blink_cmp = true,
                 },
-            })
+            }
+        end,
+        init = function()
             vim.cmd.colorscheme("catppuccin")
         end,
     },
