@@ -36,6 +36,12 @@ return {
                             action = ":lua Snacks.dashboard.pick('oldfiles')",
                         },
                         {
+                            icon = "󱚈 ",
+                            key = "s",
+                            desc = "Last CWD Session",
+                            action = ':lua require("sessions").try_read_session()',
+                        },
+                        {
                             icon = " ",
                             key = "c",
                             desc = "Config",
