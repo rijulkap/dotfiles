@@ -125,7 +125,7 @@ local def_virtual_lines = {
         -- severity = { min = "ERROR" },
         format = function(diagnostic)
             local max_length = 100 -- Set your preferred max length
-            return "● " .. diagnostic.source .. ": " .. truncate_message(diagnostic.message, max_length)
+            return "● " .. truncate_message(diagnostic.message, max_length)
         end,
     },
     isFalse = false,
