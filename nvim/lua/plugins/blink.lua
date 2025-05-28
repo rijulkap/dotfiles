@@ -35,10 +35,25 @@ return {
                 list = {
                     selection = { preselect = false, auto_insert = false },
                 },
-                trigger = { show_in_snippet = false },
+                trigger = { show_in_snippet = true },
                 ghost_text = { enabled = true },
             },
             keymap = {
+                ["<esc>"] = {
+                    function(cmp)
+                        -- Check if snippet is active
+                        if require("luasnip").expand_or_jumpable() then
+                            if cmp.is_menu_visible() then -- If menu is shown, close it
+                                cmp.hide()
+                                return true -- return true to skip fallback (and hence not leave snippet)
+                            else
+                                require("luasnip").unlink_current() -- close snippet engine
+                                return false -- return false to trigger fallback (go to normal mode)
+                            end
+                        end
+                    end,
+                    "fallback",
+                },
                 ["<C-e>"] = { "hide", "fallback" },
 
                 ["<C-n>"] = { "select_next", "show" },
@@ -46,7 +61,17 @@ return {
 
                 ["<CR>"] = { "accept", "fallback" },
 
-                ["<Tab>"] = { "accept", "snippet_forward", "fallback" },
+                ["<Tab>"] = {
+                    function(cmp)
+                        if cmp.snippet_active() then
+                            return cmp.accept()
+                        else
+                            return cmp.select_and_accept()
+                        end
+                    end,
+                    "snippet_forward",
+                    "fallback",
+                },
                 ["<S-Tab>"] = { "snippet_backward", "fallback" },
 
                 ["<C-b>"] = { "scroll_documentation_up", "fallback" },
