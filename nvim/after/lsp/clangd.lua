@@ -9,4 +9,13 @@ if vim.env.ESP_IDF_VERSION then
     }
 end
 
-return {}
+return {
+    cmd = {
+        "clangd",
+        "--clang-tidy",
+        "--header-insertion=iwyu",
+        "--completion-style=detailed",
+        "--fallback-style=none",
+        "--function-arg-placeholders=false",
+    },
+}

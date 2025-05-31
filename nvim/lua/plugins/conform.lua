@@ -56,7 +56,8 @@ return {
     {
         "folke/snacks.nvim",
         opts = function()
-            vim.g.autoformat = true
+            local val = (vim.env.NVIM_AUTOFMT or ""):lower()
+            vim.g.autoformat = not (val == "0" or val == "false" or val == "no")
 
             Snacks.toggle
                 .new({
