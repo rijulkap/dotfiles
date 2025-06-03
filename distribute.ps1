@@ -21,33 +21,42 @@ $yaziThemeTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\theme.to
 $yaziKeymapSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\keymap.toml"
 $yaziKeymapTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\keymap.toml"
 
+$gitSource = Join-Path -Path $PSScriptRoot -ChildPath "git\.gitconfig"
+$gitTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".gitconfig"
+
 # Function to ensure parent directory exists
-function Ensure-ParentDirectoryExists {
+function Ensure-ParentDirectoryExists
+{
     param (
         [string]$target
     )
 
     $parentDir = Split-Path -Path $target -Parent
-    if (-not (Test-Path $parentDir)) {
+    if (-not (Test-Path $parentDir))
+    {
         New-Item -ItemType Directory -Path $parentDir | Out-Null
     }
 }
 
 # Function to create a symbolic link
-function Create-SymbolicLink {
+function Create-SymbolicLink
+{
     param (
         [string]$source,
         [string]$target
     )
 
-    if (Test-Path $source) {
+    if (Test-Path $source)
+    {
         Ensure-ParentDirectoryExists -target $target
-        if (Test-Path $target) {
+        if (Test-Path $target)
+        {
             Remove-Item -Path $target -Recurse -Force
         }
         New-Item -ItemType SymbolicLink -Path $target -Target $source | Out-Null
         Write-Output "Created symbolic link from $target to $source"
-    } else {
+    } else
+    {
         Write-Output "$source does not exist."
     }
 }
@@ -63,6 +72,8 @@ Create-SymbolicLink -source $yaziThemeSource -target $yaziThemeTarget
 Create-SymbolicLink -source $yaziKeymapSource -target $yaziKeymapTarget
 
 Create-SymbolicLink -source $pwshSource -target $pwshTarget
+
+Create-SymbolicLink -source $gitSource -target $gitTarget
 
 # Keep the terminal open
 Read-Host -Prompt "Press Enter to exit"

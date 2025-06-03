@@ -23,6 +23,10 @@ yaziThemeTarget="$HOME/.config/yazi/theme.toml"
 yaziKeymapSource="$(pwd)/yazi/keymap.toml"
 yaziKeymapTarget="$HOME/.config/yazi/keymap.toml"
 
+
+gitSource="$(pwd)/git/.gitconfig"
+gitTarget="$HOME/.gitconfig"
+
 # Function to create a symbolic link
 create_symbolic_link() {
     local source=$1
@@ -53,6 +57,8 @@ create_symbolic_link "$yaziThemeSource" "$yaziThemeTarget"
 create_symbolic_link "$yaziKeymapSource" "$yaziKeymapTarget"
 
 create_symbolic_link "$fishSource" "$fishTarget"
+
+create_symbolic_link "$gitSource" "$gitTarget"
 
 # Keep the terminal open
 read -p "Press Enter to exit"

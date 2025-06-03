@@ -1,0 +1,27 @@
+[user]
+    name = Rijul Kapoor
+    email = 115141708+rijulkap@users.noreply.github.com
+
+[color]
+    ui = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[pull]
+    rebase = true
+
+[push]
+    default = upstream
+
+[init]
+    defaultBranch = main
+
+[rebase]
+	autoStash = true
+
+[include]
+    path = ~/.gitconfig-work
