@@ -1,64 +1,48 @@
 #!/bin/bash
 
-# Define source and target directories
+set -e  # Exit on error
 
-# alacrittySource="$(pwd)/alacritty"
-# alacrittyTarget="$HOME/.config/alacritty"
-fishSource="$(pwd)/fish/config.fish"
-fishTarget="$HOME/.config/fish/config.fish"
+# Root of your dotfiles (e.g., repo root)
+ROOT="$(pwd)"
 
-neovimSource="$(pwd)/nvim"
-neovimTarget="$HOME/.config/nvim"
+# Define source and target pairs as tuples: "source -> target"
+declare -a SYMLINKS=(
+    "$ROOT/fish/config.fish -> $HOME/.config/fish/config.fish"
+    "$ROOT/nvim -> $HOME/.config/nvim"
+    "$ROOT/wezterm/wezterm.lua -> $HOME/.config/wezterm/wezterm.lua"
+    "$ROOT/starship/starship.toml -> $HOME/.config/starship.toml"
+    "$ROOT/yazi/yazi.toml -> $HOME/.config/yazi/yazi.toml"
+    "$ROOT/yazi/theme.toml -> $HOME/.config/yazi/theme.toml"
+    "$ROOT/yazi/keymap.toml -> $HOME/.config/yazi/keymap.toml"
+    "$ROOT/git/.gitconfig -> $HOME/.gitconfig"
+)
 
-weztermSource="$(pwd)/wezterm/wezterm.lua"
-weztermTarget="$HOME/.config/wezterm/wezterm.lua"
-
-starshipSource="$(pwd)/starship/starship.toml"
-starshipTarget="$HOME/.config/starship.toml"
-
-yaziMainSource="$(pwd)/yazi/yazi.toml"
-yaziMainTarget="$HOME/.config/yazi/yazi.toml"
-yaziThemeSource="$(pwd)/yazi/theme.toml"
-yaziThemeTarget="$HOME/.config/yazi/theme.toml"
-yaziKeymapSource="$(pwd)/yazi/keymap.toml"
-yaziKeymapTarget="$HOME/.config/yazi/keymap.toml"
-
-
-gitSource="$(pwd)/git/.gitconfig"
-gitTarget="$HOME/.gitconfig"
-
-# Function to create a symbolic link
+# Create symbolic link safely
 create_symbolic_link() {
-    local source=$1
-    local target=$2
+    local source="$1"
+    local target="$2"
 
-    # Ensure the target directory exists
+    if [[ ! -e "$source" ]]; then
+        echo "⚠️  $source does not exist. Skipping."
+        return
+    fi
+
     mkdir -p "$(dirname "$target")"
 
-    if [ -d "$source" ] || [ -f "$source" ]; then
-        if [ -L "$target" ] || [ -e "$target" ]; then
-            rm -rf "$target"  # Remove existing file/symlink/directory
-        fi
-        ln -s "$source" "$target"  # Create symbolic link
-        echo "Created symbolic link from $target to $source"
-    else
-        echo "$source does not exist."
+    if [[ -L "$target" || -e "$target" ]]; then
+        echo "🗑️  Removing existing $target"
+        rm -rf "$target"
     fi
+
+    ln -s "$source" "$target"
+    echo "✅ Linked: $target → $source"
 }
 
-# Create symbolic links for Alacritty, Neovim, and WezTerm configurations
-# create_symbolic_link "$alacrittySource" "$alacrittyTarget"
-create_symbolic_link "$neovimSource" "$neovimTarget"
-create_symbolic_link "$weztermSource" "$weztermTarget"
-create_symbolic_link "$starshipSource" "$starshipTarget"
+# Loop through all path pairs
+for pair in "${SYMLINKS[@]}"; do
+    src="${pair%% -> *}"
+    tgt="${pair##* -> }"
+    create_symbolic_link "$src" "$tgt"
+done
 
-create_symbolic_link "$yaziMainSource" "$yaziMainTarget"
-create_symbolic_link "$yaziThemeSource" "$yaziThemeTarget"
-create_symbolic_link "$yaziKeymapSource" "$yaziKeymapTarget"
-
-create_symbolic_link "$fishSource" "$fishTarget"
-
-create_symbolic_link "$gitSource" "$gitTarget"
-
-# Keep the terminal open
 read -p "Press Enter to exit"

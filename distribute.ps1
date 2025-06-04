@@ -2,27 +2,16 @@
 
 # $alacrittySource = Join-Path -Path $PSScriptRoot -ChildPath "alacritty"
 # $alacrittyTarget = Join-Path -Path $env:APPDATA -ChildPath "alacritty"
-$pwshSource = Join-Path -Path $PSScriptRoot -ChildPath "pwsh\Profile.ps1"
-$pwshTarget = "$PROFILE"
-
-$neovimSource = Join-Path -Path $PSScriptRoot -ChildPath "nvim"
-$neovimTarget = Join-Path -Path $env:LOCALAPPDATA -ChildPath "nvim"
-
-$weztermSource = Join-Path -Path $PSScriptRoot -ChildPath "wezterm\wezterm.lua"
-$weztermTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".wezterm.lua"
-
-$starshipSource = Join-Path -Path $PSScriptRoot -ChildPath "starship\starship.toml"
-$starshipTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".config\starship.toml"
-
-$yaziMainSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\yazi.toml"
-$yaziMainTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\yazi.toml"
-$yaziThemeSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\theme.toml"
-$yaziThemeTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\theme.toml"
-$yaziKeymapSource = Join-Path -Path $PSScriptRoot -ChildPath "yazi\keymap.toml"
-$yaziKeymapTarget = Join-Path -Path $env:APPDATA -ChildPath "yazi\config\keymap.toml"
-
-$gitSource = Join-Path -Path $PSScriptRoot -ChildPath "git\.gitconfig"
-$gitTarget = Join-Path -Path $env:USERPROFILE -ChildPath ".gitconfig"
+$symlinks = @(
+    @{ source = "pwsh\Profile.ps1"; target = $PROFILE },
+    @{ source = "nvim"; target = Join-Path $env:LOCALAPPDATA "nvim" },
+    @{ source = "wezterm\wezterm.lua"; target = Join-Path $env:USERPROFILE ".wezterm.lua" },
+    @{ source = "starship\starship.toml"; target = Join-Path $env:USERPROFILE ".config\starship.toml" },
+    @{ source = "yazi\yazi.toml"; target = Join-Path $env:APPDATA "yazi\config\yazi.toml" },
+    @{ source = "yazi\theme.toml"; target = Join-Path $env:APPDATA "yazi\config\theme.toml" },
+    @{ source = "yazi\keymap.toml"; target = Join-Path $env:APPDATA "yazi\config\keymap.toml" },
+    @{ source = "git\.gitconfig"; target = Join-Path $env:USERPROFILE ".gitconfig" }
+)
 
 # Function to ensure parent directory exists
 function Ensure-ParentDirectoryExists
@@ -61,19 +50,15 @@ function Create-SymbolicLink
     }
 }
 
-# Create symbolic links for Alacritty, Neovim, and WezTerm configurations
-# Create-SymbolicLink -source $alacrittySource -target $alacrittyTarget
-Create-SymbolicLink -source $neovimSource -target $neovimTarget
-Create-SymbolicLink -source $weztermSource -target $weztermTarget
-Create-SymbolicLink -source $starshipSource -target $starshipTarget
+function main
+{
+    foreach ($link in $symlinks)
+    {
+        $fullSource = Join-Path $PSScriptRoot $link.source
+        Create-SymbolicLink -source $fullSource -target $link.target
+    }
 
-Create-SymbolicLink -source $yaziMainSource -target $yaziMainTarget
-Create-SymbolicLink -source $yaziThemeSource -target $yaziThemeTarget
-Create-SymbolicLink -source $yaziKeymapSource -target $yaziKeymapTarget
+    Read-Host -Prompt "Press Enter to exit"
+}
 
-Create-SymbolicLink -source $pwshSource -target $pwshTarget
-
-Create-SymbolicLink -source $gitSource -target $gitTarget
-
-# Keep the terminal open
-Read-Host -Prompt "Press Enter to exit"
+main
