@@ -1,6 +1,9 @@
-vim.keymap.set({ "n" }, "<Esc>", function()
+vim.keymap.set({ "n" }, "<esc>", function()
     vim.cmd.nohlsearch()
-end)
+    return "<esc>"
+end, {
+    expr = true,
+})
 
 vim.keymap.set({ "n", "v" }, "H", "^", { noremap = true })
 vim.keymap.set({ "n", "v" }, "L", "g_", { noremap = true })
@@ -62,17 +65,6 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move focus to the left window" 
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move focus to the upper window" })
-
-vim.keymap.set("n", "<A-1>", "mA")
-vim.keymap.set("n", "<leader>m1", "`A")
-vim.keymap.set("n", "<A-2>", "mB")
-vim.keymap.set("n", "<leader>m2", "`B")
-vim.keymap.set("n", "<A-3>", "mC")
-vim.keymap.set("n", "<leader>m3", "`C")
-vim.keymap.set("n", "<A-4>", "mD")
-vim.keymap.set("n", "<leader>m4", "`D")
-vim.keymap.set("n", "<A-5>", "mE")
-vim.keymap.set("n", "<leader>m5", "`E")
 
 -- local keypress = function()
 --     local ok = true
