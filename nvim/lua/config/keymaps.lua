@@ -2,8 +2,11 @@ vim.keymap.set({ "n" }, "<Esc>", function()
     vim.cmd.nohlsearch()
 end)
 
-vim.keymap.set("n", "H", "^", { noremap = true })
-vim.keymap.set("n", "L", "$", { noremap = true })
+vim.keymap.set({ "n", "v" }, "H", "^", { noremap = true })
+vim.keymap.set({ "n", "v" }, "L", "g_", { noremap = true })
+
+vim.keymap.set("n", "<C-d>", "10j", { noremap = true })
+vim.keymap.set("n", "<C-u>", "10k", { noremap = true })
 
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
