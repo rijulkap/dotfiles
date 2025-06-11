@@ -43,7 +43,7 @@ local function setup_inlayhint(client)
 end
 
 utils.dyn_lsp_methods:add(setup_document_highlight)
-utils.dyn_lsp_methods:add(setup_codelens)
+-- utils.dyn_lsp_methods:add(setup_codelens)
 utils.dyn_lsp_methods:add(setup_inlayhint)
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -104,17 +104,32 @@ local function truncate_message(message, max_length)
     return message
 end
 
+local diag_signs = {
+    ERROR = " ",
+    WARN = " ",
+    INFO = " ",
+    HINT = " ",
+}
+
 -- wrappers to allow for toggling
 local def_virtual_text = {
     isTrue = {
         -- severity = { max = "WARN" },
-        current_line = false,
-        source = "if_many",
-        spacing = 4,
-        -- prefix = "● ",
-        -- format = function(diagnostic)
-        --     return diagnostic.message
-        -- end,
+        current_line = nil,
+        prefix = "",
+        -- source = "if_many",
+        spacing = 2,
+        format = function(diagnostic)
+            local message = diag_signs[vim.diagnostic.severity[diagnostic.severity]]
+            if diagnostic.source then
+                message = string.format("%s %s", message, diagnostic.source)
+            end
+            if diagnostic.code then
+                message = string.format("%s[%s]", message, diagnostic.code)
+            end
+
+            return message .. " "
+        end,
     },
     isFalse = false,
 }
@@ -133,24 +148,27 @@ local def_virtual_lines = {
 
 local default_diagnostic_config = {
     update_in_insert = false,
-    virtual_lines = def_virtual_lines.isTrue,
+    virtual_lines = def_virtual_lines.isFalse,
     virtual_text = def_virtual_text.isTrue,
     underline = true,
     severity_sort = true,
+    jump = {
+        float = true,
+    },
     float = {
         focusable = false,
         style = "minimal",
         border = "rounded",
-        source = "always",
+        source = true,
         header = "",
-        prefix = "",
+        prefix = function(diag)
+            local level = vim.diagnostic.severity[diag.severity]
+            local prefix = string.format(" %s ", diag_signs[level])
+            return prefix, "Diagnostic" .. level:gsub("^%l", string.upper)
+        end,
     },
     signs = {
         text = {
-            -- [vim.diagnostic.severity.ERROR] = " ",
-            -- [vim.diagnostic.severity.WARN] = " ",
-            -- [vim.diagnostic.severity.INFO] = " ",
-            -- [vim.diagnostic.severity.HINT] = " ",
             [vim.diagnostic.severity.ERROR] = "",
             [vim.diagnostic.severity.WARN] = "",
             [vim.diagnostic.severity.INFO] = "",
@@ -166,6 +184,20 @@ local default_diagnostic_config = {
 }
 
 vim.diagnostic.config(default_diagnostic_config)
+
+-- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
+local show_handler_vt = vim.diagnostic.handlers.virtual_text.show
+assert(show_handler_vt)
+local hide_handler = vim.diagnostic.handlers.virtual_text.hide
+vim.diagnostic.handlers.virtual_text = {
+    show = function(ns, bufnr, diagnostics, opts)
+        table.sort(diagnostics, function(diag1, diag2)
+            return diag1.severity > diag2.severity
+        end)
+        return show_handler_vt(ns, bufnr, diagnostics, opts)
+    end,
+    hide = hide_handler,
+}
 
 -- local datapath = vim.fn.stdpath("data")
 
