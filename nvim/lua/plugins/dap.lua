@@ -179,7 +179,7 @@ return {
                 type = "executable",
                 command = netcoredbg_exe,
                 args = { "--interpreter=vscode" },
-                options = { detached = false },
+                detached = false,
             }
 
             dap.configurations.cs = {
