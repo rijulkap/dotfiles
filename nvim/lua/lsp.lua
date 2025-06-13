@@ -1,7 +1,7 @@
 local utils = require("utils")
 
 local function setup_document_highlight(client, bufnr)
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
         local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
 
         vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -27,7 +27,7 @@ local function setup_document_highlight(client, bufnr)
 end
 
 local function setup_codelens(client, bufnr)
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
         vim.lsp.codelens.refresh()
         vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
             buffer = bufnr,
@@ -37,7 +37,7 @@ local function setup_codelens(client, bufnr)
 end
 
 local function setup_inlayhint(client)
-    if client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
         vim.lsp.inlay_hint.enable(true)
     end
 end
@@ -153,7 +153,7 @@ local default_diagnostic_config = {
     underline = true,
     severity_sort = true,
     jump = {
-        float = true,
+        on_jump = vim.diagnostic.open_float,
     },
     float = {
         focusable = false,
