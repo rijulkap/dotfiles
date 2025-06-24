@@ -1,18 +1,30 @@
 local utils = {}
 
--- Dyn LSP Methods Subtable
-utils.dyn_lsp_methods = {
-    __methods = {},
-}
+local DynDispatch = {}
+DynDispatch.__index = DynDispatch
 
-function utils.dyn_lsp_methods:add(method)
-    table.insert(self.__methods, method)
+function DynDispatch.new()
+    return setmetatable({ __methods = {} }, DynDispatch)
 end
 
-function utils.dyn_lsp_methods:resolve(client, buf)
-    for _, method in ipairs(self.__methods) do
-        method(client, buf)
+function DynDispatch:add(fn)
+    table.insert(self.__methods, fn)
+end
+
+function DynDispatch:resolve(client, buf)
+    for _, m in ipairs(self.__methods) do
+        if client ~= nil and buf ~= nil then
+            m(client, buf)
+        else
+            m()
+        end
     end
 end
+
+-- Dyn LSP Methods Subtable
+utils.dyn_lsp_methods = DynDispatch.new()
+
+-- Dyn esc handler
+utils.dyn_exit = DynDispatch.new()
 
 return utils

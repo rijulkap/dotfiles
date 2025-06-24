@@ -16,11 +16,14 @@ return {
         ls.filetype_extend("lua", { "luadoc" })
         ls.filetype_extend("cs", { "csharpdoc" })
 
-        vim.keymap.set({ "n" }, "<c-e>", function()
+        local function unlink ()
             if ls.expand_or_jumpable() then
                 ls.unlink_current()
             end
-        end)
+        end
+
+        require("utils").dyn_exit:add(unlink)
+
 
         local types = require("luasnip.util.types")
         return {

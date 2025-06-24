@@ -46,13 +46,10 @@ return {
                             if cmp.is_menu_visible() then -- If menu is shown, close it
                                 cmp.hide()
                                 return true -- return true to skip fallback (and hence not leave snippet)
-                            else
-                                require("luasnip").unlink_current() -- close snippet engine
-                                return false -- return false to trigger fallback (go to normal mode)
                             end
                         end
                     end,
-                    "fallback",
+                    "fallback"
                 },
                 ["<C-e>"] = { "hide", "fallback" },
 

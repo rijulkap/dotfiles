@@ -22,7 +22,8 @@ return {
                 end,
                 separator_style = "thick",
                 diagnostics = "nvim_lsp",
-                always_show_bufferline = false,
+                always_show_bufferline = true,
+                indicator = { style = 'underline' },
                 diagnostics_indicator = function(_, _, diag)
                     local ret = (diag.error and " " .. diag.error .. " " or "")
                         .. (diag.warning and " " .. diag.warning or "")

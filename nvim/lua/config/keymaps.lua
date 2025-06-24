@@ -1,5 +1,13 @@
-vim.keymap.set({ "n" }, "<esc>", function()
-    vim.cmd.nohlsearch()
+local utils = require("utils")
+
+utils.dyn_exit:add(function()
+    if vim.api.nvim_get_mode().mode ~= "i" then
+        vim.cmd.nohlsearch()
+    end
+end)
+
+vim.keymap.set({ "n", "i", "s" }, "<esc>", function()
+    utils.dyn_exit:resolve()
     return "<esc>"
 end, {
     expr = true,
