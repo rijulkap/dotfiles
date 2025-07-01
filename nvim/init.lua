@@ -8,4 +8,5 @@ else
     require("lsp")
     -- require("marks") --currently using snacks
     require("config.lazy")
+    require("winbar")
 end

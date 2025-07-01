@@ -3,47 +3,14 @@ return {
         "nvim-lualine/lualine.nvim",
         event = "VeryLazy",
         opts = function(_)
-            local function shorten_path(path, max_len)
-                -- Normalize path separators for Windows
-                path = path:gsub("\\", "/")
-
-                local parts = {}
-                for part in string.gmatch(path, "[^/]+") do
-                    table.insert(parts, part)
-                end
-
-                -- Start from the filename and move up to 2 parents
-                local final_parts = {}
-                for i = #parts, math.max(#parts - 2, 1), -1 do
-                    table.insert(final_parts, 1, parts[i])
-                end
-
-                local result = table.concat(final_parts, "/")
-
-                -- Truncate if too long
-                if #result > max_len then
-                    result = "…" .. result:sub(-max_len + 1)
-                end
-
-                return result
-            end
-
-            local function custom_filename()
-                local path = vim.fn.expand("%:p")
-                if path == "" then
-                    return ""
-                end
-                return shorten_path(path, 40)
-            end
-
             local lualine_b = {
                 {
                     "filetype",
                     icon_only = true,
                     padding = { left = 1, right = 0 },
-                    -- separator = "",
+                    separator = "",
                 },
-                { custom_filename },
+                { "filename", padding = {left = 0, right = 1} },
                 { "fileformat" },
             }
 
