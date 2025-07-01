@@ -1,5 +1,12 @@
 local utils = require("utils")
 
+local diag_signs = {
+    ERROR = " ",
+    WARN = " ",
+    INFO = " ",
+    HINT = " ",
+}
+
 local function setup_document_highlight(client, bufnr)
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
         local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
@@ -56,17 +63,51 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map("gd", function()
             require("snacks").picker.lsp_definitions()
         end, "[G]oto [D]efinition")
+        map("gD", function()
+            require("snacks").picker.lsp_type_definitions()
+        end, "[G]oto type [D]efinition")
         map("gr", function()
             require("snacks").picker.lsp_references()
         end, "[G]oto [R]eferences")
         map("gI", function()
             require("snacks").picker.lsp_implementations()
         end, "[G]oto [I]mplementation")
-        map("<leader>ll", vim.diagnostic.setloclist, "Open diagnostic [l]sp [l]oclist list")
-        map("<leader>lq", vim.diagnostic.setqflist, "Open diagnostic [l]sp [q]uickfix list")
+        map("<leader>ll", function()
+            local wininfo = vim.fn.getwininfo()
+            for _, win in ipairs(wininfo) do
+                if win.loclist == 1 then
+                    vim.cmd("lclose")
+                    return
+                end
+            end
+            vim.diagnostic.setloclist({
+                title = "Buffer Diagnostics",
+                format = function(diag)
+                    local level = vim.diagnostic.severity[diag.severity]
+                    local prefix = string.format(" %s ", diag_signs[level])
+                    return prefix .. diag.message
+                end,
+            })
+        end, "Toggle diagnostic [l]sp [l]oclist")
+        map("<leader>lq", function()
+            local wininfo = vim.fn.getwininfo()
+            for _, win in ipairs(wininfo) do
+                if win.quickfix == 1 then
+                    vim.cmd("cclose")
+                    return
+                end
+            end
+            vim.diagnostic.setqflist({
+                title = "Workspace Diagnostics",
+                format = function(diag)
+                    local level = vim.diagnostic.severity[diag.severity]
+                    local prefix = string.format(" %s ", diag_signs[level])
+                    return prefix .. diag.message
+                end,
+            })
+        end, "Toggle diagnostic quickfix list")
         map("<leader>lr", vim.lsp.buf.rename, "[l]sp [R]ename")
         map("<leader>lc", vim.lsp.buf.code_action, "[l]sp [C]ode Action")
-        map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client then
@@ -103,13 +144,6 @@ local function truncate_message(message, max_length)
     end
     return message
 end
-
-local diag_signs = {
-    ERROR = " ",
-    WARN = " ",
-    INFO = " ",
-    HINT = " ",
-}
 
 -- wrappers to allow for toggling
 local def_virtual_text = {
