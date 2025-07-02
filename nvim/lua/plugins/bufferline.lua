@@ -14,6 +14,7 @@ return {
         },
         opts = {
             options = {
+                tab_size = 25,
                 close_command = function(n)
                     Snacks.bufdelete(n)
                 end,
@@ -23,7 +24,7 @@ return {
                 separator_style = "thick",
                 diagnostics = "nvim_lsp",
                 always_show_bufferline = true,
-                indicator = { style = 'underline' },
+                indicator = { icon = "  " },
                 diagnostics_indicator = function(_, _, diag)
                     local ret = (diag.error and " " .. diag.error .. " " or "")
                         .. (diag.warning and " " .. diag.warning or "")
