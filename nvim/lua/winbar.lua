@@ -77,7 +77,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "VimResized
             local config = vim.api.nvim_win_get_config(winid)
             local bufnr = vim.api.nvim_win_get_buf(winid)
 
-            if not config.zindex and vim.api.nvim_buf_get_name(bufnr) ~= "" then
+            if not config.zindex and vim.api.nvim_buf_get_name(bufnr) ~= "" and vim.bo[bufnr].buftype == "" then
                 vim.api.nvim_win_call(winid, function()
                     vim.wo.winbar = winbar.render()
                 end)
