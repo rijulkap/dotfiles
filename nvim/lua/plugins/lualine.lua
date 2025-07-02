@@ -18,6 +18,15 @@ return {
                 end
             end
 
+            local function git_branch()
+                local head = vim.b.gitsigns_head
+                if not head or head == "" then
+                    return ""
+                end
+
+                return string.format(" %s", head)
+            end
+
             return {
                 options = {
                     icons_enabled = true,
@@ -34,20 +43,23 @@ return {
                     globalstatus = true,
                     refresh = {
                         statusline = 100,
-                        tabline = 2000,
-                        winbar = 2000,
+                        tabline = 10000,
+                        winbar = 10000,
                     },
                 },
                 sections = {
                     lualine_a = {
                         {
                             "mode",
-                            fmt = function(str)
-                                return str:sub(1, 1)
-                            end,
+                            -- fmt = function(str)
+                            --     return str:sub(1, 1)
+                            -- end,
                         },
                     },
                     lualine_b = {
+                        { "fileformat" },
+                        { git_branch },
+                        { python_venv },
                         {
                             "filetype",
                             icon_only = true,
@@ -55,9 +67,6 @@ return {
                             separator = "",
                         },
                         { "filename", padding = { left = 0, right = 1 } },
-                        -- { "fileformat" },
-                        { "branch" },
-                        { python_venv },
                     },
                     lualine_c = {
                         {
@@ -105,6 +114,7 @@ return {
                     },
                     lualine_z = { { "location" } },
                 },
+                extensions = { "quickfix" },
             }
         end,
     },
