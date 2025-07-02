@@ -3,35 +3,19 @@ return {
         "nvim-lualine/lualine.nvim",
         event = "VeryLazy",
         opts = function(_)
-            local lualine_b = {
-                {
-                    "filetype",
-                    icon_only = true,
-                    padding = { left = 1, right = 0 },
-                    separator = "",
-                },
-                { "filename", padding = {left = 0, right = 1} },
-                { "fileformat" },
-            }
-
-            if vim.bo.filetype == "python" then
-                local virtual_env = function()
-                    local conda_env = os.getenv("CONDA_DEFAULT_ENV")
+            local function python_venv()
+                if vim.bo.filetype == "python" then
                     local venv_path = os.getenv("VIRTUAL_ENV")
 
                     if venv_path == nil then
-                        if conda_env == nil then
-                            return ""
-                        else
-                            return string.format("%s (conda)", conda_env)
-                        end
+                        return ""
                     else
                         local venv_name = vim.fn.fnamemodify(venv_path, ":t")
                         return string.format("%s (venv)", venv_name)
                     end
+                else
+                    return ""
                 end
-
-                table.insert(lualine_b, virtual_env)
             end
 
             return {
@@ -63,9 +47,19 @@ return {
                             end,
                         },
                     },
-                    lualine_b = lualine_b,
-                    lualine_c = {
+                    lualine_b = {
+                        {
+                            "filetype",
+                            icon_only = true,
+                            padding = { left = 1, right = 0 },
+                            separator = "",
+                        },
+                        { "filename", padding = { left = 0, right = 1 } },
+                        -- { "fileformat" },
                         { "branch" },
+                        { python_venv },
+                    },
+                    lualine_c = {
                         {
                             "diff",
                             symbols = {
