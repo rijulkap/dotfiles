@@ -53,6 +53,70 @@ utils.dyn_lsp_methods:add(setup_document_highlight)
 -- utils.dyn_lsp_methods:add(setup_codelens)
 utils.dyn_lsp_methods:add(setup_inlayhint)
 
+local function update_loclist(opts)
+    opts = opts or {}
+
+    local diagnostics = vim.diagnostic.get(0, {
+        severity = {min = opts.severity},
+    })
+
+    -- Format and sort by severity (ascending severity value = higher priority)
+    table.sort(diagnostics, function(a, b)
+        return a.severity < b.severity
+    end)
+
+    local items = {}
+    for _, diag in ipairs(diagnostics) do
+        local level = vim.diagnostic.severity[diag.severity]
+        local prefix = string.format(" %s ", diag_signs[level])
+        table.insert(items, {
+            bufnr = diag.bufnr,
+            lnum = diag.lnum,
+            col = diag.col,
+            text = prefix .. diag.message,
+            severity = diag.severity,
+        })
+    end
+
+    vim.fn.setloclist(0, {}, "r", {
+        title = "Buffer Diagnostics",
+        items = items,
+    })
+end
+
+local function update_qflist(opts)
+    opts = opts or {}
+
+    local diagnostics = vim.diagnostic.get(nil, {
+        severity = {min = opts.severity},
+    })
+
+    table.sort(diagnostics, function(a, b)
+        return a.severity < b.severity
+    end)
+
+    local items = {}
+    for _, diag in ipairs(diagnostics) do
+        local level = vim.diagnostic.severity[diag.severity]
+        local prefix = string.format(" %s ", diag_signs[level] or "")
+        table.insert(items, {
+            bufnr = diag.bufnr,
+            lnum = diag.lnum + 1, -- Quickfix expects 1-based lines
+            col = diag.col + 1, -- Same for columns
+            text = prefix .. diag.message,
+            severity = diag.severity,
+        })
+    end
+
+    vim.fn.setqflist({}, "r", {
+        title = "Workspace Diagnostics",
+        items = items,
+    })
+end
+
+vim.g.ll_open = false
+vim.g.qf_open = false
+
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
     callback = function(event)
@@ -72,40 +136,37 @@ vim.api.nvim_create_autocmd("LspAttach", {
         map("gI", function()
             require("snacks").picker.lsp_implementations()
         end, "[G]oto [I]mplementation")
+
+        local function toggle_loclist()
+            if vim.g.ll_open == true then
+                vim.cmd("lclose")
+                vim.g.ll_open = false
+                return
+            end
+            update_loclist({severity = vim.diagnostic.severity.WARN})
+            vim.cmd("lopen")
+            vim.g.ll_open = true
+        end
+
         map("<leader>ll", function()
-            local wininfo = vim.fn.getwininfo()
-            for _, win in ipairs(wininfo) do
-                if win.loclist == 1 then
-                    vim.cmd("lclose")
-                    return
-                end
+            toggle_loclist()
+        end, "Toggle loclist")
+
+        local function toggle_qflist()
+            if vim.g.qf_open == true then
+                vim.cmd("cclose")
+                vim.g.qf_open = false
+                return
             end
-            vim.diagnostic.setloclist({
-                title = "Buffer Diagnostics",
-                format = function(diag)
-                    local level = vim.diagnostic.severity[diag.severity]
-                    local prefix = string.format(" %s ", diag_signs[level])
-                    return prefix .. diag.message
-                end,
-            })
-        end, "Toggle diagnostic [l]sp [l]oclist")
+            update_qflist({severity = vim.diagnostic.severity.WARN})
+            vim.cmd("copen")
+            vim.g.qf_open = true
+        end
+
         map("<leader>lq", function()
-            local wininfo = vim.fn.getwininfo()
-            for _, win in ipairs(wininfo) do
-                if win.quickfix == 1 then
-                    vim.cmd("cclose")
-                    return
-                end
-            end
-            vim.diagnostic.setqflist({
-                title = "Workspace Diagnostics",
-                format = function(diag)
-                    local level = vim.diagnostic.severity[diag.severity]
-                    local prefix = string.format(" %s ", diag_signs[level])
-                    return prefix .. diag.message
-                end,
-            })
-        end, "Toggle diagnostic quickfix list")
+            toggle_qflist()
+        end, "Toggle quickfix")
+
         map("<leader>lr", vim.lsp.buf.rename, "[l]sp [R]ename")
         map("<leader>lc", vim.lsp.buf.code_action, "[l]sp [C]ode Action")
 
@@ -115,6 +176,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
     end,
 })
+
+-- Setup timer to refresh lists
+local timer = vim.loop.new_timer()
+timer:start(0, 2000, vim.schedule_wrap(function()
+    if vim.g.ll_open then update_loclist({severity = vim.diagnostic.severity.WARN}) end
+    if vim.g.qf_open then update_qflist({severity = vim.diagnostic.severity.WARN}) end
+end))
 
 vim.lsp.set_log_level("off")
 
