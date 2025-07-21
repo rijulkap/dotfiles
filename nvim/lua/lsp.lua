@@ -216,7 +216,7 @@ end
 -- wrappers to allow for toggling
 local def_virtual_text = {
     isTrue = {
-        -- severity = { max = "WARN" },
+        severity = { min = "WARN" },
         current_line = nil,
         prefix = "",
         -- source = "if_many",
@@ -252,7 +252,9 @@ local default_diagnostic_config = {
     update_in_insert = false,
     virtual_lines = def_virtual_lines.isFalse,
     virtual_text = def_virtual_text.isTrue,
-    underline = true,
+    underline = {
+        severity = {min = "WARN"}
+    },
     severity_sort = true,
     jump = {
         on_jump = vim.diagnostic.open_float,
