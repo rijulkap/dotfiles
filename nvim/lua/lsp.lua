@@ -178,11 +178,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Setup timer to refresh lists
-local timer = vim.loop.new_timer()
-timer:start(0, 2000, vim.schedule_wrap(function()
-    if vim.g.ll_open then update_loclist({severity = vim.diagnostic.severity.WARN}) end
-    if vim.g.qf_open then update_qflist({severity = vim.diagnostic.severity.WARN}) end
-end))
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    callback = function(args)
+        if vim.g.ll_open then
+            update_loclist({severity = vim.diagnostic.severity.WARN})
+        end
+        if vim.g.qf_open then
+            update_qflist({severity = vim.diagnostic.severity.WARN})
+        end
+    end,
+})
 
 vim.lsp.set_log_level("off")
 
