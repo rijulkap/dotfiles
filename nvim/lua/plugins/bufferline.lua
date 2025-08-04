@@ -14,7 +14,7 @@ return {
         },
         opts = {
             options = {
-                tab_size = 25,
+                tab_size = 20,
                 close_command = function(n)
                     Snacks.bufdelete(n)
                 end,
