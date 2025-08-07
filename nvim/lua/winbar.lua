@@ -26,7 +26,7 @@ function M.render()
         return ""
     end
 
-    if path:find("gitsigns") then
+    if path:find("gitsigns:") then
         return "%#Winbar# GIT DIFF"
     end
 
