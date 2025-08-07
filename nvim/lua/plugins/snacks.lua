@@ -11,7 +11,7 @@ return {
                     term_normal = {},
                 },
             },
-            explorer = { enabled = true },
+            explorer = { enabled = true, replace_netrw = false },
             dashboard = {
                 enabled = true,
                 preset = {
@@ -99,7 +99,7 @@ return {
         keys = {
 
             {
-                "-",
+                "_",
                 function()
                     Snacks.explorer.open({ diagnostics = false, git_status = false })
                 end,

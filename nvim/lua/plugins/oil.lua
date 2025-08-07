@@ -1,16 +1,19 @@
 return {
-    -- {
-    --     "stevearc/oil.nvim",
-    --     -- Optional dependencies
-    --     config = function(_)
-    --         require("oil").setup({
-    --             columns = {
-    --                 "icon",
-    --             },
-    --         })
-    --         vim.keymap.set("n", "-", function()
-    --             require("oil").open_float()
-    --         end, { noremap = true, silent = true, desc = "Open parent directory" })
-    --     end,
-    -- },
+    {
+        "stevearc/oil.nvim",
+        dependencies = { { "echasnovski/mini.icons", opts = {} } },
+        opts = function(_)
+            vim.keymap.set("n", "-", function()
+                require("oil").open_float()
+            end, { desc = "Open parent directory" })
+            return {
+                columns = {
+                    "icon",
+                },
+                view_options = {
+                    show_hidden = true,
+                },
+            }
+        end,
+    },
 }

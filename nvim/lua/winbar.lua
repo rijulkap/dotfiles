@@ -62,6 +62,11 @@ function M.render()
             end
         end
 
+        if segment:find("oil:") then
+            icon = ""
+            segment = "*** OIL-EXPLORER ***"
+        end
+
         table.insert(rendered, string.format("%%#%s#%s %%#Winbar#%s", hl, icon, segment))
     end
 
