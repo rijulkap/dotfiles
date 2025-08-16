@@ -26,3 +26,11 @@ end
 
 # Zoxide
 zoxide init fish | source
+
+function nv
+    env VIMRUNTIME=/home/rk-dev/Workspace/neovim/runtime /home/rk-dev/Workspace/neovim/build/bin/nvim $argv
+end
+
+function devenv
+    source /home/rk-dev/Workspace/python/devenv/bin/activate.fish
+end

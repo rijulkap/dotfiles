@@ -1,20 +1,11 @@
-return {
-    {
-        -- Useful plugin to show you pending keybinds.
-        'folke/which-key.nvim',
-        event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
-        opts = {
-            preset = "helix",
-        },
-        config = function(_, opts) -- This is the function that runs, AFTER loading
-            require('which-key').setup(opts)
+vim.pack.add({ { src = "https://github.com/folke/which-key.nvim" } }, { confirm = false })
 
-            -- Document existing key chains
-            require('which-key').add {
-                { '<leader>l', group = '[l]sp Stuff' },
-                { '<leader>s', group = '[S]earch' },
-                { '<leader>b', group = '[b]uffer menu' },
-            }
-        end,
-    },
-}
+require("which-key").setup({
+    preset = "helix",
+})
+
+require("which-key").add({
+    { "<leader>l", group = "[l]sp Stuff" },
+    { "<leader>s", group = "[S]earch" },
+    { "<leader>b", group = "[b]uffer menu" },
+})

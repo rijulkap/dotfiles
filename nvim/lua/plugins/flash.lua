@@ -1,42 +1,18 @@
-return {
-    {
-        "folke/flash.nvim",
-        event = "VeryLazy",
-        ---@type Flash.Config
-        opts = {},
-        keys = {
-            {
-                "s",
-                mode = { "n", "x", "o" },
-                function()
-                    require("flash").jump()
-                end,
-                desc = "Flash",
-            },
-            {
-                "S",
-                mode = { "n", "x", "o" },
-                function()
-                    require("flash").treesitter()
-                end,
-                desc = "Flash Treesitter",
-            },
-            {
-                "R",
-                mode = "o",
-                function()
-                    require("flash").remote()
-                end,
-                desc = "Remote Flash",
-            },
-            {
-                "<c-s>",
-                mode = { "c" },
-                function()
-                    require("flash").toggle()
-                end,
-                desc = "Toggle Flash Search",
-            },
-        },
-    },
-}
+vim.pack.add({ { src = "https://github.com/folke/flash.nvim" } }, { confirm = false })
+require("flash").setup()
+
+vim.keymap.set({ "n", "x", "o" }, "s", function()
+    require("flash").jump()
+end, { desc = "Flash" })
+
+vim.keymap.set({ "n", "x", "o" }, "S", function()
+    require("flash").treesitter()
+end, { desc = "Flash Treesitter" })
+
+vim.keymap.set("o", "R", function()
+    require("flash").remote()
+end, { desc = "Remote Flash" })
+
+vim.keymap.set("c", "<c-s>", function()
+    require("flash").toggle()
+end, { desc = "Toggle Flash Search" })
