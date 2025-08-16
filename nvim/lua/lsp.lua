@@ -189,7 +189,7 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
     end,
 })
 
-vim.lsp.set_log_level("off")
+vim.lsp.log.set_level("off")
 
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field

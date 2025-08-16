@@ -7,6 +7,6 @@ else
     require("config.autocmds")
     require("lsp")
     -- require("marks") --currently using snacks
-    require("config.lazy")
+    require("config.plugins")
     require("winbar")
 end

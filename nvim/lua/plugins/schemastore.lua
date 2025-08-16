@@ -1,8 +1,9 @@
-return {
-    {
-        'b0o/SchemaStore.nvim',
-        lazy = true,
-        ft = 'json',
-        version = false, -- last release is way too old
-    },
-}
+-- vim.pack.add({ { src = "https://github.com/b0o/SchemaStore.nvim" } }, { confirm = false })
+-- return {
+--     {
+--         "b0o/SchemaStore.nvim",
+--         lazy = true,
+--         ft = "json",
+--         version = false, -- last release is way too old
+--     },
+-- }
