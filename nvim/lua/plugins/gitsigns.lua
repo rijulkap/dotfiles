@@ -1,19 +1,26 @@
-vim.pack.add({ { src = "https://github.com/lewis6991/gitsigns.nvim" } }, { confirm = false })
-require("gitsigns").setup({
-    signs = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-        untracked = { text = "┆" },
-    },
-    on_attach = function(buffer)
-        local gs = package.loaded.gitsigns
+local setup_gitsigns
 
-        local function map(mode, l, r, desc)
-            vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-        end
+require("pluginmgr").add_normal_spec({ src = "https://github.com/lewis6991/gitsigns.nvim" })
+require("pluginmgr").add_normal_setup(function()
+    setup_gitsigns()
+end)
+
+function setup_gitsigns()
+    require("gitsigns").setup({
+        signs = {
+            add = { text = "▎" },
+            change = { text = "▎" },
+            delete = { text = "" },
+            topdelete = { text = "" },
+            changedelete = { text = "▎" },
+            untracked = { text = "┆" },
+        },
+        on_attach = function(buffer)
+            local gs = package.loaded.gitsigns
+
+            local function map(mode, l, r, desc)
+                vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
+            end
 
                 -- stylua: ignore start
                 map("n", "]h", function() gs.nav_hunk("next") end, "Next Hunk")
@@ -31,5 +38,6 @@ require("gitsigns").setup({
                 map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
                 map("n", "<leader>gt",  ":Gitsigns setqflist<CR>", "Set Gitsign to Trouble qf")
                 map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-    end,
-})
+        end,
+    })
+end

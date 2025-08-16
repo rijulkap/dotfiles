@@ -1,11 +1,18 @@
-vim.pack.add({ { src = "https://github.com/folke/which-key.nvim" } }, { confirm = false })
+local setup_which_key
 
-require("which-key").setup({
-    preset = "helix",
-})
+require("pluginmgr").add_normal_spec({ src = "https://github.com/folke/which-key.nvim" })
+require("pluginmgr").add_normal_setup(function()
+    setup_which_key()
+end)
 
-require("which-key").add({
-    { "<leader>l", group = "[l]sp Stuff" },
-    { "<leader>s", group = "[S]earch" },
-    { "<leader>b", group = "[b]uffer menu" },
-})
+function setup_which_key()
+    require("which-key").setup({
+        preset = "helix",
+    })
+
+    require("which-key").add({
+        { "<leader>l", group = "[l]sp Stuff" },
+        { "<leader>s", group = "[S]earch" },
+        { "<leader>b", group = "[b]uffer menu" },
+    })
+end

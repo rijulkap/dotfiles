@@ -33,6 +33,9 @@ require("plugins.oil")
 
 --misc
 require("plugins.flash")
-require("plugins.schemastore")
-require("plugins.dap")
+-- require("plugins.dap")
 
+
+-- load once to install all plugins 
+require("pluginmgr").install_all()
+require("pluginmgr").setup_normal()
