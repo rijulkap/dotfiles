@@ -6,7 +6,6 @@ vim.pack.add({ { src = "https://github.com/neovim/nvim-lspconfig" } }, { confirm
 vim.pack.add({ { src = "https://github.com/mason-org/mason-lspconfig.nvim" } }, { confirm = false })
 
 local mr = require("mason-registry")
-vim.g.myformatters = {}
 mr.refresh(function()
     for _, tool in ipairs(vim.g.formatters) do
         local p = mr.get_package(tool)
