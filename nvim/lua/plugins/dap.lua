@@ -16,14 +16,16 @@ for name, sign in pairs(icons) do
     })
 end
 
-vim.pack.add({ { src = "https://github.com/jay-babu/mason-nvim-dap.nvim" } }, { confirm = false })
+require("utils").PackageManager:add({ src = "https://github.com/jay-babu/mason-nvim-dap.nvim" }, nil)
 
-vim.pack.add({ { src = "https://github.com/mfussenegger/nvim-dap" } }, { confirm = false })
+require("utils").PackageManager:add({ src = "https://github.com/mfussenegger/nvim-dap" }, nil)
 
-local dap = require("dap")
+local function setup_dap_view()
+    local dap = require("dap")
+end
 
+require("utils").PackageManager:add({ src = "https://github.com/igorlfs/nvim-dap-view" }, nil)
 
-vim.pack.add({ { src = "https://github.com/igorlfs/nvim-dap-view" } }, { confirm = false })
 require("dap-view").setup({
     winbar = {
         sections = { "scopes", "breakpoints", "threads", "exceptions", "repl", "console" },
@@ -170,5 +172,8 @@ vim.keymap.set("n", "<leader>du", function()
 end, { desc = "Close UI" })
 
 
-vim.pack.add({ { src = "https://github.com/theHamsta/nvim-dap-virtual-text" } }, { confirm = false })
-require("nvim-dap-virtual-text").setup({ virt_text_pos = "eol" })
+local function setup_dap_vt()
+    require("nvim-dap-virtual-text").setup({ virt_text_pos = "eol" })
+end
+require("utils").PackageManager:add({ src = "https://github.com/theHamsta/nvim-dap-virtual-text" }, setup_dap_vt)
+

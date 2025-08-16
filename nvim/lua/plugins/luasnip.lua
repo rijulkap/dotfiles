@@ -1,45 +1,50 @@
-vim.pack.add({ { src = "https://github.com/rafamadriz/friendly-snippets" } }, { confirm = false })
+require("pluginmgr").add_normal({ src = "https://github.com/rafamadriz/friendly-snippets" }, nil)
 
-vim.pack.add({ { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("^2") } }, { confirm = false })
-require("luasnip.loaders.from_vscode").lazy_load()
+local function setup_luasnip()
+    require("luasnip.loaders.from_vscode").lazy_load()
 
-local ls = require("luasnip")
-ls.filetype_extend("lua", { "luadoc" })
-ls.filetype_extend("cs", { "csharpdoc" })
+    local ls = require("luasnip")
+    ls.filetype_extend("lua", { "luadoc" })
+    ls.filetype_extend("cs", { "csharpdoc" })
 
-local function unlink()
-    if ls.expand_or_jumpable() then
-        ls.unlink_current()
+    local function unlink()
+        if ls.expand_or_jumpable() then
+            ls.unlink_current()
+        end
     end
+
+    require("utils").dyn_exit:add(unlink)
+
+    local types = require("luasnip.util.types")
+
+    require("luasnip").setup({
+        -- region_check_events = "CursorMoved",
+        -- Check if the current snippet was deleted.
+        -- delete_check_events = "TextChanged",
+        -- Display a cursor-like placeholder in unvisited nodes
+        -- of the snippet.
+        ext_opts = {
+            [types.insertNode] = {
+                unvisited = {
+                    virt_text = { { "|", "Conceal" } },
+                    virt_text_pos = "inline",
+                },
+            },
+            [types.exitNode] = {
+                unvisited = {
+                    virt_text = { { "|", "Conceal" } },
+                    virt_text_pos = "inline",
+                },
+            },
+            [types.choiceNode] = {
+                active = {
+                    virt_text = { { "(snippet) choice node", "LspInlayHint" } },
+                },
+            },
+        },
+    })
 end
 
-require("utils").dyn_exit:add(unlink)
+require("pluginmgr").add_lazy({ src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("^2") })
 
-local types = require("luasnip.util.types")
-
-require("luasnip").setup({
-    -- region_check_events = "CursorMoved",
-    -- Check if the current snippet was deleted.
-    -- delete_check_events = "TextChanged",
-    -- Display a cursor-like placeholder in unvisited nodes
-    -- of the snippet.
-    ext_opts = {
-        [types.insertNode] = {
-            unvisited = {
-                virt_text = { { "|", "Conceal" } },
-                virt_text_pos = "inline",
-            },
-        },
-        [types.exitNode] = {
-            unvisited = {
-                virt_text = { { "|", "Conceal" } },
-                virt_text_pos = "inline",
-            },
-        },
-        [types.choiceNode] = {
-            active = {
-                virt_text = { { "(snippet) choice node", "LspInlayHint" } },
-            },
-        },
-    },
-})
+require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "LuaSnip", setup_luasnip)
