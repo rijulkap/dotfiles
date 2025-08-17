@@ -5,7 +5,7 @@ local normal_loaded_plugins_setup = {}
 local lazy_loaded_plugins_spec = {}
 
 ---@param spec vim.pack.Spec
-function M.add_normal_spec(spec )
+function M.add_normal_spec(spec)
     table.insert(normal_loaded_plugins_spec, spec)
 end
 
@@ -29,7 +29,7 @@ function M.setup_normal()
     end
 end
 
-local gr = vim.api.nvim_create_augroup("pack-add", {})
+local gr = vim.api.nvim_create_augroup("lazy-pack-add-setups", {})
 
 M.pack_setup_on_event = function(event, name, setup)
     local cb = function()
@@ -37,6 +37,21 @@ M.pack_setup_on_event = function(event, name, setup)
         setup()
     end
     vim.api.nvim_create_autocmd(event, { group = gr, callback = cb, once = true })
+end
+
+M.pack_setup_on_filetype = function(filetype, name, setup)
+    local id
+    id = vim.api.nvim_create_autocmd("FileType", {
+        group = gr,
+        pattern = filetype,
+        callback = function(args)
+            if vim.bo[args.buf].filetype == filetype then
+                vim.cmd.packadd(name)
+                setup()
+                vim.api.nvim_del_autocmd(id) -- remove once it's been called
+            end
+        end,
+    })
 end
 
 return M

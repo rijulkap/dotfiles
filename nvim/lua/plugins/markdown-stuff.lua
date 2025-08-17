@@ -1,8 +1,8 @@
 local setup_md
 
-require("pluginmgr").add_normal_spec({ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" })
+require("pluginmgr").add_lazy_spec({ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" })
 
-require("pluginmgr").add_normal_setup(function()
+require("pluginmgr").pack_setup_on_filetype("markdown", "render-markdown.nvim", function()
     setup_md()
 end)
 
