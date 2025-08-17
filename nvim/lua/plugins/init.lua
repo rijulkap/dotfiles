@@ -1,4 +1,4 @@
-require("plugins.colorscheme.colorschemes")
+require("plugins.colorschemes")
 
 -- Snacks
 require("plugins.snacks")
@@ -35,6 +35,8 @@ require("plugins.oil")
 require("plugins.flash")
 -- require("plugins.dap")
 
+-- Resolve untracked Extras
+require("plugins.Extras")
 
 -- load once to install all plugins 
 require("pluginmgr").install_all()
