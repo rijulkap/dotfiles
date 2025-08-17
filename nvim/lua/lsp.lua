@@ -310,7 +310,7 @@ vim.diagnostic.handlers.virtual_text = {
 
 -- local datapath = vim.fn.stdpath("data")
 
-vim.g.lsps = vim.iter(vim.api.nvim_get_runtime_file("after/lsp/*.lua", true))
+vim.g.lsps = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
     :map(function(file)
         -- ignore all dynamically added lspconfig files
         -- if not vim.startswith(file, datapath) then
