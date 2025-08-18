@@ -46,7 +46,9 @@ M.pack_setup_on_filetype = function(filetype, name, setup)
         pattern = filetype,
         callback = function(args)
             if vim.bo[args.buf].filetype == filetype then
-                vim.cmd.packadd(name)
+                if name ~= nil then
+                    vim.cmd.packadd(name)
+                end
                 setup()
                 vim.api.nvim_del_autocmd(id) -- remove once it's been called
             end
