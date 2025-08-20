@@ -7,3 +7,4 @@ spell/
 lazy-lock.json
 
 lua/plugins/Extras/Extras.lua
+lua/plugins/Extras/Extras_backup.txt

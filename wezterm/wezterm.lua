@@ -35,6 +35,8 @@ config.window_background_opacity = 0.95
 config.scrollback_lines = 30000
 config.default_workspace = "main"
 
+config.front_end = 'WebGpu'
+
 config.max_fps = 240
 
 -- Keys
