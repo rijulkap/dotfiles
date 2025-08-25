@@ -1,7 +1,9 @@
 local setup_snacks
 
 require("pluginmgr").add_normal_spec({ src = "https://github.com/folke/snacks.nvim" })
-require("pluginmgr").add_normal_setup(function() setup_snacks() end )
+require("pluginmgr").add_normal_setup(function()
+    setup_snacks()
+end)
 
 function setup_snacks()
     local Snacks = require("snacks")
@@ -86,7 +88,14 @@ function setup_snacks()
                 wo = { wrap = true }, -- Wrap notifications
             },
         },
-        picker = { enabled = true },
+        picker = {
+            enabled = true,
+            formatters = {
+                file = {
+                    filename_first = true,
+                },
+            },
+        },
     })
 
     vim.keymap.set("n", "_", function()
