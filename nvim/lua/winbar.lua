@@ -4,6 +4,7 @@ local mocha = require("catppuccin.palettes").get_palette("mocha")
 
 vim.api.nvim_set_hl(0, "WinBarDir", { fg = mocha.lavender, bold = true })
 vim.api.nvim_set_hl(0, "Winbar", { fg = mocha.blue })
+vim.api.nvim_set_hl(0, "WinBarFile", { fg = mocha.peach, bold = true })
 
 local function get_last_segments(path, count)
     path = path:gsub("\\", "/")
@@ -51,29 +52,30 @@ function M.render()
         local hl = "DevIconDefault"
 
         if i == #segments then
-            -- Last item: the file
             local fname = vim.fn.expand("%:t")
             local ico, group = devicons.get_icon(fname, nil, { default = true })
             icon = ico or ""
             hl = group or "DevIconDefault"
+
+            -- render icon + filename with different groups
+            table.insert(rendered, string.format("%%#%s#%s %%#WinBarFile#%s", hl, icon, fname))
         else
             if use_short and i == 1 then
-                icon = "" -- alternate icon only for the first folder in short mode
+                icon = ""
             end
+            table.insert(rendered, string.format("%%#%s#%s %%#Winbar#%s", hl, icon, segment))
         end
 
         if segment:find("oil:") then
             icon = ""
             segment = "*** OIL-EXPLORER ***"
         end
-
-        table.insert(rendered, string.format("%%#%s#%s %%#Winbar#%s", hl, icon, segment))
     end
 
     return " " .. table.concat(rendered, separator)
 end
 
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "VimResized", "WinResized"}, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "VimResized", "WinResized" }, {
     group = vim.api.nvim_create_augroup("winbar", { clear = true }),
     callback = function()
         local winbar = require("winbar")
@@ -82,10 +84,11 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "VimResized
             local config = vim.api.nvim_win_get_config(winid)
             local bufnr = vim.api.nvim_win_get_buf(winid)
 
-            if not config.zindex
+            if
+                not config.zindex
                 and vim.api.nvim_buf_get_name(bufnr) ~= ""
                 and (vim.bo[bufnr].buftype == "" or vim.wo.diff)
-                then
+            then
                 vim.api.nvim_win_call(winid, function()
                     vim.wo.winbar = winbar.render()
                 end)

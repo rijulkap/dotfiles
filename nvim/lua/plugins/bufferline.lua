@@ -1,10 +1,10 @@
 local setup_bufferline
 
-require("pluginmgr").add_lazy_spec({ src = "https://github.com/akinsho/bufferline.nvim" })
-
-require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "bufferline.nvim", function()
-    setup_bufferline()
-end)
+-- require("pluginmgr").add_lazy_spec({ src = "https://github.com/akinsho/bufferline.nvim" })
+--
+-- require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "bufferline.nvim", function()
+--     setup_bufferline()
+-- end)
 
 function setup_bufferline()
     vim.keymap.set("n", "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", { desc = "Toggle Pin" })
