@@ -13,6 +13,7 @@ vim.o.showmode = false
 local statusline_hls = {}
 
 local icons = require("icons")
+local devicons = require("nvim-web-devicons")
 
 ---@param hl string
 ---@return string
@@ -166,8 +167,10 @@ local progress_status = {
     title = nil,
 }
 
+local diag_aug = vim.api.nvim_create_augroup("rijul/statusline_diagnostics", { clear = true })
+
 vim.api.nvim_create_autocmd("LspProgress", {
-    group = vim.api.nvim_create_augroup("rijul/statusline", { clear = true }),
+    group = diag_aug,
     desc = "Update LSP progress in statusline",
     pattern = { "begin", "end" },
     callback = function(args)
@@ -222,42 +225,84 @@ function M.lsp_names_component()
     return string.format("%%#%s#%s  %s", M.get_or_create_hl("Special"), icons.misc.Cogs, table.concat(names, ", "))
 end
 
-local Sev = vim.diagnostic.severity -- bi-directional map
+local Sev = vim.diagnostic.severity
 local DIAG_ORDER = { "ERROR", "WARN", "INFO", "HINT" }
-local last_diagnostic_component = ""
---- Diagnostic counts in the current buffer.
----@return string
-function M.diagnostics_component()
-    if vim.startswith(vim.api.nvim_get_mode().mode, "i") then
-        return last_diagnostic_component
-    end
 
+-- Per-buffer cache: { [bufnr] = { counts=?, str=? } }
+local diag_cache = {}
+local last_diagnostic_component = "" -- keeps the last rendered value for insert-mode freeze
+
+local function render_diag_str(counts)
+    local parts = {}
+    for _, name in ipairs(DIAG_ORDER) do
+        local n = counts[name] or 0
+        if n ~= 0 then
+            local hl = "Diagnostic" .. name:sub(1, 1) .. name:sub(2):lower()
+            local icon = (icons and icons.diagnostics and icons.diagnostics[name]) or ""
+            parts[#parts + 1] = string.format("%%#%s#%s %d", M.get_or_create_hl(hl), icon, n)
+        end
+    end
+    return table.concat(parts, " ")
+end
+
+local function recompute_diags(bufnr)
+    bufnr = bufnr ~= 0 and bufnr or vim.api.nvim_get_current_buf()
     local counts = { ERROR = 0, WARN = 0, INFO = 0, HINT = 0 }
-    for _, d in ipairs(vim.diagnostic.get(0)) do
+    for _, d in ipairs(vim.diagnostic.get(bufnr)) do
         local name = Sev[d.severity] -- 1->"ERROR"
         if name then
             counts[name] = counts[name] + 1
         end
     end
+    local str = render_diag_str(counts)
+    diag_cache[bufnr] = { counts = counts, str = str }
+    -- If this is the current buffer and we're not in insert, update the “last” string and refresh.
+    if bufnr == vim.api.nvim_get_current_buf() and not vim.startswith(vim.api.nvim_get_mode().mode, "i") then
+        last_diagnostic_component = str
+        vim.schedule(vim.cmd.redrawstatus)
+    end
+end
 
-    local parts = {}
-    for _, name in ipairs(DIAG_ORDER) do
-        local n = counts[name]
-        if n ~= 0 then
-            local hl = "Diagnostic" .. name:sub(1, 1) .. name:sub(2):lower()
-            parts[#parts + 1] = string.format("%%#%s#%s %d", M.get_or_create_hl(hl), icons.diagnostics[name], n)
-        end
+-- Keep cache fresh.
+vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
+    group = diag_aug,
+    callback = function(args)
+        -- args.buf is set for DiagnosticChanged/BufEnter
+        recompute_diags(args.buf or 0)
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+    group = diag_aug,
+    callback = function(args)
+        -- args.buf is set for DiagnosticChanged/BufEnter
+        diag_cache[args.buf] = nil
+    end,
+})
+
+--- Diagnostic counts in the current buffer (reads from cache).
+---@return string
+function M.diagnostics_component()
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    -- Seed cache if missing (first render, or after buffer was wiped).
+    if not (diag_cache[bufnr] and diag_cache[bufnr].str) then
+        recompute_diags(bufnr)
     end
 
-    last_diagnostic_component = table.concat(parts, " ")
-    return last_diagnostic_component
+    -- Freeze during insert mode: show last known rendered string.
+    if vim.startswith(vim.api.nvim_get_mode().mode, "i") then
+        return last_diagnostic_component
+    end
+
+    local s = (diag_cache[bufnr] and diag_cache[bufnr].str) or ""
+    last_diagnostic_component = s
+    return s
 end
 
 --- The buffer's filetype (with icon).
 ---@return string
 function M.filetype_component()
-    local devicons = require("nvim-web-devicons")
-
     local filetype = vim.bo.filetype
     if filetype == "" then
         filetype = "[No Name]"
@@ -291,7 +336,6 @@ function M.python_venv_component()
     end
     return string.format("%%#%s#%s %s", M.get_or_create_hl("Special"), icons.misc.Python, name)
 end
-
 
 function M.eol_encoding_component()
     local fmt = vim.bo.fileformat or "unix"
@@ -340,11 +384,14 @@ end
 --- The current line, total line count, and column position.
 ---@return string
 function M.position_component()
-    local line = vim.fn.line(".")
-    local line_count = vim.api.nvim_buf_line_count(0)
-    local col = vim.fn.virtcol(".")
-
-    return string.format("%%#StatuslineTitle#%d:%d", line, col)
+    -- 5-wide line number, 3-wide column (zero-padded col as example)
+    local s = "%#StatuslineTitle#%5l:%03c"
+    return s .. string.format(
+        "%%#%s#",
+        (default_status_hl or function()
+            return "StatusLine"
+        end)()
+    )
 end
 
 --- Renders the statusline.
