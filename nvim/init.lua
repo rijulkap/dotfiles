@@ -9,4 +9,5 @@ else
     -- require("marks") --currently using snacks
     require("config.plugins")
     require("winbar")
+    require("statusline")
 end

@@ -1,11 +1,6 @@
 local utils = require("utils")
 
-local diag_signs = {
-    ERROR = " ",
-    WARN = " ",
-    INFO = " ",
-    HINT = " ",
-}
+local diag_signs = require("icons").diagnostics
 
 local function setup_document_highlight(client, bufnr)
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then

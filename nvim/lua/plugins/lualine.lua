@@ -1,10 +1,10 @@
 local setup_lualine
 
-require("pluginmgr").add_lazy_spec({ src = "https://github.com/nvim-lualine/lualine.nvim" })
-
-require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "lualine.nvim", function()
-    setup_lualine()
-end)
+-- require("pluginmgr").add_lazy_spec({ src = "https://github.com/nvim-lualine/lualine.nvim" })
+--
+-- require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "lualine.nvim", function()
+--     setup_lualine()
+-- end)
 
 function setup_lualine()
     local function python_venv()
