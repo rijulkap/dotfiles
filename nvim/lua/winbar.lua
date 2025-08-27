@@ -3,7 +3,7 @@ local devicons = require("nvim-web-devicons")
 local mocha = require("catppuccin.palettes").get_palette("mocha")
 
 vim.api.nvim_set_hl(0, "WinBarDir", { fg = mocha.lavender, bold = true })
-vim.api.nvim_set_hl(0, "Winbar", { fg = mocha.blue })
+vim.api.nvim_set_hl(0, "WinBar", { fg = mocha.blue, bg = mocha.crust }) -- crust = darkest bg
 vim.api.nvim_set_hl(0, "WinBarFile", { fg = mocha.peach, bold = true })
 
 local function get_last_segments(path, count)
@@ -32,7 +32,7 @@ function M.render()
     end
 
     local win_width = vim.api.nvim_win_get_width(0)
-    local use_short = win_width < 80 or #path > 60
+    local use_short = win_width < 80 or #path > 60 or vim.o.columns < 100
 
     local segments = {}
     if use_short then
