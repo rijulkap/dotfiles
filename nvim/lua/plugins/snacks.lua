@@ -1,9 +1,11 @@
-local setup_snacks
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/folke/snacks.nvim" })
-require("pluginmgr").add_normal_setup(function()
-    setup_snacks()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/folke/snacks.nvim",
+    data = {
+        config = function()
+            setup_snacks()
+        end,
+    },
+})
 
 function setup_snacks()
     local Snacks = require("snacks")

@@ -1,10 +1,11 @@
-local setup_oil
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/stevearc/oil.nvim" })
-
-require("pluginmgr").add_normal_setup(function()
-    setup_oil()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/stevearc/oil.nvim",
+    data = {
+        config = function()
+            setup_oil()
+        end,
+    },
+})
 
 function setup_oil()
     require("oil").setup({

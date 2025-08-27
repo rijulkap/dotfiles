@@ -1,11 +1,17 @@
-local setup_luasnip
+require("pluginmgr").add_plugin({
+    src = "https://github.com/rafamadriz/friendly-snippets",
+})
 
-require("pluginmgr").add_normal_spec({ src = "https://github.com/rafamadriz/friendly-snippets" })
-require("pluginmgr").add_lazy_spec({ src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("^2") })
-
-require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "LuaSnip", function()
-    setup_luasnip()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/L3MON4D3/LuaSnip",
+    version = vim.version.range("^2"),
+    data = {
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            setup_luasnip()
+        end,
+    },
+})
 
 function setup_luasnip()
     require("luasnip.loaders.from_vscode").lazy_load()

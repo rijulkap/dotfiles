@@ -1,10 +1,13 @@
-local setup_md
-
-require("pluginmgr").add_lazy_spec({ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" })
-
-require("pluginmgr").pack_setup_on_filetype("markdown", "render-markdown.nvim", function()
-    setup_md()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+    data = {
+        event = { "FileType" },
+        pattern = "markdown",
+        config = function()
+            setup_md()
+        end,
+    },
+})
 
 function setup_md()
     require("render-markdown").setup()

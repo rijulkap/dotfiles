@@ -1,7 +1,7 @@
-require("pluginmgr").add_normal_spec({ src = "https://github.com/stevearc/conform.nvim" })
-require("pluginmgr").add_normal_setup(function()
-    setup_conform()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/stevearc/conform.nvim",
+    data = { config = function() setup_conform() end },
+})
 
 function setup_conform()
     vim.g.formatters = { "stylua" }

@@ -1,10 +1,8 @@
-local setup_blink
-
-require("pluginmgr").add_lazy_spec({ src = "https://github.com/Saghen/blink.cmp", version = vim.version.range("^1") })
-
-require("pluginmgr").pack_setup_on_event({ "BufReadPre", "BufNewFile" }, "blink.cmp", function()
-    setup_blink()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/Saghen/blink.cmp",
+    version = vim.version.range("^1"),
+    data = { event = { "BufReadPre", "BufNewFile" }, config = function() setup_blink() end },
+})
 
 function setup_blink()
     require("blink-cmp").setup({

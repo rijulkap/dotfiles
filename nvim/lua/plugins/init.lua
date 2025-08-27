@@ -40,4 +40,3 @@ require("plugins.Extras")
 
 -- load once to install all plugins 
 require("pluginmgr").install_all()
-require("pluginmgr").setup_normal()

@@ -1,9 +1,11 @@
-local setup_which_key
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/folke/which-key.nvim" })
-require("pluginmgr").add_normal_setup(function()
-    setup_which_key()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/folke/which-key.nvim",
+    data = {
+        config = function()
+            setup_which_key()
+        end,
+    },
+})
 
 function setup_which_key()
     require("which-key").setup({

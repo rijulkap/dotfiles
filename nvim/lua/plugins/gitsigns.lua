@@ -1,9 +1,7 @@
-local setup_gitsigns
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/lewis6991/gitsigns.nvim" })
-require("pluginmgr").add_normal_setup(function()
-    setup_gitsigns()
-end)
+require("pluginmgr").add_plugin({
+src = "https://github.com/lewis6991/gitsigns.nvim",
+    data = { config = function() setup_gitsigns() end },
+})
 
 function setup_gitsigns()
     require("gitsigns").setup({

@@ -1,56 +1,81 @@
 local M = {}
 
-local normal_loaded_plugins_spec = {}
-local normal_loaded_plugins_setup = {}
-local lazy_loaded_plugins_spec = {}
+local plugins = {}
 
----@param spec vim.pack.Spec
-function M.add_normal_spec(spec)
-    table.insert(normal_loaded_plugins_spec, spec)
-end
+local group = vim.api.nvim_create_augroup("LazyPlugins", { clear = true })
 
-function M.add_normal_setup(setup_func)
-    table.insert(normal_loaded_plugins_setup, setup_func)
-end
-
----@param spec vim.pack.Spec
-function M.add_lazy_spec(spec)
-    table.insert(lazy_loaded_plugins_spec, spec)
+---@param plugin vim.pack.Spec
+function M.add_plugin(plugin)
+    table.insert(plugins, plugin)
 end
 
 function M.install_all()
-    vim.pack.add(normal_loaded_plugins_spec, { confirm = false, load = true })
-    vim.pack.add(lazy_loaded_plugins_spec, { confirm = false, load = function() end })
-end
+    vim.pack.add(plugins, {
+        load = function(plugin)
+            local data = plugin.spec.data or {}
+            local lazy = false
 
-function M.setup_normal()
-    for _, setup in ipairs(normal_loaded_plugins_setup) do
-        setup()
-    end
-end
+            --Check Event Triggers
+            if data.event then
+                lazy = true
+                vim.api.nvim_create_autocmd(data.event, {
+                    group = group,
+                    once = true,
+                    pattern = data.pattern or "*",
+                    callback = function()
+                        vim.cmd.packadd(plugin.spec.name)
+                        if data.config then
+                            data.config(plugin)
+                        end
+                    end,
+                })
+            end
 
-local gr = vim.api.nvim_create_augroup("lazy-pack-add-setups", {})
+            -- Command Triggers
+            if data.cmd then
+                lazy = true
+                vim.api.nvim_create_user_command(data.cmd, function(cmd_args)
+                    pcall(vim.api.nvim_del_user_command, data.cmd)
+                    vim.cmd.packadd(plugin.spec.name)
+                    if data.config then
+                        data.config(plugin)
+                    end
+                    vim.api.nvim_cmd({
+                        cmd = data.cmd,
+                        args = cmd_args.fargs,
+                        bang = cmd_args.bang,
+                        nargs = cmd_args.nargs,
+                        range = cmd_args.range ~= 0 and { cmd_args.line1, cmd_args.line2 } or nil,
+                        count = cmd_args.count ~= -1 and cmd_args.count or nil,
+                    }, {})
+                end, {
+                    nargs = data.nargs,
+                    range = data.range,
+                    bang = data.bang,
+                    complete = data.complete,
+                    count = data.count,
+                })
+            end
 
-M.pack_setup_on_event = function(event, name, setup)
-    local cb = function()
-        vim.cmd.packadd(name)
-        setup()
-    end
-    vim.api.nvim_create_autocmd(event, { group = gr, callback = cb, once = true })
-end
+            -- -- Key trigger
+            -- if data.keys then
+            --     lazy = true
+            --     local mode, lhs = data.keys[1], data.keys[2]
+            --     vim.keymap.set(mode, lhs, function()
+            --         vim.keymap.del(mode, lhs)
+            --         vim.cmd.packadd(plugin.spec.name)
+            --         if data.config then
+            --             data.config(plugin)
+            --         end
+            --         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(lhs, true, false, true), "m", false)
+            --     end, { desc = data.desc })
+            -- end
 
-M.pack_setup_on_filetype = function(filetype, name, setup)
-    local id
-    id = vim.api.nvim_create_autocmd("FileType", {
-        group = gr,
-        pattern = filetype,
-        callback = function(args)
-            if vim.bo[args.buf].filetype == filetype then
-                if name ~= nil then
-                    vim.cmd.packadd(name)
+            if lazy == false then
+                vim.cmd.packadd(plugin.spec.name)
+                if data.config then
+                    data.config(plugin)
                 end
-                setup()
-                vim.api.nvim_del_autocmd(id) -- remove once it's been called
             end
         end,
     })

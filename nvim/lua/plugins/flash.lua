@@ -1,10 +1,7 @@
-local setup_flash
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/folke/flash.nvim" })
-
-require("pluginmgr").add_normal_setup(function()
-    setup_flash()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/folke/flash.nvim",
+    data = { config =function() setup_flash() end },
+})
 
 function setup_flash()
     require("flash").setup()

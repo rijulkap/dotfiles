@@ -1,15 +1,21 @@
-local setup_ts_context
-local setup_ts
+require("pluginmgr").add_plugin({
+    src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
+    data = {
+        config = function()
+            setup_ts_context()
+        end,
+    },
+})
 
-require("pluginmgr").add_normal_spec({ src = "https://github.com/nvim-treesitter/nvim-treesitter-context" })
-require("pluginmgr").add_normal_spec({ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" })
-
-require("pluginmgr").add_normal_setup(function()
-    setup_ts_context()
-end)
-require("pluginmgr").add_normal_setup(function()
-    setup_ts()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/nvim-treesitter/nvim-treesitter",
+    version = "main",
+    data = {
+        config = function()
+            setup_ts()
+        end,
+    },
+})
 
 function setup_ts_context()
     require("treesitter-context").setup()
@@ -17,7 +23,6 @@ function setup_ts_context()
         require("treesitter-context").go_to_context(vim.v.count1)
     end, { silent = true })
 end
-
 
 function setup_ts()
     vim.opt.foldmethod = "expr"

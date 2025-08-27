@@ -1,9 +1,11 @@
-local setup_mini
-
-require("pluginmgr").add_normal_spec({ src = "https://github.com/echasnovski/mini.nvim" })
-require("pluginmgr").add_normal_setup(function()
-    setup_mini()
-end)
+require("pluginmgr").add_plugin({
+    src = "https://github.com/echasnovski/mini.nvim",
+    data = {
+        config = function()
+            setup_mini()
+        end,
+    },
+})
 
 function setup_mini()
     local mI = require("mini.icons")
