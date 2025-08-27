@@ -222,7 +222,7 @@ local def_virtual_text = {
         -- source = "if_many",
         spacing = 2,
         format = function(diagnostic)
-            local message = diag_signs[vim.diagnostic.severity[diagnostic.severity]]
+            local message = diag_signs[vim.diagnostic.severity[diagnostic.severity]] .. " "
             if diagnostic.source then
                 message = string.format("%s %s", message, diagnostic.source)
             end
