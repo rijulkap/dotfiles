@@ -386,12 +386,13 @@ end
 function M.position_component()
     -- 5-wide line number, 3-wide column (zero-padded col as example)
     local s = "%#StatuslineTitle#%5l:%03c"
-    return s .. string.format(
-        "%%#%s#",
-        (default_status_hl or function()
-            return "StatusLine"
-        end)()
-    )
+    return s
+        .. string.format(
+            "%%#%s#",
+            (default_status_hl or function()
+                return "StatusLine"
+            end)()
+        )
 end
 
 --- Renders the statusline.
@@ -419,7 +420,7 @@ function M.render()
     end
 
     -- Left: mode bubble | git | diff | python venv | dap / lsp progress
-    local left = concat_components({
+    local big_left = concat_components({
         M.mode_component(),
         M.git_component(),
         M.diff_component(),
@@ -428,7 +429,7 @@ function M.render()
     })
 
     -- Right: diagnostics | filetype | fileformat/encoding | search | spell | recording | position
-    local right = concat_components({
+    local big_right = concat_components({
         M.lsp_progress_component() or concat_components({ M.diagnostics_component(), M.lsp_names_component() }),
         M.filetype_component(),
         M.eol_encoding_component(),
@@ -437,12 +438,32 @@ function M.render()
         M.position_component(),
     })
 
-    return table.concat({
-        left,
-        "%#StatusLine#%=",
-        right,
-        " ",
+    local small_left = concat_components({
+        M.mode_component(),
+        M.diff_component(),
     })
+
+    -- Right: diagnostics | filetype | fileformat/encoding | search | spell | recording | position
+    local small_right = concat_components({
+        M.diagnostics_component(),
+        M.position_component(),
+    })
+
+    if vim.o.columns >= 100 then
+        return table.concat({
+            big_left,
+            "%#StatusLine#%=",
+            big_right,
+            " ",
+        })
+    else
+        return table.concat({
+            small_left,
+            "%#StatusLine#%=",
+            small_right,
+            " ",
+        })
+    end
 end
 
 vim.o.statusline = "%!v:lua.require'statusline'.render()"
