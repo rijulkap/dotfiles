@@ -44,7 +44,7 @@ function M.render()
         end
     end
 
-    local separator = " %#WinbarSeparator# "
+    local separator = " %#WinbarSeparatorDim# "
     local rendered = {}
 
     for i, segment in ipairs(segments) do

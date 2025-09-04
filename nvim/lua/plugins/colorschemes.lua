@@ -1,6 +1,10 @@
 require("pluginmgr").add_plugin({
     src = "https://github.com/catppuccin/nvim",
-    data = { config = function() setup_colorcheme() end },
+    data = {
+        config = function()
+            setup_colorcheme()
+        end,
+    },
 })
 
 -- now define the function
@@ -38,6 +42,11 @@ function setup_colorcheme()
             which_key = true,
             blink_cmp = true,
         },
+        custom_highlights = function(colors)
+            return {
+                WinbarSeparatorDim = { fg = colors.overlay1, bg = "NONE" },
+            }
+        end,
     })
 
     vim.cmd.colorscheme("catppuccin")
