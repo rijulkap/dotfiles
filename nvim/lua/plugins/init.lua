@@ -28,12 +28,12 @@ require("plugins.bufferline")
 require("plugins.lualine")
 require("plugins.markdown-stuff")
 
--- explorer
+-- explorer nd picker
+require("plugins.fzf-lua")
 require("plugins.oil")
 
 --misc
 require("plugins.flash")
--- require("plugins.dap")
 
 -- Resolve untracked Extras
 require("plugins.Extras")

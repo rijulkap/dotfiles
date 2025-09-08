@@ -1,181 +1,114 @@
-return {
-    -- {
-    --   'ibhagwan/fzf-lua',
-    --   cmd = 'FzfLua',
-    --   opts = function(_, opts)
-    --     local config = require 'fzf-lua.config'
-    --     local actions = require 'fzf-lua.actions'
-    --
-    --     -- Quickfix
-    --     config.defaults.keymap.fzf['ctrl-q'] = 'select-all+accept'
-    --     config.defaults.keymap.fzf['ctrl-u'] = 'half-page-up'
-    --     config.defaults.keymap.fzf['ctrl-d'] = 'half-page-down'
-    --     config.defaults.keymap.fzf['ctrl-x'] = 'jump'
-    --     config.defaults.keymap.fzf['ctrl-f'] = 'preview-page-down'
-    --     config.defaults.keymap.fzf['ctrl-b'] = 'preview-page-up'
-    --     config.defaults.keymap.builtin['<c-f>'] = 'preview-page-down'
-    --     config.defaults.keymap.builtin['<c-b>'] = 'preview-page-up'
-    --
-    --     -- Trouble
-    --     config.defaults.actions.files['ctrl-t'] = require('trouble.sources.fzf').actions.open
-    --
-    --     -- Toggle root dir / cwd
-    --
-    --     return {
-    --       'default-title',
-    --       fzf_colors = true,
-    --       fzf_opts = {
-    --         ['--no-scrollbar'] = true,
-    --       },
-    --       defaults = {
-    --         -- formatter = "path.filename_first",
-    --         formatter = 'path.dirname_first',
-    --       },
-    --       previewers = {},
-    --       -- Custom LazyVim option to configure vim.ui.select
-    --       ui_select = function(fzf_opts, items)
-    --         return vim.tbl_deep_extend('force', fzf_opts, {
-    --           prompt = ' ',
-    --           winopts = {
-    --             title = ' ' .. vim.trim((fzf_opts.prompt or 'Select'):gsub('%s*:%s*$', '')) .. ' ',
-    --             title_pos = 'center',
-    --           },
-    --         }, fzf_opts.kind == 'codeaction' and {
-    --           winopts = {
-    --             layout = 'vertical',
-    --             -- height is number of items minus 15 lines for the preview, with a max of 80% screen height
-    --             height = math.floor(math.min(vim.o.lines * 0.8 - 16, #items + 2) + 0.5) + 16,
-    --             width = 0.5,
-    --             preview = {
-    --               layout = 'vertical',
-    --               vertical = 'down:15,border-top',
-    --             },
-    --           },
-    --         } or {
-    --           winopts = {
-    --             width = 0.5,
-    --             -- height is number of items, with a max of 80% screen height
-    --             height = math.floor(math.min(vim.o.lines * 0.8, #items + 2) + 0.5),
-    --           },
-    --         })
-    --       end,
-    --       winopts = {
-    --         width = 0.8,
-    --         height = 0.8,
-    --         row = 0.5,
-    --         col = 0.5,
-    --         preview = {
-    --           scrollchars = { '┃', '' },
-    --         },
-    --       },
-    --       files = {
-    --         cwd_prompt = false,
-    --         actions = {
-    --           ['alt-i'] = { actions.toggle_ignore },
-    --           ['alt-h'] = { actions.toggle_hidden },
-    --         },
-    --       },
-    --       grep = {
-    --         actions = {
-    --           ['alt-i'] = { actions.toggle_ignore },
-    --           ['alt-h'] = { actions.toggle_hidden },
-    --         },
-    --       },
-    --       lsp = {
-    --         symbols = {
-    --           symbol_hl = function(s)
-    --             return 'TroubleIcon' .. s
-    --           end,
-    --           symbol_fmt = function(s)
-    --             return s:lower() .. '\t'
-    --           end,
-    --           child_prefix = false,
-    --         },
-    --         code_actions = {
-    --           previewer = vim.fn.executable 'delta' == 1 and 'codeaction_native' or nil,
-    --         },
-    --       },
-    --     }
-    --   end,
-    --   config = function(_, opts)
-    --     if opts[1] == 'default-title' then
-    --       -- use the same prompt for all pickers for profile `default-title` and
-    --       -- profiles that use `default-title` as base profile
-    --       local function fix(t)
-    --         t.prompt = t.prompt ~= nil and ' ' or nil
-    --         for _, v in pairs(t) do
-    --           if type(v) == 'table' then
-    --             fix(v)
-    --           end
-    --         end
-    --         return t
-    --       end
-    --       opts = vim.tbl_deep_extend('force', fix(require 'fzf-lua.profiles.default-title'), opts)
-    --       opts[1] = nil
-    --     end
-    --     require('fzf-lua').setup(opts)
-    --   end,
-    --   -- init = function()
-    --   --     vim.ui.select = function(...)
-    --   --       require('lazy').load { plugins = { 'fzf-lua' } }
-    --   --       local opts = LazyVim.opts 'fzf-lua' or {}
-    --   --       require('fzf-lua').register_ui_select(opts.ui_select or nil)
-    --   --       return vim.ui.select(...)
-    --   --     end
-    --   -- end,
-    --   keys = {
-    --     { '<c-j>', '<c-j>', ft = 'fzf', mode = 't', nowait = true },
-    --     { '<c-k>', '<c-k>', ft = 'fzf', mode = 't', nowait = true },
-    --     {
-    --       '<leader><leader>',
-    --       '<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>',
-    --       desc = 'Switch Buffer',
-    --     },
-    --     { '<leader>sg', '<cmd>FzfLua live_grep<cr>', desc = 'Grep (Root Dir)' },
-    --     { '<leader>:', '<cmd>FzfLua command_history<cr>', desc = 'Command History' },
-    --     { '<leader>sf', '<cmd>FzfLua git_files<cr>', desc = 'Find Files (Root Dir)' },
-    --     -- find
-    --     { '<leader>sn', string.format('<cmd>FzfLua git_files cwd=%s<cr>', vim.fn.stdpath 'config'), desc = 'Find Config File' },
-    --     -- { '<leader>fg', '<cmd>FzfLua git_files<cr>', desc = 'Find Files (git-files)' },
-    --     { '<leader>s.', '<cmd>FzfLua oldfiles<cr>', desc = 'Recent' },
-    --     -- { '<leader>fR', LazyVim.pick('oldfiles', { cwd = vim.uv.cwd() }), desc = 'Recent (cwd)' },
-    --     -- git
-    --     { '<leader>gc', '<cmd>FzfLua git_commits<CR>', desc = 'Commits' },
-    --     { '<leader>gs', '<cmd>FzfLua git_status<CR>', desc = 'Status' },
-    --     -- search
-    --     { '<leader>s"', '<cmd>FzfLua registers<cr>', desc = 'Registers' },
-    --     { '<leader>sa', '<cmd>FzfLua autocmds<cr>', desc = 'Auto Commands' },
-    --     { '<leader>sb', '<cmd>FzfLua grep_curbuf<cr>', desc = 'Buffer' },
-    --     { '<leader>sc', '<cmd>FzfLua commands<cr>', desc = 'Commands' },
-    --     { '<leader>sd', '<cmd>FzfLua diagnostics_document<cr>', desc = 'Document Diagnostics' },
-    --     { '<leader>sD', '<cmd>FzfLua diagnostics_workspace<cr>', desc = 'Workspace Diagnostics' },
-    --     { '<leader>sh', '<cmd>FzfLua help_tags<cr>', desc = 'Help Pages' },
-    --     { '<leader>sH', '<cmd>FzfLua highlights<cr>', desc = 'Search Highlight Groups' },
-    --     { '<leader>sj', '<cmd>FzfLua jumps<cr>', desc = 'Jumplist' },
-    --     { '<leader>sk', '<cmd>FzfLua keymaps<cr>', desc = 'Key Maps' },
-    --     { '<leader>sl', '<cmd>FzfLua loclist<cr>', desc = 'Location List' },
-    --     { '<leader>sM', '<cmd>FzfLua man_pages<cr>', desc = 'Man Pages' },
-    --     { '<leader>sm', '<cmd>FzfLua marks<cr>', desc = 'Jump to Mark' },
-    --     { '<leader>sR', '<cmd>FzfLua resume<cr>', desc = 'Resume' },
-    --     { '<leader>sq', '<cmd>FzfLua quickfix<cr>', desc = 'Quickfix List' },
-    --     {
-    --       '<leader>ss',
-    --       function()
-    --         require('fzf-lua').lsp_document_symbols {
-    --           regex_filter = symbols_filter,
-    --         }
-    --       end,
-    --       desc = 'Goto Symbol',
-    --     },
-    --     {
-    --       '<leader>sS',
-    --       function()
-    --         require('fzf-lua').lsp_live_workspace_symbols {
-    --           regex_filter = symbols_filter,
-    --         }
-    --       end,
-    --       desc = 'Goto Symbol (Workspace)',
-    --     },
-    --   },
-    -- },
-}
+require("pluginmgr").add_plugin({
+    src = "https://github.com/ibhagwan/fzf-lua",
+    data = {
+        config = function()
+            setup_fzf()
+        end,
+    },
+})
+
+function setup_fzf()
+    require("fzf-lua").setup({
+        defaults = {
+            formatter = "path.filename_first",
+        },
+        diagnostics = {
+            severity_limit = vim.diagnostic.severity.WARN,
+            multiline = 3
+        },
+        marks = {
+            marks = "%a", -- filter vim marks with a lua pattern
+        },
+    })
+
+    local fzf = require("fzf-lua")
+
+    vim.keymap.set("n", "<leader><leader>", function()
+        fzf.buffers()
+    end, { desc = "Switch Buffer" })
+    vim.keymap.set("n", "<leader>sg", function()
+        fzf.live_grep()
+    end, { desc = "Grep (Root Dir)" })
+    vim.keymap.set("n", "<leader>:", function()
+        fzf.command_history()
+    end, { desc = "Command History" })
+    vim.keymap.set("n", "<leader>sf", function()
+        fzf.files()
+    end, { desc = "Find Files (Root Dir)" })
+    vim.keymap.set("n", "<leader>sn", function()
+        fzf.files({ cwd = vim.fn.stdpath("config") })
+    end, { desc = "Find Config File" })
+    vim.keymap.set("n", "<leader>s.", function()
+        fzf.recent()
+    end, { desc = "Recent" })
+
+    -- Git Pickers
+    vim.keymap.set("n", "<leader>gc", function()
+        fzf.git_commits()
+    end, { desc = "Commits" })
+    vim.keymap.set("n", "<leader>gs", function()
+        fzf.git_status()
+    end, { desc = "Status" })
+
+    -- Search Pickers
+    vim.keymap.set("n", '<leader>s"', function()
+        fzf.registers()
+    end, { desc = "Registers" })
+    vim.keymap.set("n", "<leader>sa", function()
+        fzf.autocmds()
+    end, { desc = "Auto Commands" })
+    vim.keymap.set("n", "<leader>sb", function()
+        fzf.lines()
+    end, { desc = "Buffer" })
+    vim.keymap.set("n", "<leader>sc", function()
+        fzf.commands()
+    end, { desc = "Commands" })
+    vim.keymap.set("n", "<leader>sd", function()
+        fzf.diagnostics_document()
+    end, { desc = "Document Diagnostics" })
+    vim.keymap.set("n", "<leader>sD", function()
+        fzf.diagnostics_workspace()
+    end, { desc = "Workspace Diagnostics" })
+    vim.keymap.set("n", "<leader>sh", function()
+        fzf.helptags()
+    end, { desc = "Help Pages" })
+    vim.keymap.set("n", "<leader>sH", function()
+        fzf.highlights()
+    end, { desc = "Search Highlight Groups" })
+    vim.keymap.set("n", "<leader>sj", function()
+        fzf.jumps()
+    end, { desc = "Jumplist" })
+    vim.keymap.set("n", "<leader>sk", function()
+        fzf.keymaps()
+    end, { desc = "Key Maps" })
+    vim.keymap.set("n", "<leader>sl", function()
+        fzf.loclist()
+    end, { desc = "Location List" })
+    vim.keymap.set("n", "<leader>sM", function()
+        fzf.man_pages()
+    end, { desc = "Man Pages" })
+    vim.keymap.set("n", "<leader>sm", function()
+        fzf.marks()
+    end, { desc = "Jump to Mark" })
+    vim.keymap.set("n", "<leader>sR", function()
+        fzf.resume()
+    end, { desc = "Resume" })
+    vim.keymap.set("n", "<leader>sq", function()
+        fzf.quickfix()
+    end, { desc = "Quickfix List" })
+    vim.keymap.set("n", "<leader>ss", function()
+        fzf.lsp_document_symbols()
+    end, { desc = "Goto Symbol" })
+    vim.keymap.set("n", "<leader>sS", function()
+        fzf.lsp_workspace_symbols()
+    end, { desc = "Goto Symbol (Workspace)" })
+    vim.keymap.set("n", "<leader>sC", function()
+        fzf.colorschemes()
+    end, { desc = "Colorschemes" })
+    vim.keymap.set("n", "<leader>sz", function()
+        fzf.spell_suggest()
+    end, { desc = "Spelling Suggest" })
+    vim.keymap.set("n", "<leader>sp", function()
+        fzf.packadd()
+    end, { desc = "Spelling Suggest" })
+end

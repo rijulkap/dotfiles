@@ -120,16 +120,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         map("gd", function()
-            require("snacks").picker.lsp_definitions()
+            require("fzf-lua").lsp_definitions()
         end, "[G]oto [D]efinition")
         map("gD", function()
-            require("snacks").picker.lsp_type_definitions()
+            require("fzf-lua").lsp_type_definitions()
         end, "[G]oto type [D]efinition")
         map("gr", function()
-            require("snacks").picker.lsp_references()
+            require("fzf-lua").lsp_references()
         end, "[G]oto [R]eferences")
         map("gI", function()
-            require("snacks").picker.lsp_implementations()
+            require("fzf-lua").lsp_implementations()
         end, "[G]oto [I]mplementation")
 
         local function toggle_loclist()
