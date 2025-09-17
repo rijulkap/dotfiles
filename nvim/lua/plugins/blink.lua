@@ -1,7 +1,12 @@
 require("pluginmgr").add_plugin({
     src = "https://github.com/Saghen/blink.cmp",
     version = vim.version.range("^1"),
-    data = { event = { "BufReadPre", "BufNewFile" }, config = function() setup_blink() end },
+    data = {
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            setup_blink()
+        end,
+    },
 })
 
 function setup_blink()
@@ -113,7 +118,19 @@ function setup_blink()
                 Variable = "󰀫 ",
             },
         },
-        cmdline = { enabled = false },
+        cmdline = {
+            enabled = true,
+            -- keymap = { preset = "cmdline" },
+            completion = {
+                list = { selection = { preselect = false } },
+                menu = {
+                    auto_show = function(ctx)
+                        return vim.fn.getcmdtype() == ":"
+                    end,
+                },
+                ghost_text = { enabled = true },
+            },
+        },
 
         sources = {
             -- add lazydev to your completion providers
