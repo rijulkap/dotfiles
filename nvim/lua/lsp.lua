@@ -44,9 +44,17 @@ local function setup_inlayhint(client)
     end
 end
 
+local function setup_lsp_folding (client)
+     if client:supports_method('textDocument/foldingRange') then
+       local win = vim.api.nvim_get_current_win()
+       vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+     end
+end
+
 utils.dyn_lsp_methods:add(setup_document_highlight)
 -- utils.dyn_lsp_methods:add(setup_codelens)
 utils.dyn_lsp_methods:add(setup_inlayhint)
+utils.dyn_lsp_methods:add(setup_lsp_folding)
 
 local function update_loclist(opts)
     opts = opts or {}
