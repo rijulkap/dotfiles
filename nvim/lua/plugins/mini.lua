@@ -1,5 +1,5 @@
 require("pluginmgr").add_plugin({
-    src = "https://github.com/echasnovski/mini.nvim",
+    src = "https://github.com/nvim-mini/mini.nvim",
     data = {
         config = function()
             setup_mini()
