@@ -1,0 +1,30 @@
+{
+  "plugins": {
+    "LuaSnip": {
+      "version": "2.0.0 - 3.0.0"
+    },
+    "blink.cmp": {
+      "version": "1.0.0 - 2.0.0"
+    },
+    "conform.nvim": [],
+    "flash.nvim": [],
+    "friendly-snippets": [],
+    "fzf-lua": [],
+    "gitsigns.nvim": [],
+    "lazydev.nvim": [],
+    "mason-lspconfig.nvim": [],
+    "mason.nvim": [],
+    "mini.nvim": [],
+    "nvim": [],
+    "nvim-lspconfig": [],
+    "nvim-treesitter": {
+      "version": "'main'"
+    },
+    "nvim-treesitter-context": [],
+    "oil.nvim": [],
+    "render-markdown.nvim": [],
+    "roslyn.nvim": [],
+    "snacks.nvim": [],
+    "which-key.nvim": []
+  }
+}
