@@ -12,9 +12,45 @@ function setup_fzf()
         defaults = {
             formatter = "path.filename_first",
         },
+        files = {
+            winopts = {
+                preview = { hidden = true },
+            },
+        },
+        oldfiles = {
+            include_current_session = true,
+            winopts = {
+                preview = { hidden = true },
+            },
+        },
         diagnostics = {
-            severity_limit = vim.diagnostic.severity.WARN,
-            multiline = 3
+            -- severity_limit = vim.diagnostic.severity.WARN,
+            multiline = 1,
+            diag_icons = {
+                require("icons").diagnostics.ERROR,
+                require("icons").diagnostics.WARN,
+                require("icons").diagnostics.INFO,
+                require("icons").diagnostics.HINT,
+            },
+            actions = {
+                ["ctrl-e"] = {
+                    fn = function(_, opts)
+                        -- If not filtering by severity, show all diagnostics.
+                        if opts.severity_only then
+                            opts.severity_only = nil
+                        else
+                            -- Else only show errors.
+                            opts.severity_only = vim.diagnostic.severity.ERROR
+                        end
+                        require("fzf-lua").resume(opts)
+                    end,
+                    noclose = true,
+                    desc = "toggle-all-only-errors",
+                    header = function(opts)
+                        return opts.severity_only and "show all" or "show only errors"
+                    end,
+                },
+            },
         },
         marks = {
             marks = "%a", -- filter vim marks with a lua pattern
