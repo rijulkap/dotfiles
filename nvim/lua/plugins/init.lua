@@ -1,3 +1,7 @@
+-- Load inbuilt plugins
+vim.cmd("packadd nvim.difftool")
+vim.cmd("packadd nvim.undotree")
+
 require("plugins.colorschemes")
 
 -- Snacks

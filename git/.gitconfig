@@ -9,7 +9,11 @@
     conflictstyle = diff3
 
 [diff]
+    ; tool = nvim_difftool
     colorMoved = default
+
+[difftool "nvim_difftool"]
+    cmd = nvim -c \"DiffTool $LOCAL $REMOTE\"
 
 [pull]
     rebase = true
