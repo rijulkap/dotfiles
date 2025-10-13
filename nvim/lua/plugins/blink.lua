@@ -21,6 +21,7 @@ function setup_blink()
                         { "label", "label_description", gap = 1 },
                         { "kind_icon", "kind" },
                     },
+                    treesitter = { "lsp" },
                 },
             },
             accept = {
