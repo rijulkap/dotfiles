@@ -6,25 +6,48 @@
     "blink.cmp": {
       "version": "1.0.0 - 2.0.0"
     },
-    "conform.nvim": [],
-    "flash.nvim": [],
+    "conform.nvim": {
+      "rev": "fbcb4fa"
+    },
+    "flash.nvim": {
+      "rev": "2febce6"
+    },
     "friendly-snippets": [],
-    "fzf-lua": [],
+    "fzf-lua": {
+      "rev": "db3ccff"
+    },
     "gitsigns.nvim": [],
-    "lazydev.nvim": [],
+    "lazydev.nvim": {
+      "rev": "e28ce52"
+    },
     "mason-lspconfig.nvim": [],
     "mason.nvim": [],
-    "mini.nvim": [],
-    "nvim": [],
-    "nvim-lspconfig": [],
+    "mini.nvim": {
+      "rev": "5e1dd6e"
+    },
+    "nvim": {
+      "rev": "af58927"
+    },
+    "nvim-lspconfig": {
+      "rev": "ac98db2"
+    },
     "nvim-treesitter": {
+      "rev": "0606c7a9",
       "version": "'main'"
     },
     "nvim-treesitter-context": [],
     "oil.nvim": [],
-    "render-markdown.nvim": [],
-    "roslyn.nvim": [],
-    "snacks.nvim": [],
-    "which-key.nvim": []
+    "render-markdown.nvim": {
+      "rev": "d538564"
+    },
+    "roslyn.nvim": {
+      "rev": "7d88192"
+    },
+    "snacks.nvim": {
+      "rev": "b8d838d"
+    },
+    "which-key.nvim": {
+      "rev": "b4177e3"
+    }
   }
 }
