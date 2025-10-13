@@ -32,8 +32,7 @@ require("plugins.bufferline")
 require("plugins.lualine")
 require("plugins.markdown-stuff")
 
--- explorer nd picker
-require("plugins.fzf-lua")
+-- explorer
 require("plugins.oil")
 
 --misc
