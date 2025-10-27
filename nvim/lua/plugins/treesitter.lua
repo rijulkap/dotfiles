@@ -25,38 +25,32 @@ function setup_ts_context()
 end
 
 function setup_ts()
-    vim.opt.foldmethod = "expr"
-    --
-    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-    --
-    -- -- ref: https://github.com/neovim/neovim/pull/20750
-    vim.opt.foldtext = ""
-    vim.opt.fillchars:append("fold: ")
+    require("nvim-treesitter").install({
+        "bash",
+        "c",
+        "cpp",
+        "c_sharp",
+        "python",
+        "rust",
+        "json",
+        "markdown",
+        "html",
+        "lua",
+        "luadoc",
+        "markdown",
+        "vim",
+        "vimdoc",
+        "javascript",
+        "typescript",
+        "tsx",
+    })
 
-    require("nvim-treesitter").setup({
-        ensure_installed = {
-            "bash",
-            "c",
-            "cpp",
-            "c_sharp",
-            "python",
-            "rust",
-            "json",
-            "markdown",
-            "html",
-            "lua",
-            "luadoc",
-            "markdown",
-            "vim",
-            "vimdoc",
-            "javascript",
-            "typescript",
-            "tsx",
-        },
-        -- auto_install = true,
-        highlight = {
-            enable = true,
-        },
-        indent = { enable = true },
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "<filetype>" },
+        callback = function()
+            vim.treesitter.start()
+            -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
     })
 end
