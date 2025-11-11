@@ -36,12 +36,13 @@ function M.render()
 
     local segments = {}
     if use_short then
-        segments = get_last_segments(path, 2) -- last 2 dirs + file
+        segments = get_last_segments(path, 2) -- last dir + file
     else
-        path = path:gsub("^/", "")
-        for part in string.gmatch(path, "[^/]+") do
-            table.insert(segments, part)
-        end
+        segments = get_last_segments(path, 3) -- last 2 dirs + file
+        -- path = path:gsub("^/", "")
+        -- for part in string.gmatch(path, "[^/]+") do
+        --     table.insert(segments, part)
+        -- end
     end
 
     local separator = " %#WinbarSeparatorDim# "
