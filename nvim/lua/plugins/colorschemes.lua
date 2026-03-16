@@ -1,3 +1,5 @@
+local setup_colorcheme
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/catppuccin/nvim",
     data = {
@@ -8,7 +10,7 @@ require("pluginmgr").add_plugin({
 })
 
 -- now define the function
-function setup_colorcheme()
+setup_colorcheme = function()
     require("catppuccin").setup({
         integrations = {
             dashboard = true,

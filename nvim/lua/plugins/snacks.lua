@@ -1,3 +1,5 @@
+local setup_snacks
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/folke/snacks.nvim",
     data = {
@@ -7,7 +9,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_snacks()
+setup_snacks = function()
     local Snacks = require("snacks")
     Snacks.setup({
         terminal = {

@@ -1,3 +1,5 @@
+local setup_oil
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/stevearc/oil.nvim",
     data = {
@@ -7,7 +9,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_oil()
+setup_oil = function()
     require("oil").setup({
         columns = {
             "icon",

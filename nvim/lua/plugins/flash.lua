@@ -1,9 +1,11 @@
+local setup_flash
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/folke/flash.nvim",
     data = { config =function() setup_flash() end },
 })
 
-function setup_flash()
+setup_flash = function()
     require("flash").setup()
 
     vim.keymap.set({ "n", "x", "o" }, "s", function()

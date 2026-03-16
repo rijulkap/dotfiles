@@ -1,9 +1,11 @@
+local setup_gitsigns
+
 require("pluginmgr").add_plugin({
 src = "https://github.com/lewis6991/gitsigns.nvim",
     data = { config = function() setup_gitsigns() end },
 })
 
-function setup_gitsigns()
+setup_gitsigns = function()
     require("gitsigns").setup({
         signs = {
             add = { text = "▎" },

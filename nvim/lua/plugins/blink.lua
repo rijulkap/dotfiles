@@ -1,3 +1,5 @@
+local setup_blink
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/Saghen/blink.cmp",
     version = vim.version.range("^1"),
@@ -9,7 +11,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_blink()
+setup_blink = function()
     require("blink-cmp").setup({
         -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- adjusts spacing to ensure icons are aligned

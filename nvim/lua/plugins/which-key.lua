@@ -1,3 +1,5 @@
+local setup_which_key
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/folke/which-key.nvim",
     data = {
@@ -7,7 +9,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_which_key()
+setup_which_key = function()
     require("which-key").setup({
         preset = "helix",
     })

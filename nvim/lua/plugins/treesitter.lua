@@ -1,3 +1,6 @@
+local setup_ts_context
+local setup_ts
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
     data = {
@@ -17,14 +20,14 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_ts_context()
+setup_ts_context = function()
     require("treesitter-context").setup()
     vim.keymap.set("n", "[c", function()
         require("treesitter-context").go_to_context(vim.v.count1)
     end, { silent = true })
 end
 
-function setup_ts()
+setup_ts = function()
     require("nvim-treesitter").install({
         "bash",
         "c",

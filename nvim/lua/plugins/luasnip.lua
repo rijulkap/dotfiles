@@ -1,3 +1,5 @@
+local setup_luasnip
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/rafamadriz/friendly-snippets",
 })
@@ -13,7 +15,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_luasnip()
+setup_luasnip = function()
     require("luasnip.loaders.from_vscode").lazy_load()
 
     local ls = require("luasnip")

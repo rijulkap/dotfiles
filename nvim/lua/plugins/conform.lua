@@ -1,9 +1,11 @@
+local setup_conform
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/stevearc/conform.nvim",
     data = { config = function() setup_conform() end },
 })
 
-function setup_conform()
+setup_conform = function()
     vim.g.formatters = { "stylua" }
 
     require("conform").setup({

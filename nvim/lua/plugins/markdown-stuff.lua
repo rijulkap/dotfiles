@@ -1,3 +1,5 @@
+local setup_md
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",
     data = {
@@ -9,6 +11,6 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_md()
+setup_md = function()
     require("render-markdown").setup()
 end

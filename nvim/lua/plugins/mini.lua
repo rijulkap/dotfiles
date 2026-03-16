@@ -1,3 +1,5 @@
+local setup_mini
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/nvim-mini/mini.nvim",
     data = {
@@ -7,7 +9,7 @@ require("pluginmgr").add_plugin({
     },
 })
 
-function setup_mini()
+setup_mini = function()
     local mI = require("mini.icons")
     mI.setup()
     mI.mock_nvim_web_devicons()

@@ -1,3 +1,7 @@
+local setup_mason
+local setup_mason_lspcfg
+local setup_lazydev
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/mason-org/mason.nvim",
     data = { config = function() setup_mason() end },
@@ -17,11 +21,11 @@ require("pluginmgr").add_plugin({
     data = { event = { "FileType" }, pattern = "lua", config = function() setup_lazydev() end },
 })
 
-function setup_mason()
+setup_mason = function()
     require("mason").setup()
 end
 
-function setup_mason_lspcfg()
+setup_mason_lspcfg = function()
     local mr = require("mason-registry")
     mr.refresh(function()
         for _, tool in ipairs(vim.g.formatters) do
@@ -38,7 +42,7 @@ function setup_mason_lspcfg()
     })
 end
 
-function setup_lazydev()
+setup_lazydev = function()
     ---@diagnostic disable-next-line: missing-fields
     require("lazydev").setup({
         library = {
