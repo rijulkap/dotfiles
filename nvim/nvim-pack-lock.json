@@ -23,7 +23,7 @@
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
     "gitsigns.nvim": {
-      "rev": "7c4faa3540d0781a28588cafbd4dd187a28ac6e3",
+      "rev": "0a80125bace82d82847d40bc2c38a22d62c6dc2d",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "lazydev.nvim": {
@@ -31,7 +31,7 @@
       "src": "https://github.com/folke/lazydev.nvim"
     },
     "mason-lspconfig.nvim": {
-      "rev": "a676ab7282da8d651e175118bcf54483ca11e46d",
+      "rev": "a979821a975897b88493843301950c456a725982",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -39,24 +39,24 @@
       "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.nvim": {
-      "rev": "9990c41f10f54f29a888d13024c9f765037bde23",
+      "rev": "439cdcd6992bc9012efd7d8ed7a7b7a0f1fac32a",
       "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nvim": {
-      "rev": "384f304c8b04664c9e0091fbfb3923c5f97c1bcf",
+      "rev": "a7788416689dbefea659d9e9415c87926b0ba5d8",
       "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-lspconfig": {
-      "rev": "dd261ad5266ab5bbec249d21efeceda98ff3e1a6",
+      "rev": "841c6d4139aedb8a3f2baf30cef5327371385b93",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "2f5d4c3f3c675962242096bcc8e586d76dd72eb2",
+      "rev": "6620ae1c44dfa8623b22d0cbf873a9e8d073b849",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
     "nvim-treesitter-context": {
-      "rev": "9a8e39993e3b895601bf8227124a48ea8268149e",
+      "rev": "adf4b6b0420b7be6c717ef0ac7993183d6c201b1",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
     },
     "oil.nvim": {
@@ -68,11 +68,11 @@
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "roslyn.nvim": {
-      "rev": "5461f098cde200046063bde02fba564c61e322ca",
+      "rev": "ff43201090361b8936e008a006473b59ef2c0ca6",
       "src": "https://github.com/seblyng/roslyn.nvim"
     },
     "snacks.nvim": {
-      "rev": "a049339328e2599ad6e85a69fa034ac501e921b2",
+      "rev": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e",
       "src": "https://github.com/folke/snacks.nvim"
     },
     "which-key.nvim": {
