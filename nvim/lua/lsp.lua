@@ -215,7 +215,7 @@ end
 -- wrappers to allow for toggling
 local def_virtual_text = {
     isTrue = {
-        severity = { min = "WARN" },
+        severity = { min = "ERROR" },
         current_line = nil,
         prefix = "",
         -- source = "if_many",
@@ -252,7 +252,7 @@ local default_diagnostic_config = {
     virtual_lines = def_virtual_lines.isFalse,
     virtual_text = def_virtual_text.isTrue,
     underline = {
-        severity = {min = "WARN"}
+        severity = {min = "ERROR"}
     },
     severity_sort = true,
     jump = {
