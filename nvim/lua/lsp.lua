@@ -28,15 +28,6 @@ local function setup_document_highlight(client, bufnr)
     end
 end
 
-local function setup_codelens(client, bufnr)
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
-        vim.lsp.codelens.refresh()
-        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-            buffer = bufnr,
-            callback = vim.lsp.codelens.refresh,
-        })
-    end
-end
 
 local function setup_inlayhint(client)
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
@@ -52,7 +43,7 @@ local function setup_lsp_folding (client)
 end
 
 utils.dyn_lsp_methods:add(setup_document_highlight)
--- utils.dyn_lsp_methods:add(setup_codelens)
+vim.lsp.codelens.enable(true)
 utils.dyn_lsp_methods:add(setup_inlayhint)
 utils.dyn_lsp_methods:add(setup_lsp_folding)
 
