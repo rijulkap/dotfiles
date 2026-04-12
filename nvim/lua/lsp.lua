@@ -43,7 +43,7 @@ local function setup_lsp_folding (client)
 end
 
 utils.dyn_lsp_methods:add(setup_document_highlight)
-vim.lsp.codelens.enable(true)
+vim.lsp.codelens.enable(false)
 utils.dyn_lsp_methods:add(setup_inlayhint)
 utils.dyn_lsp_methods:add(setup_lsp_folding)
 
