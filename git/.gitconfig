@@ -21,6 +21,7 @@
 [push]
     default = upstream
 
+	autoSetupRemote = true
 [init]
     defaultBranch = main
 
