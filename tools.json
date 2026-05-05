@@ -55,7 +55,7 @@
             "rm -r ./rustup-init.exe"
         ],
         "Linux": [
-            "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --help"
+            "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
         ]
     },
     "vscode": {
