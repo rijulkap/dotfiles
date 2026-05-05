@@ -312,6 +312,7 @@ vim.g.lsps = {
     ruff = true,
     rust_analyzer = { "rust-analyzer" },
     tinymist = true,
+    roslyn_ls = {"roslyn"}
 }
 
 -- Set Toggles

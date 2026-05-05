@@ -66,16 +66,21 @@ local function install_missing_lsp()
                     seen[package_name] = true
 
                     local has_pkg, pkg = pcall(mr.get_package, package_name)
+
                     if not has_pkg then
                         notify("Mason package not found: " .. package_name, vim.log.levels.WARN)
-                    elseif installed[package_name] or vim.fn.executable(package_name) == 1 then
-                        enable_lsp(pkg)
-                    else
-                        notify("Installing missing lsp: " .. package_name)
 
-                        pkg:install():once("install:success", function()
-                            enable_lsp(pkg)
-                        end)
+                        if installed[package_name] or vim.fn.executable(package_name) == 1 then
+                            if(package_name~= "roslyn") then
+                                enable_lsp(pkg)
+                            end
+                        else
+                            notify("Installing missing lsp: " .. package_name)
+
+                            pkg:install():once("install:success", function()
+                                enable_lsp(pkg)
+                            end)
+                        end
                     end
                 end
             end
@@ -97,7 +102,12 @@ local function install_missing_lsp()
 end
 
 setup_mason = function()
-    require("mason").setup()
+    require("mason").setup({
+        registries = {
+            "github:mason-org/mason-registry",
+            "github:Crashdummyy/mason-registry",
+        },
+    })
     install_missing_lsp()
 end
 

@@ -19,6 +19,7 @@ require("plugins.treesitter")
 -- LSP and Formatter
 require("plugins.conform")
 require("plugins.lsp")
+require("plugins.roslyn")
 
 -- Git
 require("plugins.gitsigns")
