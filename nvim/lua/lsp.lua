@@ -304,14 +304,15 @@ vim.diagnostic.handlers.virtual_text = {
 
 -- local datapath = vim.fn.stdpath("data")
 
-vim.g.lsps = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
-    :map(function(file)
-        -- ignore all dynamically added lspconfig files
-        -- if not vim.startswith(file, datapath) then
-        return vim.fn.fnamemodify(file, ":t:r")
-        -- end
-    end)
-    :totable()
+vim.g.lsps = {
+    basedpyright = true,
+    clangd = true,
+    jsonls = { "json-lsp" },
+    lua_ls = { "lua-language-server" },
+    ruff = true,
+    rust_analyzer = { "rust-analyzer" },
+    tinymist = true,
+}
 
 -- Set Toggles
 -- Snacks.toggle
