@@ -12,7 +12,7 @@ local function setup_document_highlight(client, bufnr)
             callback = vim.lsp.buf.document_highlight,
         })
 
-        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "WinLeave"}, {
+        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "WinLeave" }, {
             group = highlight_augroup,
             buffer = bufnr,
             callback = vim.lsp.buf.clear_references,
@@ -28,18 +28,17 @@ local function setup_document_highlight(client, bufnr)
     end
 end
 
-
 local function setup_inlayhint(client)
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
         vim.lsp.inlay_hint.enable(true)
     end
 end
 
-local function setup_lsp_folding (client)
-     if client:supports_method('textDocument/foldingRange') then
-       local win = vim.api.nvim_get_current_win()
-       vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
-     end
+local function setup_lsp_folding(client)
+    if client:supports_method("textDocument/foldingRange") then
+        local win = vim.api.nvim_get_current_win()
+        vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+    end
 end
 
 utils.dyn_lsp_methods:add(setup_document_highlight)
@@ -51,7 +50,7 @@ local function update_loclist(opts)
     opts = opts or {}
 
     local diagnostics = vim.diagnostic.get(0, {
-        severity = {min = opts.severity},
+        severity = { min = opts.severity },
     })
 
     -- Format and sort by severity (ascending severity value = higher priority)
@@ -82,7 +81,7 @@ local function update_qflist(opts)
     opts = opts or {}
 
     local diagnostics = vim.diagnostic.get(nil, {
-        severity = {min = opts.severity},
+        severity = { min = opts.severity },
     })
 
     table.sort(diagnostics, function(a, b)
@@ -137,7 +136,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 vim.g.ll_open = false
                 return
             end
-            update_loclist({severity = vim.diagnostic.severity.WARN})
+            update_loclist({ severity = vim.diagnostic.severity.WARN })
             vim.cmd("lopen")
             vim.g.ll_open = true
         end
@@ -152,7 +151,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 vim.g.qf_open = false
                 return
             end
-            update_qflist({severity = vim.diagnostic.severity.WARN})
+            update_qflist({ severity = vim.diagnostic.severity.WARN })
             vim.cmd("copen")
             vim.g.qf_open = true
         end
@@ -175,10 +174,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
     callback = function(args)
         if vim.g.ll_open then
-            update_loclist({severity = vim.diagnostic.severity.WARN})
+            update_loclist({ severity = vim.diagnostic.severity.WARN })
         end
         if vim.g.qf_open then
-            update_qflist({severity = vim.diagnostic.severity.WARN})
+            update_qflist({ severity = vim.diagnostic.severity.WARN })
         end
     end,
 })
@@ -252,7 +251,7 @@ local default_diagnostic_config = {
     virtual_lines = def_virtual_lines.isFalse,
     virtual_text = def_virtual_text.isTrue,
     underline = {
-        severity = {min = "ERROR"}
+        severity = { min = "ERROR" },
     },
     severity_sort = true,
     jump = {
@@ -312,7 +311,8 @@ vim.g.lsps = {
     ruff = true,
     rust_analyzer = { "rust-analyzer" },
     tinymist = true,
-    roslyn_ls = {"roslyn"}
+    roslyn_ls = { "roslyn" },
+    ts_ls = { "typescript-language-server" },
 }
 
 -- Set Toggles
