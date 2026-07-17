@@ -29,13 +29,13 @@
     },
     "neovim": {
         "Windows": [
-            "choco install neovim -y",
+            "choco install neovim -y"
         ],
         "Linux": [
             "curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage",
             "sudo rm -rf /usr/local/bin/nvim",
             "sudo chmod a+x ./nvim-linux-x86_64.appimage",
-            "sudo mv ./nvim-linux-x86_64.appimage /usr/local/bin/nvim",
+            "sudo mv ./nvim-linux-x86_64.appimage /usr/local/bin/nvim"
         ]
     },
     "treesitter-cli": {
