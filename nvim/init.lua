@@ -1,3 +1,5 @@
+vim.g.lite_enabled = vim.env.NVIM_LITE == "true"
+
 if vim.g.vscode then
     require("vsc")
 else
@@ -5,7 +7,9 @@ else
     require("config.options")
     require("config.keymaps")
     require("config.autocmds")
-    require("lsp")
+    if not vim.g.lite_enabled then
+        require("lsp")
+    end
     -- require("marks") --currently using snacks
     require("config.plugins")
     require("winbar")

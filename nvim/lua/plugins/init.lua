@@ -14,12 +14,16 @@ require("plugins.which-key")
 require("plugins.mini")
 
 -- Treesitter
-require("plugins.treesitter")
+if not vim.g.lite_enabled then
+    require("plugins.treesitter")
+end
 
 -- LSP and Formatter
-require("plugins.conform")
-require("plugins.lsp")
-require("plugins.roslyn")
+if not vim.g.lite_enabled then
+    require("plugins.conform")
+    require("plugins.lsp")
+    require("plugins.roslyn")
+end
 
 -- Git
 require("plugins.gitsigns")

@@ -40,6 +40,14 @@
             "cargo install --locked tree-sitter-cli"
         ]
     },
+    "treesitter-cli": {
+        "Windows": [
+            "choco install tree-sitter"
+        ],
+        "Linux": [
+            "cargo install --locked tree-sitter-cli"
+        ]
+    },
     "lazygit": {
         "Windows": [
             "choco install lazygit -y"
