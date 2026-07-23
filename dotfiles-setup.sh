@@ -79,7 +79,7 @@ select_tag() {
 platform_value() {
   local path=$1 type
   type=$(yq -r "$path | type" "$MANIFEST")
-  if [[ "$type" == "!!map" ]]; then yq -r "$path.$PLATFORM // empty" "$MANIFEST"; else yq -r "$path // empty" "$MANIFEST"; fi
+  if [[ "$type" == "!!map" ]]; then yq -r "$path.$PLATFORM // \"\"" "$MANIFEST"; else yq -r "$path // \"\"" "$MANIFEST"; fi
 }
 
 tool_installed() {
@@ -115,7 +115,7 @@ expand_target() {
 configure_item() {
   local cfg=$1 source target parent existing
   source="$SCRIPT_DIR/$(yq -r ".configs.\"$cfg\".source" "$MANIFEST")"
-  target=$(yq -r ".configs.\"$cfg\".targets.$PLATFORM // empty" "$MANIFEST")
+  target=$(yq -r ".configs.\"$cfg\".targets.$PLATFORM // \"\"" "$MANIFEST")
   [[ -n "$target" ]] || { echo "No $PLATFORM target for config: $cfg"; return; }
   target=$(expand_target "$target")
   [[ -e "$source" ]] || { echo "Missing config source: $source" >&2; return; }
@@ -153,11 +153,11 @@ ensure_yq
 # Verify required package managers are available
 while IFS= read -r pm; do
   [[ -n "$pm" ]] || continue
-  pm_platform=$(yq -r ".package_managers.\"$pm\".platform // empty" "$MANIFEST")
+  pm_platform=$(yq -r ".package_managers.\"$pm\".platform // \"\"" "$MANIFEST")
   [[ -z "$pm_platform" || "$pm_platform" == "$PLATFORM" ]] || continue
-  pm_check=$(yq -r ".package_managers.\"$pm\".check // empty" "$MANIFEST")
+  pm_check=$(yq -r ".package_managers.\"$pm\".check // \"\"" "$MANIFEST")
   if [[ -n "$pm_check" ]] && ! command -v "$pm_check" >/dev/null 2>&1; then
-    pm_hint=$(yq -r ".package_managers.\"$pm\".hint // empty" "$MANIFEST")
+    pm_hint=$(yq -r ".package_managers.\"$pm\".hint // \"\"" "$MANIFEST")
     if [[ -n "$pm_hint" ]]; then echo "Warning [$pm]: $pm_hint" >&2; else echo "Warning: Package manager '$pm' not found ($pm_check)." >&2; fi
   fi
 done < <(yq -r '.package_managers | keys | .[]' "$MANIFEST")
