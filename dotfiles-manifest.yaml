@@ -18,7 +18,7 @@ package_managers:
 tools:
   git:
     description: Distributed version control
-    tags: [core, dev, workstation]
+    tags: [all, dev]
     check: git
     configs: [git]
     install:
@@ -30,7 +30,7 @@ tools:
 
   rust:
     description: Rust toolchain and Cargo
-    tags: [dev, workstation]
+    tags: [all]
     check: cargo
     install:
       linux:
@@ -42,7 +42,7 @@ tools:
 
   cpp:
     description: C and C++ build tools
-    tags: [dev, workstation]
+    tags: [all]
     check: clang
     install:
       linux:
@@ -53,7 +53,7 @@ tools:
 
   fish:
     description: Fish shell
-    tags: [shell, workstation]
+    tags: [all]
     check: fish
     configs: [fish]
     install:
@@ -63,7 +63,8 @@ tools:
 
   neovim:
     description: Neovim editor
-    tags: [editor, dev, workstation]
+    tags: [all, dev]
+    depends_on: [tree-sitter-cli, ripgrep, fd, fzf]
     check: nvim
     configs: [nvim]
     install:
@@ -77,8 +78,8 @@ tools:
 
   tree-sitter-cli:
     description: Tree-sitter command line interface
-    tags: [editor, dev, workstation]
-    depends_on: [rust]
+    tags: [all]
+    depends_on: [cpp, rust]
     check: tree-sitter
     install:
       linux:
@@ -88,7 +89,7 @@ tools:
 
   lazygit:
     description: Terminal UI for Git
-    tags: [terminal, workstation]
+    tags: [all]
     depends_on: [git]
     check: lazygit
     install:
@@ -105,7 +106,7 @@ tools:
 
   ripgrep:
     description: Fast text search
-    tags: [core, dev, workstation]
+    tags: [all, dev]
     check: rg
     install:
       linux:
@@ -116,7 +117,7 @@ tools:
 
   fd:
     description: Fast file finder
-    tags: [core, dev, workstation]
+    tags: [all, dev]
     check:
       linux: fdfind
       windows: fd
@@ -129,7 +130,7 @@ tools:
 
   fzf:
     description: Fuzzy finder
-    tags: [core, dev, workstation]
+    tags: [all, dev]
     check: fzf
     install:
       linux:
@@ -140,7 +141,7 @@ tools:
 
   starship:
     description: Cross-shell prompt
-    tags: [shell, workstation]
+    tags: [all, dev]
     check: starship
     configs: [starship]
     install:
@@ -151,7 +152,7 @@ tools:
 
   wezterm:
     description: Terminal emulator
-    tags: [terminal, workstation]
+    tags: [all, dev]
     check: wezterm
     configs: [wezterm]
     install:
@@ -165,7 +166,7 @@ tools:
 
   zoxide:
     description: Smarter directory navigation
-    tags: [shell, workstation]
+    tags: [all, dev]
     depends_on: [rust]
     check: zoxide
     install:
@@ -176,7 +177,7 @@ tools:
 
   yazi:
     description: Terminal file manager
-    tags: [terminal, workstation]
+    tags: [all]
     depends_on:
       linux: [rust]
       windows: []
@@ -190,7 +191,7 @@ tools:
 
   vscode:
     description: Visual Studio Code
-    tags: [dev, workstation]
+    tags: []
     check: code
     install:
       linux:
@@ -207,9 +208,9 @@ tools:
 
   jetbrains-mono:
     description: JetBrains Mono Nerd Font
-    tags: [workstation]
+    tags: [all, dev]
     check:
-      linux: fc-list
+      linux: null
       windows: null
     install:
       linux:
@@ -278,9 +279,5 @@ configs:
       windows: ~/AppData/Roaming/yazi/config/keymap.toml
 
 tags:
-  core: Core command-line utilities
-  shell: Shell and prompt configuration
-  terminal: Terminal applications
-  editor: Neovim and parser tooling
-  dev: Development environment
-  workstation: Complete workstation setup
+  all: All tools
+  dev: Minimal tools
