@@ -53,7 +53,7 @@ tools:
 
   fish:
     description: Fish shell
-    tags: [all]
+    tags: [all, dev]
     check: fish
     configs: [fish]
     install:
