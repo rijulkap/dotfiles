@@ -63,7 +63,7 @@ select_tool() {
   local tool=$1 cfg
   has_key tools "$tool" || { echo "Unknown tool: $tool" >&2; exit 1; }
   TOOLS["$tool"]=1
-  while IFS= read -r cfg; do [[ -n "$cfg" ]] && CONFIGS["$cfg"]=1; done < <(yq -r ".tools.\"$tool\".configs[]?" "$MANIFEST")
+  while IFS= read -r cfg; do if [[ -n "$cfg" ]]; then CONFIGS["$cfg"]=1; fi; done < <(yq -r ".tools.\"$tool\".configs[]?" "$MANIFEST")
 }
 
 select_tag() {
@@ -72,7 +72,7 @@ select_tag() {
   while IFS= read -r tool; do
     local has_tag
     has_tag=$(yq -r ".tools.\"$tool\".tags[]? | select(. == \"$tag\")" "$MANIFEST")
-    [[ -n "$has_tag" ]] && select_tool "$tool"
+    if [[ -n "$has_tag" ]]; then select_tool "$tool"; fi
   done < <(yq -r '.tools | keys | .[]' "$MANIFEST")
 }
 
@@ -93,7 +93,7 @@ install_tool() {
   [[ -z "${TOOL_DONE[$tool]:-}" ]] || return
   [[ -z "${TOOL_STACK[$tool]:-}" ]] || { echo "Dependency cycle detected at $tool" >&2; exit 1; }
   TOOL_STACK["$tool"]=1
-  while IFS= read -r dep; do [[ -n "$dep" ]] && install_tool "$dep"; done < <(platform_value ".tools.\"$tool\".depends_on[]?")
+  while IFS= read -r dep; do if [[ -n "$dep" ]]; then install_tool "$dep"; fi; done < <(platform_value ".tools.\"$tool\".depends_on[]?")
   unset 'TOOL_STACK[$tool]'
 
   if [[ "$FORCE" != true ]] && tool_installed "$tool"; then
@@ -178,10 +178,10 @@ else
 fi
 
 if [[ "$MODE" != configure ]]; then
-  while IFS= read -r tool; do [[ -n "${TOOLS[$tool]:-}" ]] && install_tool "$tool"; done < <(yq -r '.tools | keys | .[]' "$MANIFEST")
+  while IFS= read -r tool; do if [[ -n "${TOOLS[$tool]:-}" ]]; then install_tool "$tool"; fi; done < <(yq -r '.tools | keys | .[]' "$MANIFEST")
 fi
 if [[ "$MODE" != install ]]; then
   if [[ ${#CONFIGS[@]} -eq 0 ]]; then echo "No configs associated with the selection."; else
-    while IFS= read -r cfg; do [[ -n "${CONFIGS[$cfg]:-}" ]] && configure_item "$cfg"; done < <(yq -r '.configs | keys | .[]' "$MANIFEST")
+    while IFS= read -r cfg; do if [[ -n "${CONFIGS[$cfg]:-}" ]]; then configure_item "$cfg"; fi; done < <(yq -r '.configs | keys | .[]' "$MANIFEST")
   fi
 fi
