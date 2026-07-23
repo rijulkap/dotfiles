@@ -90,7 +90,7 @@ tool_installed() {
 
 install_tool() {
   local tool=$1 dep cmd
-  [[ -z "${TOOL_DONE[$tool]:-}" ]] || return
+  [[ -z "${TOOL_DONE[$tool]:-}" ]] || return 0 
   [[ -z "${TOOL_STACK[$tool]:-}" ]] || { echo "Dependency cycle detected at $tool" >&2; exit 1; }
   TOOL_STACK["$tool"]=1
   while IFS= read -r dep; do if [[ -n "$dep" ]]; then install_tool "$dep"; fi; done < <(platform_value ".tools.\"$tool\".depends_on[]?")
