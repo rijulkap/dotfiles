@@ -2,6 +2,7 @@
 
 format = """
 [░▒▓](blue)\
+$os\
 $shell\
 $username\
 $directory\
@@ -58,6 +59,19 @@ crust = "#11111b"
 success_symbol = '[ ➜](bold green) '
 error_symbol = '[ ✗](bold red) '
 
+[os]
+disabled = false
+style = "fg:crust bg:blue italic"
+format = "[ $symbol ]($style)"
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = ""
+Debian = ""
+Arch = "󰣇"
+Fedora = "󰣛"
+Macos = "󰀵"
+Alpine = ""
+Unknown = ""
 
 [shell]
 style = "fg:crust bg:blue italic"
