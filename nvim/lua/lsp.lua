@@ -270,6 +270,7 @@ local default_diagnostic_config = {
         end,
     },
     signs = {
+        severity = { min = "ERROR" },
         text = {
             [vim.diagnostic.severity.ERROR] = "",
             [vim.diagnostic.severity.WARN] = "",
