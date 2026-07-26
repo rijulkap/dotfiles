@@ -28,7 +28,7 @@ setup_ts_context = function()
 end
 
 setup_ts = function()
-    require("nvim-treesitter").install({
+    local parsers = {
         "bash",
         "c",
         "cpp",
@@ -40,13 +40,14 @@ setup_ts = function()
         "html",
         "lua",
         "luadoc",
-        "markdown",
         "vim",
         "vimdoc",
         "javascript",
         "typescript",
         "tsx",
-    })
+    }
+
+    require("nvim-treesitter").install(parsers)
     vim.api.nvim_create_autocmd("PackChanged", {
         callback = function(ev)
             local name, kind = ev.data.spec.name, ev.data.kind
@@ -60,7 +61,24 @@ setup_ts = function()
     })
 
     vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "<filetype>" },
+        pattern = {
+            "bash",
+            "sh",
+            "c",
+            "cpp",
+            "cs",
+            "python",
+            "rust",
+            "json",
+            "markdown",
+            "html",
+            "lua",
+            "vim",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+        },
         callback = function()
             vim.treesitter.start()
             -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"

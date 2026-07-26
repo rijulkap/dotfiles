@@ -8,14 +8,24 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "typst", "markdown" },
-    callback = function()
+    callback = function(event)
         if vim.bo.buftype ~= "nofile" then
-            vim.o.spell = true
+            vim.opt_local.spell = true
         end
-        vim.o.wrap = true
-        vim.o.spelllang = "en_us"
-        vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
-        vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
+        vim.opt_local.wrap = true
+        vim.opt_local.spelllang = "en_us"
+        vim.keymap.set(
+            "n",
+            "k",
+            "v:count == 0 ? 'gk' : 'k'",
+            { buffer = event.buf, noremap = true, expr = true, silent = true }
+        )
+        vim.keymap.set(
+            "n",
+            "j",
+            "v:count == 0 ? 'gj' : 'j'",
+            { buffer = event.buf, noremap = true, expr = true, silent = true }
+        )
     end,
     group = vim.api.nvim_create_augroup("TypstSettings", { clear = true }),
 })

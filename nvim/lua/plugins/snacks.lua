@@ -102,10 +102,6 @@ setup_snacks = function()
         },
     })
 
-    vim.keymap.set("n", "_", function()
-        Snacks.explorer.open({ diagnostics = false, git_status = false })
-    end, { desc = "Toggle explorer" })
-
     -- Toggle Explorer
     vim.keymap.set("n", "_", function()
         Snacks.explorer.open({ diagnostics = false, git_status = false })

@@ -2,42 +2,62 @@ local utils = require("utils")
 
 local diag_signs = require("icons").diagnostics
 
+local document_highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
+local lsp_detach_group = vim.api.nvim_create_augroup("LspDetach", { clear = true })
+local document_highlight_buffers = {}
+
 local function setup_document_highlight(client, bufnr)
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-        local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = false })
+    if
+        client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight)
+        and not document_highlight_buffers[bufnr]
+    then
+        document_highlight_buffers[bufnr] = true
 
         vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-            group = highlight_augroup,
+            group = document_highlight_group,
             buffer = bufnr,
             callback = vim.lsp.buf.document_highlight,
         })
 
         vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "WinLeave" }, {
-            group = highlight_augroup,
+            group = document_highlight_group,
             buffer = bufnr,
             callback = vim.lsp.buf.clear_references,
         })
-
-        vim.api.nvim_create_autocmd("LspDetach", {
-            group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
-            callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds({ group = "LspDocumentHighlight", buffer = event2.buf })
-            end,
-        })
     end
 end
 
-local function setup_inlayhint(client)
+vim.api.nvim_create_autocmd("LspDetach", {
+    group = lsp_detach_group,
+    callback = function(event)
+        vim.schedule(function()
+            local has_highlight_client = vim.iter(vim.lsp.get_clients({ bufnr = event.buf })):any(function(client)
+                return client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight)
+            end)
+
+            if not has_highlight_client then
+                vim.lsp.util.buf_clear_references(event.buf)
+                vim.api.nvim_clear_autocmds({ group = document_highlight_group, buffer = event.buf })
+                document_highlight_buffers[event.buf] = nil
+            end
+        end)
+    end,
+})
+
+local function setup_inlayhint(client, bufnr)
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-        vim.lsp.inlay_hint.enable(true)
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 end
 
-local function setup_lsp_folding(client)
+local function setup_lsp_folding(client, bufnr)
     if client:supports_method("textDocument/foldingRange") then
-        local win = vim.api.nvim_get_current_win()
-        vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.api.nvim_win_get_buf(win) == bufnr then
+                vim.wo[win].foldmethod = "expr"
+                vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
+            end
+        end
     end
 end
 
@@ -64,8 +84,8 @@ local function update_loclist(opts)
         local prefix = string.format(" %s ", diag_signs[level])
         table.insert(items, {
             bufnr = diag.bufnr,
-            lnum = diag.lnum,
-            col = diag.col,
+            lnum = diag.lnum + 1,
+            col = diag.col + 1,
             text = prefix .. diag.message,
             severity = diag.severity,
         })

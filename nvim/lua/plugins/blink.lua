@@ -48,7 +48,7 @@ setup_blink = function()
                     if require("luasnip").expand_or_jumpable() then
                         if cmp.is_menu_visible() then -- If menu is shown, close it
                             cmp.hide()
-                            return true -- return true to skip fallback (and hence not leave snippet)
+                            -- Continue to fallback so the same keypress also exits insert mode.
                         end
                     end
                 end,
