@@ -1,8 +1,25 @@
 local M = {}
 
 local plugins = {}
+local loaded = {}
 
 local group = vim.api.nvim_create_augroup("LazyPlugins", { clear = true })
+
+local function load_plugin(plugin)
+    local name = plugin.spec.name
+    if loaded[name] then
+        return
+    end
+
+    vim.cmd.packadd(name)
+
+    -- Mark before setup so a callback cannot recursively configure the plugin.
+    loaded[name] = true
+    local data = plugin.spec.data or {}
+    if data.config then
+        data.config(plugin)
+    end
+end
 
 ---@param plugin vim.pack.Spec
 function M.add_plugin(plugin)
@@ -23,10 +40,7 @@ function M.install_all()
                     once = true,
                     pattern = data.pattern or "*",
                     callback = function()
-                        vim.cmd.packadd(plugin.spec.name)
-                        if data.config then
-                            data.config(plugin)
-                        end
+                        load_plugin(plugin)
                     end,
                 })
             end
@@ -36,10 +50,7 @@ function M.install_all()
                 lazy = true
                 vim.api.nvim_create_user_command(data.cmd, function(cmd_args)
                     pcall(vim.api.nvim_del_user_command, data.cmd)
-                    vim.cmd.packadd(plugin.spec.name)
-                    if data.config then
-                        data.config(plugin)
-                    end
+                    load_plugin(plugin)
                     vim.api.nvim_cmd({
                         cmd = data.cmd,
                         args = cmd_args.fargs,
@@ -72,10 +83,7 @@ function M.install_all()
             -- end
 
             if lazy == false then
-                vim.cmd.packadd(plugin.spec.name)
-                if data.config then
-                    data.config(plugin)
-                end
+                load_plugin(plugin)
             end
         end,
     })

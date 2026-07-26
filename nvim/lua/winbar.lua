@@ -30,6 +30,9 @@ function M.render()
     if path:find("gitsigns:") then
         return "%#Winbar# GIT DIFF"
     end
+    if path:find("oil:", 1, true) then
+        return "%#Winbar# *** OIL-EXPLORER ***"
+    end
 
     local win_width = vim.api.nvim_win_get_width(0)
     local use_short = win_width < 80 or #path > 60 or vim.o.columns < 100
@@ -65,11 +68,6 @@ function M.render()
                 icon = ""
             end
             table.insert(rendered, string.format("%%#%s#%s %%#Winbar#%s", hl, icon, segment))
-        end
-
-        if segment:find("oil:") then
-            icon = ""
-            segment = "*** OIL-EXPLORER ***"
         end
     end
 

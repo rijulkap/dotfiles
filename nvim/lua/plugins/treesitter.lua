@@ -1,6 +1,33 @@
 local setup_ts_context
 local setup_ts
 
+local languages = {
+    bash = { "bash", "sh" },
+    c = { "c" },
+    cpp = { "cpp" },
+    c_sharp = { "cs" },
+    html = { "html" },
+    javascript = { "javascript", "javascriptreact" },
+    json = { "json" },
+    lua = { "lua" },
+    luadoc = {},
+    markdown = { "markdown" },
+    python = { "python" },
+    rust = { "rust" },
+    tsx = { "typescriptreact" },
+    typescript = { "typescript" },
+    vim = { "vim" },
+    vimdoc = {},
+}
+
+local parsers = vim.tbl_keys(languages)
+table.sort(parsers)
+
+local filetypes = {}
+for _, parser in ipairs(parsers) do
+    vim.list_extend(filetypes, languages[parser])
+end
+
 require("pluginmgr").add_plugin({
     src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
     data = {
@@ -29,25 +56,6 @@ setup_ts_context = function()
 end
 
 setup_ts = function()
-    local parsers = {
-        "bash",
-        "c",
-        "cpp",
-        "c_sharp",
-        "python",
-        "rust",
-        "json",
-        "markdown",
-        "html",
-        "lua",
-        "luadoc",
-        "vim",
-        "vimdoc",
-        "javascript",
-        "typescript",
-        "tsx",
-    }
-
     -- Check/install parsers after the dashboard has rendered, rather than
     -- blocking initial UI setup or waiting for the first real buffer.
     vim.api.nvim_create_autocmd("VimEnter", {
@@ -71,24 +79,7 @@ setup_ts = function()
     })
 
     vim.api.nvim_create_autocmd("FileType", {
-        pattern = {
-            "bash",
-            "sh",
-            "c",
-            "cpp",
-            "cs",
-            "python",
-            "rust",
-            "json",
-            "markdown",
-            "html",
-            "lua",
-            "vim",
-            "javascript",
-            "javascriptreact",
-            "typescript",
-            "typescriptreact",
-        },
+        pattern = filetypes,
         callback = function()
             vim.treesitter.start()
             -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"

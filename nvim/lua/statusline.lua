@@ -239,8 +239,12 @@ vim.api.nvim_create_autocmd("LspProgress", {
         if not args.data then
             return
         end
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then
+            return
+        end
         progress_status = {
-            client = vim.lsp.get_client_by_id(args.data.client_id).name,
+            client = client.name,
             kind = args.data.params.value.kind,
             title = args.data.params.value.title,
         }
@@ -336,6 +340,15 @@ vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
         diag_cache[args.buf] = nil
         lsp_names_cache[args.buf] = nil
         filetype_cache[args.buf] = nil
+    end,
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    group = diag_aug,
+    callback = function()
+        statusline_hls = {}
+        filetype_cache = {}
+        vim.cmd.redrawstatus()
     end,
 })
 

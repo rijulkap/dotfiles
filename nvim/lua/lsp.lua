@@ -191,15 +191,31 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- Keep visible diagnostic lists in sync.
+-- Keep visible diagnostic lists in sync without rebuilding them for every
+-- publication in a burst of diagnostic updates.
+local diagnostic_refresh_generation = 0
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
     callback = function()
-        if loclist_is_open() then
-            update_loclist({ severity = vim.diagnostic.severity.WARN })
-        end
-        if qflist_is_open() then
-            update_qflist({ severity = vim.diagnostic.severity.WARN })
-        end
+        diagnostic_refresh_generation = diagnostic_refresh_generation + 1
+        local generation = diagnostic_refresh_generation
+        local winid = vim.api.nvim_get_current_win()
+
+        vim.defer_fn(function()
+            if generation ~= diagnostic_refresh_generation then
+                return
+            end
+
+            if vim.api.nvim_win_is_valid(winid) then
+                vim.api.nvim_win_call(winid, function()
+                    if loclist_is_open() then
+                        update_loclist({ severity = vim.diagnostic.severity.WARN })
+                    end
+                end)
+            end
+            if qflist_is_open() then
+                update_qflist({ severity = vim.diagnostic.severity.WARN })
+            end
+        end, 75)
     end,
 })
 
