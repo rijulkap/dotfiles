@@ -109,7 +109,15 @@ setup_mason = function()
             "github:Crashdummyy/mason-registry",
         },
     })
-    install_missing_lsp()
+
+    -- Let the dashboard render before refreshing registries and installing
+    -- tools. This still runs without waiting for a real file buffer.
+    vim.api.nvim_create_autocmd("VimEnter", {
+        once = true,
+        callback = function()
+            vim.defer_fn(install_missing_lsp, 100)
+        end,
+    })
 end
 
 setup_lazydev = function()

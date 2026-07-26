@@ -15,6 +15,52 @@ local statusline_hls = {}
 local icons = require("icons")
 local devicons = require("nvim-web-devicons")
 
+-- Note that: \19 = ^S and \22 = ^V.
+local MODE_TO_STR = {
+    ["n"] = "NORMAL",
+    ["no"] = "OP-PENDING",
+    ["nov"] = "OP-PENDING",
+    ["noV"] = "OP-PENDING",
+    ["no\22"] = "OP-PENDING",
+    ["niI"] = "NORMAL",
+    ["niR"] = "NORMAL",
+    ["niV"] = "NORMAL",
+    ["nt"] = "NORMAL",
+    ["ntT"] = "NORMAL",
+    ["v"] = "VISUAL",
+    ["vs"] = "VISUAL",
+    ["V"] = "VISUAL",
+    ["Vs"] = "VISUAL",
+    ["\22"] = "VISUAL",
+    ["\22s"] = "VISUAL",
+    ["s"] = "SELECT",
+    ["S"] = "SELECT",
+    ["\19"] = "SELECT",
+    ["i"] = "INSERT",
+    ["ic"] = "INSERT",
+    ["ix"] = "INSERT",
+    ["R"] = "REPLACE",
+    ["Rc"] = "REPLACE",
+    ["Rx"] = "REPLACE",
+    ["Rv"] = "VIRT REPLACE",
+    ["Rvc"] = "VIRT REPLACE",
+    ["Rvx"] = "VIRT REPLACE",
+    ["c"] = "COMMAND",
+    ["cv"] = "VIM EX",
+    ["ce"] = "EX",
+    ["r"] = "PROMPT",
+    ["rm"] = "MORE",
+    ["r?"] = "CONFIRM",
+    ["!"] = "SHELL",
+    ["t"] = "TERMINAL",
+}
+
+local DIFF_HLS = {
+    added = "GitSignsAdd",
+    changed = "GitSignsChange",
+    removed = "GitSignsDelete",
+}
+
 ---@param hl string
 ---@return string
 function M.get_or_create_hl(hl)
@@ -48,47 +94,7 @@ end
 --- Current mode.
 ---@return string
 function M.mode_component()
-    -- Note that: \19 = ^S and \22 = ^V.
-    local mode_to_str = {
-        ["n"] = "NORMAL",
-        ["no"] = "OP-PENDING",
-        ["nov"] = "OP-PENDING",
-        ["noV"] = "OP-PENDING",
-        ["no\22"] = "OP-PENDING",
-        ["niI"] = "NORMAL",
-        ["niR"] = "NORMAL",
-        ["niV"] = "NORMAL",
-        ["nt"] = "NORMAL",
-        ["ntT"] = "NORMAL",
-        ["v"] = "VISUAL",
-        ["vs"] = "VISUAL",
-        ["V"] = "VISUAL",
-        ["Vs"] = "VISUAL",
-        ["\22"] = "VISUAL",
-        ["\22s"] = "VISUAL",
-        ["s"] = "SELECT",
-        ["S"] = "SELECT",
-        ["\19"] = "SELECT",
-        ["i"] = "INSERT",
-        ["ic"] = "INSERT",
-        ["ix"] = "INSERT",
-        ["R"] = "REPLACE",
-        ["Rc"] = "REPLACE",
-        ["Rx"] = "REPLACE",
-        ["Rv"] = "VIRT REPLACE",
-        ["Rvc"] = "VIRT REPLACE",
-        ["Rvx"] = "VIRT REPLACE",
-        ["c"] = "COMMAND",
-        ["cv"] = "VIM EX",
-        ["ce"] = "EX",
-        ["r"] = "PROMPT",
-        ["rm"] = "MORE",
-        ["r?"] = "CONFIRM",
-        ["!"] = "SHELL",
-        ["t"] = "TERMINAL",
-    }
-
-    local mode = mode_to_str[vim.api.nvim_get_mode().mode] or "UNKNOWN"
+    local mode = MODE_TO_STR[vim.api.nvim_get_mode().mode] or "UNKNOWN"
 
     local hl = "Other"
     if mode:find("NORMAL") then
@@ -103,11 +109,7 @@ function M.mode_component()
         hl = "Command"
     end
 
-    return table.concat({
-        -- string.format('%%#StatuslineModeSeparator%s#', hl),
-        string.format(" %%#StatuslineMode%s#%s", hl, mode),
-        -- string.format('%%#StatuslineModeSeparator%s#', hl),
-    })
+    return string.format(" %%#StatuslineMode%s#%s", hl, mode)
 end
 
 --- Git branch + optional hunks count.
@@ -133,8 +135,7 @@ function M.diff_component()
         if not count or count == 0 then
             return nil
         end
-        local map = { added = "GitSignsAdd", changed = "GitSignsChange", removed = "GitSignsDelete" }
-        local hl = M.get_or_create_hl(map[label_hl] or "Normal")
+        local hl = M.get_or_create_hl(DIFF_HLS[label_hl] or "Normal")
         return string.format("%%#%s#%s %d", hl, icon, count)
     end
 
@@ -168,6 +169,67 @@ local progress_status = {
 }
 
 local diag_aug = vim.api.nvim_create_augroup("rijul/statusline_diagnostics", { clear = true })
+local lsp_names_cache = {}
+local filetype_cache = {}
+
+local function recompute_lsp_names(bufnr)
+    local names = {}
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+        names[#names + 1] = client.name
+    end
+
+    lsp_names_cache[bufnr] = #names > 0
+            and string.format(
+                "%%#%s#%s  %s",
+                M.get_or_create_hl("Special"),
+                icons.misc.Cogs,
+                table.concat(names, ", ")
+            )
+        or ""
+end
+
+local function recompute_filetype(bufnr)
+    local filetype = vim.bo[bufnr].filetype
+    if filetype == "" then
+        filetype = "[No Name]"
+    end
+
+    local buf_name = vim.api.nvim_buf_get_name(bufnr)
+    local name = vim.fn.fnamemodify(buf_name, ":t")
+    local ext = vim.fn.fnamemodify(buf_name, ":e")
+    local icon, icon_hl = devicons.get_icon(name, ext)
+    if not icon then
+        icon, icon_hl = devicons.get_icon_by_filetype(filetype, { default = true })
+    end
+
+    filetype_cache[bufnr] =
+        string.format("%%#%s#%s %%#StatuslineTitle#%s", M.get_or_create_hl(icon_hl or "Normal"), icon, filetype)
+end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = diag_aug,
+    callback = function(args)
+        recompute_lsp_names(args.buf)
+    end,
+})
+
+vim.api.nvim_create_autocmd("LspDetach", {
+    group = diag_aug,
+    callback = function(args)
+        vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(args.buf) then
+                recompute_lsp_names(args.buf)
+            end
+        end)
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufFilePost", "FileType" }, {
+    group = diag_aug,
+    callback = function(args)
+        recompute_filetype(args.buf)
+    end,
+})
 
 vim.api.nvim_create_autocmd("LspProgress", {
     group = diag_aug,
@@ -214,15 +276,11 @@ end
 --- LSP client names (when there is no progress event).
 ---@return string
 function M.lsp_names_component()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
-    if not clients or #clients == 0 then
-        return ""
+    local bufnr = vim.api.nvim_get_current_buf()
+    if lsp_names_cache[bufnr] == nil then
+        recompute_lsp_names(bufnr)
     end
-    local names = {}
-    for _, c in ipairs(clients) do
-        names[#names + 1] = c.name
-    end
-    return string.format("%%#%s#%s  %s", M.get_or_create_hl("Special"), icons.misc.Cogs, table.concat(names, ", "))
+    return lsp_names_cache[bufnr]
 end
 
 local Sev = vim.diagnostic.severity
@@ -275,8 +333,9 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
 vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
     group = diag_aug,
     callback = function(args)
-        -- args.buf is set for DiagnosticChanged/BufEnter
         diag_cache[args.buf] = nil
+        lsp_names_cache[args.buf] = nil
+        filetype_cache[args.buf] = nil
     end,
 })
 
@@ -303,21 +362,11 @@ end
 --- The buffer's filetype (with icon).
 ---@return string
 function M.filetype_component()
-    local filetype = vim.bo.filetype
-    if filetype == "" then
-        filetype = "[No Name]"
+    local bufnr = vim.api.nvim_get_current_buf()
+    if filetype_cache[bufnr] == nil then
+        recompute_filetype(bufnr)
     end
-
-    local icon, icon_hl
-    local buf_name = vim.api.nvim_buf_get_name(0)
-    local name, ext = vim.fn.fnamemodify(buf_name, ":t"), vim.fn.fnamemodify(buf_name, ":e")
-    icon, icon_hl = devicons.get_icon(name, ext)
-    if not icon then
-        icon, icon_hl = devicons.get_icon_by_filetype(filetype, { default = true })
-    end
-    icon_hl = M.get_or_create_hl(icon_hl or "Normal")
-
-    return string.format("%%#%s#%s %%#StatuslineTitle#%s", icon_hl, icon, filetype)
+    return filetype_cache[bufnr]
 end
 
 --- Python venv name (only in Python buffers).
@@ -386,81 +435,58 @@ end
 function M.position_component()
     -- 5-wide line number, 3-wide column (zero-padded col as example)
     local s = "%#StatuslineTitle#%5l:%03c"
-    return s
-        .. string.format(
-            "%%#%s#",
-            (default_status_hl or function()
-                return "StatusLine"
-            end)()
-        )
+    return s .. string.format("%%#%s#", default_status_hl())
+end
+
+local function sep_component()
+    return string.format("%%#%s#  |  ", default_status_hl())
+end
+
+local function concat_components(components)
+    local items = {}
+    for _, component in ipairs(components) do
+        if component and #component > 0 then
+            items[#items + 1] = component
+        end
+    end
+    return table.concat(items, sep_component())
 end
 
 --- Renders the statusline.
 ---@return string
 function M.render()
-    local function sep_component()
-        return string.format("%%#%s#  |  ", default_status_hl())
-    end
-
-    local function concat_components(components)
-        local items = vim.iter(components)
-            :filter(function(c)
-                return c and #c > 0
-            end)
-            :totable()
-        if #items == 0 then
-            return ""
-        end
-
-        local acc = items[1]
-        for i = 2, #items do
-            acc = acc .. sep_component() .. items[i]
-        end
-        return acc
-    end
-
-    -- Left: mode bubble | git | diff | python venv | dap / lsp progress
-    local big_left = concat_components({
-        M.mode_component(),
-        M.git_component(),
-        M.diff_component(),
-        M.python_venv_component(),
-        -- M.dap_component(),
-    })
-
-    -- Right: diagnostics | filetype | fileformat/encoding | search | spell | recording | position
-    local big_right = concat_components({
-        M.lsp_progress_component() or concat_components({ M.diagnostics_component(), M.lsp_names_component() }),
-        M.filetype_component(),
-        M.eol_encoding_component(),
-        -- M.search_component(),
-        -- M.spell_component(),
-        M.position_component(),
-    })
-
-    local small_left = concat_components({
-        M.mode_component(),
-        M.diff_component(),
-    })
-
-    -- Right: diagnostics | filetype | fileformat/encoding | search | spell | recording | position
-    local small_right = concat_components({
-        M.diagnostics_component(),
-        M.position_component(),
-    })
-
     if vim.o.columns >= 100 then
+        local left = concat_components({
+            M.mode_component(),
+            M.git_component(),
+            M.diff_component(),
+            M.python_venv_component(),
+        })
+        local right = concat_components({
+            M.lsp_progress_component() or concat_components({ M.diagnostics_component(), M.lsp_names_component() }),
+            M.filetype_component(),
+            M.eol_encoding_component(),
+            M.position_component(),
+        })
         return table.concat({
-            big_left,
+            left,
             "%#StatusLine#%=",
-            big_right,
+            right,
             " ",
         })
     else
+        local left = concat_components({
+            M.mode_component(),
+            M.diff_component(),
+        })
+        local right = concat_components({
+            M.diagnostics_component(),
+            M.position_component(),
+        })
         return table.concat({
-            small_left,
+            left,
             "%#StatusLine#%=",
-            small_right,
+            right,
             " ",
         })
     end

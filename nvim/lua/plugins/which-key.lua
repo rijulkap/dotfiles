@@ -3,6 +3,7 @@ local setup_which_key
 require("pluginmgr").add_plugin({
     src = "https://github.com/folke/which-key.nvim",
     data = {
+        event = "VimEnter",
         config = function()
             setup_which_key()
         end,

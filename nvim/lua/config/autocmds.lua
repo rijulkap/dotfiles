@@ -30,8 +30,9 @@ vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("TypstSettings", { clear = true }),
 })
 
--- Save buffer on leave
-vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost" }, {
+-- Save file buffers when Neovim loses focus. Avoid synchronous writes and
+-- format-on-save work during ordinary buffer switches.
+vim.api.nvim_create_autocmd("FocusLost", {
     callback = function()
         if vim.bo.modified and not vim.bo.readonly and vim.fn.expand("%") ~= "" and vim.bo.buftype == "" then
             vim.api.nvim_command("silent update")

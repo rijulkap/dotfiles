@@ -76,24 +76,41 @@ function M.render()
     return " " .. table.concat(rendered, separator)
 end
 
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter", "VimResized", "WinResized" }, {
-    group = vim.api.nvim_create_augroup("winbar", { clear = true }),
+local function update_winbar(winid)
+    if not vim.api.nvim_win_is_valid(winid) then
+        return
+    end
+
+    local config = vim.api.nvim_win_get_config(winid)
+    local bufnr = vim.api.nvim_win_get_buf(winid)
+    local should_show = not config.zindex
+        and vim.api.nvim_buf_get_name(bufnr) ~= ""
+        and (vim.bo[bufnr].buftype == "" or vim.wo[winid].diff)
+
+    if not should_show then
+        vim.wo[winid].winbar = ""
+        return
+    end
+
+    vim.api.nvim_win_call(winid, function()
+        vim.wo.winbar = M.render()
+    end)
+end
+
+local winbar_group = vim.api.nvim_create_augroup("winbar", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "WinEnter" }, {
+    group = winbar_group,
     callback = function()
-        local winbar = require("winbar")
+        update_winbar(vim.api.nvim_get_current_win())
+    end,
+})
 
+vim.api.nvim_create_autocmd({ "VimResized", "WinResized" }, {
+    group = winbar_group,
+    callback = function()
         for _, winid in ipairs(vim.api.nvim_list_wins()) do
-            local config = vim.api.nvim_win_get_config(winid)
-            local bufnr = vim.api.nvim_win_get_buf(winid)
-
-            if
-                not config.zindex
-                and vim.api.nvim_buf_get_name(bufnr) ~= ""
-                and (vim.bo[bufnr].buftype == "" or vim.wo.diff)
-            then
-                vim.api.nvim_win_call(winid, function()
-                    vim.wo.winbar = winbar.render()
-                end)
-            end
+            update_winbar(winid)
         end
     end,
 })

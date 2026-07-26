@@ -4,6 +4,7 @@ local setup_ts
 require("pluginmgr").add_plugin({
     src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
     data = {
+        event = { "BufReadPre", "BufNewFile" },
         config = function()
             setup_ts_context()
         end,
@@ -47,7 +48,16 @@ setup_ts = function()
         "tsx",
     }
 
-    require("nvim-treesitter").install(parsers)
+    -- Check/install parsers after the dashboard has rendered, rather than
+    -- blocking initial UI setup or waiting for the first real buffer.
+    vim.api.nvim_create_autocmd("VimEnter", {
+        once = true,
+        callback = function()
+            vim.defer_fn(function()
+                require("nvim-treesitter").install(parsers)
+            end, 100)
+        end,
+    })
     vim.api.nvim_create_autocmd("PackChanged", {
         callback = function(ev)
             local name, kind = ev.data.spec.name, ev.data.kind
