@@ -65,21 +65,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
         vim.schedule(function()
             vim.keymap.set("n", "q", function()
-                local winid = vim.fn.bufwinid(event.buf)
-                if winid ~= -1 then
-                    local loclist = vim.fn.getloclist(winid)
-                    local qflist = vim.fn.getqflist()
-
-                    -- Compare lists by checking their content length
-                    if vim.bo[event.buf].filetype == "qf" then
-                        if #loclist > 0 then
-                            vim.g.ll_open = false
-                        elseif #qflist > 0 then
-                            vim.g.qf_open = false
-                        end
-                    end
-                end
-
                 vim.cmd("close")
                 pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
             end, {
@@ -100,7 +85,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
             return
         end
 
-        local file = vim.loop.fs_realpath(event.match) or event.match
+        local file = vim.uv.fs_realpath(event.match) or event.match
         local dir = vim.fn.fnamemodify(file, ":p:h")
         if vim.fn.isdirectory(dir) == 0 then
             vim.fn.mkdir(dir, "p")

@@ -127,8 +127,13 @@ local function update_qflist(opts)
     })
 end
 
-vim.g.ll_open = false
-vim.g.qf_open = false
+local function loclist_is_open()
+    return vim.fn.getloclist(0, { winid = 0 }).winid ~= 0
+end
+
+local function qflist_is_open()
+    return vim.fn.getqflist({ winid = 0 }).winid ~= 0
+end
 
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
@@ -151,14 +156,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, "[G]oto [I]mplementation")
 
         local function toggle_loclist()
-            if vim.g.ll_open == true then
+            if loclist_is_open() then
                 vim.cmd("lclose")
-                vim.g.ll_open = false
                 return
             end
             update_loclist({ severity = vim.diagnostic.severity.WARN })
             vim.cmd("lopen")
-            vim.g.ll_open = true
         end
 
         map("<leader>ll", function()
@@ -166,14 +169,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, "Toggle loclist")
 
         local function toggle_qflist()
-            if vim.g.qf_open == true then
+            if qflist_is_open() then
                 vim.cmd("cclose")
-                vim.g.qf_open = false
                 return
             end
             update_qflist({ severity = vim.diagnostic.severity.WARN })
             vim.cmd("copen")
-            vim.g.qf_open = true
         end
 
         map("<leader>lq", function()
@@ -190,13 +191,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- Setup timer to refresh lists
+-- Keep visible diagnostic lists in sync.
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
-    callback = function(args)
-        if vim.g.ll_open then
+    callback = function()
+        if loclist_is_open() then
             update_loclist({ severity = vim.diagnostic.severity.WARN })
         end
-        if vim.g.qf_open then
+        if qflist_is_open() then
             update_qflist({ severity = vim.diagnostic.severity.WARN })
         end
     end,
@@ -307,20 +308,6 @@ local default_diagnostic_config = {
 }
 
 vim.diagnostic.config(default_diagnostic_config)
-
--- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
-local show_handler_vt = vim.diagnostic.handlers.virtual_text.show
-assert(show_handler_vt)
-local hide_handler = vim.diagnostic.handlers.virtual_text.hide
-vim.diagnostic.handlers.virtual_text = {
-    show = function(ns, bufnr, diagnostics, opts)
-        table.sort(diagnostics, function(diag1, diag2)
-            return diag1.severity > diag2.severity
-        end)
-        return show_handler_vt(ns, bufnr, diagnostics, opts)
-    end,
-    hide = hide_handler,
-}
 
 -- local datapath = vim.fn.stdpath("data")
 

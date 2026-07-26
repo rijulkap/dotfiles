@@ -10,7 +10,7 @@ require("pluginmgr").add_plugin({
 })
 
 setup_conform = function()
-    vim.g.formatters = { "stylua", "prettier"}
+    vim.g.formatters = { "stylua", "prettier" }
 
     require("conform").setup({
         notify_on_error = false,
@@ -40,7 +40,7 @@ setup_conform = function()
         end,
         formatters_by_ft = {
             lua = { "stylua" },
-            typescriptreact = {"prettier"}
+            typescriptreact = { "prettier" },
         },
         formatters = {
             stylua = {
@@ -50,7 +50,7 @@ setup_conform = function()
         },
     })
     vim.keymap.set("n", "<leader>f", function()
-        require("conform").format({ async = true, lsp_fallback = true })
+        require("conform").format({ async = true, lsp_format = "fallback" })
     end, { desc = "[F]ormat buffer" })
 
     vim.g.autoformat = false

@@ -1,5 +1,7 @@
 vim.g.lite_enabled = vim.env.NVIM_LITE == "true"
 
+require("filetypes")
+
 if vim.g.vscode then
     require("vsc")
 else

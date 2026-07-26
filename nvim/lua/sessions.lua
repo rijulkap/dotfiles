@@ -1,4 +1,4 @@
-M = {}
+local M = {}
 
 function M.get_hashed_session_name()
     local cwd = vim.fn.getcwd()
