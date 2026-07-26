@@ -1,3 +1,5 @@
+local profile = require("config.profile")
+
 -- Load inbuilt plugins
 vim.cmd("packadd nvim.difftool")
 vim.cmd("packadd nvim.undotree")
@@ -14,13 +16,15 @@ require("plugins.which-key")
 require("plugins.mini")
 
 -- Treesitter
-if not vim.g.lite_enabled then
+if profile.has("treesitter") then
     require("plugins.treesitter")
 end
 
 -- LSP and Formatter
-if not vim.g.lite_enabled then
+if profile.has("formatting") then
     require("plugins.conform")
+end
+if profile.has("lsp") then
     require("plugins.lsp")
     require("plugins.roslyn")
 end
@@ -35,7 +39,9 @@ require("plugins.blink")
 -- UI
 require("plugins.bufferline")
 require("plugins.lualine")
-require("plugins.markdown-stuff")
+if profile.has("treesitter") then
+    require("plugins.markdown-stuff")
+end
 
 -- explorer
 require("plugins.oil")

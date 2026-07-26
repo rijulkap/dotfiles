@@ -12,9 +12,11 @@ setup_flash = function()
         require("flash").jump()
     end, { desc = "Flash" })
 
-    vim.keymap.set({ "n", "x", "o" }, "S", function()
-        require("flash").treesitter()
-    end, { desc = "Flash Treesitter" })
+    if require("config.profile").has("treesitter") then
+        vim.keymap.set({ "n", "x", "o" }, "S", function()
+            require("flash").treesitter()
+        end, { desc = "Flash Treesitter" })
+    end
 
     vim.keymap.set("o", "R", function()
         require("flash").remote()

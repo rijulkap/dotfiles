@@ -12,6 +12,17 @@ require("pluginmgr").add_plugin({
 })
 
 setup_blink = function()
+    local profile = require("config.profile")
+    local sources = { "path", "snippets", "buffer" }
+    local treesitter = {}
+
+    if profile.has("lsp") then
+        table.insert(sources, 1, "lsp")
+    end
+    if profile.has("treesitter") then
+        treesitter = { "lsp" }
+    end
+
     require("blink-cmp").setup({
         -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- adjusts spacing to ensure icons are aligned
@@ -23,7 +34,7 @@ setup_blink = function()
                         { "label", "label_description", gap = 1 },
                         { "kind_icon", "kind" },
                     },
-                    treesitter = { "lsp" },
+                    treesitter = treesitter,
                 },
             },
             accept = {
@@ -137,7 +148,7 @@ setup_blink = function()
 
         sources = {
             -- add lazydev to your completion providers
-            default = { "lsp", "path", "snippets", "buffer" },
+            default = sources,
         },
         -- experimental auto-brackets support
         -- accept = { auto_brackets = { enabled = true } }

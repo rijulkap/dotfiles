@@ -256,12 +256,14 @@ setup_snacks = function()
     vim.keymap.set("n", "<leader>sq", function()
         Snacks.picker.qflist()
     end, { desc = "Quickfix List" })
-    vim.keymap.set("n", "<leader>ss", function()
-        Snacks.picker.lsp_symbols()
-    end, { desc = "Goto Symbol" })
-    vim.keymap.set("n", "<leader>sS", function()
-        Snacks.picker.lsp_workspace_symbols()
-    end, { desc = "Goto Symbol (Workspace)" })
+    if require("config.profile").has("lsp") then
+        vim.keymap.set("n", "<leader>ss", function()
+            Snacks.picker.lsp_symbols()
+        end, { desc = "Goto Symbol" })
+        vim.keymap.set("n", "<leader>sS", function()
+            Snacks.picker.lsp_workspace_symbols()
+        end, { desc = "Goto Symbol (Workspace)" })
+    end
     vim.keymap.set("n", "<leader>su", function()
         Snacks.picker.undo()
     end, { desc = "Undo History" })
@@ -278,7 +280,11 @@ setup_snacks = function()
     Snacks.toggle
         .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
         :map("<leader>uc")
-    Snacks.toggle.treesitter():map("<leader>uT")
+    if require("config.profile").has("treesitter") then
+        Snacks.toggle.treesitter():map("<leader>uT")
+    end
     Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
-    Snacks.toggle.inlay_hints():map("<leader>uh")
+    if require("config.profile").has("lsp") then
+        Snacks.toggle.inlay_hints():map("<leader>uh")
+    end
 end

@@ -1,4 +1,5 @@
-vim.g.lite_enabled = vim.env.NVIM_LITE == "true"
+local profile = require("config.profile")
+vim.g.lite_enabled = profile.is_lite()
 
 require("filetypes")
 
@@ -9,7 +10,7 @@ else
     require("config.options")
     require("config.keymaps")
     require("config.autocmds")
-    if not vim.g.lite_enabled then
+    if profile.has("lsp") then
         require("lsp")
     end
     -- require("marks") --currently using snacks
