@@ -1,0 +1,243 @@
+version = 1
+
+[package_managers.apt]
+description = "Debian/Ubuntu package manager"
+platform = "linux_x64"
+check = "apt-get"
+hint = "apt-get not found. Install a Debian-based distro or adjust the manifest."
+
+[package_managers.choco]
+description = "Chocolatey package manager for Windows"
+platform = "windows_x64"
+check = "choco"
+hint = "Chocolatey not found. Install it from https://chocolatey.org/install."
+
+[tools.git]
+description = "Distributed version control"
+tags = ["dev"]
+check = "git"
+
+[tools.git.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y git"]
+windows_x64 = ["choco install git -y"]
+
+[tools.git.configs]
+description = "Git configuration"
+source = "git/.gitconfig"
+
+[tools.git.configs.targets]
+linux_x64 = "~/.gitconfig"
+windows_x64 = "~/.gitconfig"
+
+[tools.rust]
+description = "Rust toolchain and Cargo"
+tags = []
+check = "cargo"
+
+[tools.rust.install]
+linux_x64 = ["curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"]
+windows_x64 = [
+  'Invoke-WebRequest -Uri "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe" -OutFile "$env:TEMP/rustup-init.exe"',
+  'Start-Process -FilePath "$env:TEMP/rustup-init.exe" -ArgumentList "-y" -Wait',
+  'Remove-Item "$env:TEMP/rustup-init.exe" -Force',
+]
+
+[tools.cpp]
+description = "C and C++ build tools"
+tags = []
+check = "clang"
+
+[tools.cpp.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y build-essential make cmake clang llvm"]
+windows_x64 = ["choco install mingw make cmake llvm -y"]
+
+[tools.fish]
+description = "Fish shell"
+tags = ["dev"]
+check = "fish"
+
+[tools.fish.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fish"]
+
+[tools.fish.configs]
+description = "Fish shell configuration"
+source = "fish/config.fish"
+
+[tools.fish.configs.targets]
+linux_x64 = "~/.config/fish/config.fish"
+
+[tools.neovim]
+description = "Neovim editor"
+deps = ["tree-sitter-cli", "ripgrep", "fd", "fzf"]
+tags = ["dev"]
+check = "nvim"
+
+[tools.neovim.install]
+linux_x64 = [
+  "curl -fLo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage",
+  "chmod +x /tmp/nvim.appimage",
+  "sudo install /tmp/nvim.appimage /usr/local/bin/nvim",
+  "rm -f /tmp/nvim.appimage",
+]
+windows_x64 = ["choco install neovim -y"]
+
+[tools.neovim.configs]
+description = "Neovim configuration directory"
+source = "nvim"
+
+[tools.neovim.configs.targets]
+linux_x64 = "~/.config/nvim"
+windows_x64 = "~/AppData/Local/nvim"
+
+[tools.tree-sitter-cli]
+description = "Tree-sitter command line interface"
+deps = ["cpp", "rust"]
+tags = ["all"]
+check = "tree-sitter"
+
+[tools.tree-sitter-cli.install]
+linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked tree-sitter-cli']
+windows_x64 = ["cargo install --locked tree-sitter-cli"]
+
+[tools.lazygit]
+description = "Terminal UI for Git"
+deps = ["git"]
+tags = ["all"]
+check = "lazygit"
+
+[tools.lazygit.install]
+linux_x64 = [
+  '''LAZYGIT_VERSION=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | sed -n 's/.*"tag_name": "v\([^"]*\)".*/\1/p' | head -n1)''',
+  'test -n "$LAZYGIT_VERSION"',
+  'curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"',
+  "tar -C /tmp -xf /tmp/lazygit.tar.gz lazygit",
+  "sudo install /tmp/lazygit /usr/local/bin/lazygit",
+  "rm -f /tmp/lazygit /tmp/lazygit.tar.gz",
+]
+windows_x64 = ["choco install lazygit -y"]
+
+[tools.ripgrep]
+description = "Fast text search"
+tags = ["dev"]
+check = "rg"
+
+[tools.ripgrep.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y ripgrep"]
+windows_x64 = ["choco install ripgrep -y"]
+
+[tools.fd]
+description = "Fast file finder"
+tags = ["dev"]
+check = "fd"
+
+[tools.fd.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fd-find"]
+windows_x64 = ["choco install fd -y"]
+
+[tools.fzf]
+description = "Fuzzy finder"
+tags = ["dev"]
+check = "fzf"
+
+[tools.fzf.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fzf"]
+windows_x64 = ["choco install fzf -y"]
+
+[tools.starship]
+description = "Cross-shell prompt"
+tags = ["dev"]
+check = "starship"
+
+[tools.starship.install]
+linux_x64 = ["curl -sS https://starship.rs/install.sh | sh -s -- -y"]
+windows_x64 = ["choco install starship -y"]
+
+[tools.starship.configs]
+description = "Starship prompt configuration"
+source = "starship/starship.toml"
+
+[tools.starship.configs.targets]
+linux_x64 = "~/.config/starship.toml"
+windows_x64 = "~/.config/starship.toml"
+
+[tools.wezterm]
+description = "Terminal emulator"
+tags = ["dev"]
+check = "wezterm"
+
+[tools.wezterm.install]
+linux_x64 = [
+  "curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg",
+  "echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null",
+  "sudo apt-get update",
+  "sudo apt-get install -y wezterm-nightly",
+]
+windows_x64 = ["choco install wezterm -y"]
+
+[tools.wezterm.configs]
+description = "WezTerm configuration"
+source = "wezterm/wezterm.lua"
+
+[tools.wezterm.configs.targets]
+linux_x64 = "~/.config/wezterm/wezterm.lua"
+windows_x64 = "~/.wezterm.lua"
+
+[tools.zoxide]
+description = "Smarter directory navigation"
+deps = ["rust"]
+tags = ["dev"]
+check = "zoxide"
+
+[tools.zoxide.install]
+linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked zoxide']
+windows_x64 = ["cargo install --locked zoxide"]
+
+[tools.yazi]
+description = "Terminal file manager"
+deps = ["rust"]
+tags = []
+check = "yazi"
+
+[tools.yazi.install]
+linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked yazi-fm yazi-cli']
+windows_x64 = ["choco install yazi -y"]
+
+[tools.yazi.configs]
+description = "Yazi configuration directory"
+source = "yazi"
+
+[tools.yazi.configs.targets]
+linux_x64 = "~/.config/yazi"
+windows_x64 = "~/AppData/Roaming/yazi/config"
+
+[tools.vscode]
+description = "Visual Studio Code"
+tags = []
+check = "code"
+
+[tools.vscode.install]
+linux_x64 = [
+  "sudo apt-get update",
+  "sudo apt-get install -y wget gpg apt-transport-https",
+  "wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg",
+  "sudo install -D -o root -g root -m 644 /tmp/packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg",
+  '''echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null''',
+  "rm -f /tmp/packages.microsoft.gpg",
+  "sudo apt-get update",
+  "sudo apt-get install -y code",
+]
+windows_x64 = ["choco install vscode -y"]
+
+[tools.jetbrains-mono]
+description = "JetBrains Mono Nerd Font"
+tags = ["dev"]
+
+[tools.jetbrains-mono.install]
+linux_x64 = [
+  'mkdir -p "$HOME/.local/share/fonts/JetBrainsMono"',
+  "curl -fLo /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip",
+  'unzip -o /tmp/JetBrainsMono.zip -d "$HOME/.local/share/fonts/JetBrainsMono"',
+  "rm -f /tmp/JetBrainsMono.zip",
+  "fc-cache -fv",
+]
+windows_x64 = ["choco install nerd-fonts-jetbrainsmono -y"]
