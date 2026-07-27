@@ -328,15 +328,15 @@ vim.diagnostic.config(default_diagnostic_config)
 -- local datapath = vim.fn.stdpath("data")
 
 vim.g.lsps = {
-    basedpyright = true,
-    clangd = true,
-    jsonls = { "json-lsp" },
-    lua_ls = { "lua-language-server" },
-    ruff = true,
-    rust_analyzer = { "rust-analyzer" },
-    tinymist = true,
-    roslyn_ls = { "roslyn" },
-    ts_ls = { "typescript-language-server" },
+    "basedpyright",
+    "clangd",
+    "json-lsp",
+    "lua-language-server",
+    "ruff",
+    "rust-analyzer",
+    "tinymist",
+    "roslyn",
+    "typescript-language-server",
 }
 
 -- Set Toggles

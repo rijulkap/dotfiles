@@ -1,5 +1,4 @@
 local setup_mason
-local setup_mason_lspcfg
 local setup_lazydev
 
 require("pluginmgr").add_plugin({
@@ -40,8 +39,8 @@ local function install_missing_lsp()
     local function enable_lsp(pkg)
         local lsp_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
 
-        if not lsp_name then
-            notify("LSP " .. pkg.name .. " does not have a neovim config, skipping", vim.log.levels.WARN)
+        -- Roslyn is configured and enabled by plugins.roslyn.
+        if not lsp_name or pkg.name == "roslyn" then
             return
         end
 
@@ -52,38 +51,32 @@ local function install_missing_lsp()
         local installed = {}
         for _, name in ipairs(mr.get_installed_package_names()) do
             installed[name] = true
+
+            local has_pkg, pkg = pcall(mr.get_package, name)
+            if has_pkg then
+                enable_lsp(pkg)
+            end
         end
 
         local seen = {}
 
-        for lsp_name, mason_packages in pairs(vim.g.lsps or {}) do
-            if mason_packages == true then
-                mason_packages = { lsp_name }
-            end
+        for _, package_name in ipairs(vim.g.lsps or {}) do
+            seen[package_name] = true
 
-            for _, package_name in ipairs(mason_packages) do
-                if not seen[package_name] then
-                    seen[package_name] = true
+            local has_pkg, pkg = pcall(mr.get_package, package_name)
 
-                    local has_pkg, pkg = pcall(mr.get_package, package_name)
+            if has_pkg then
+                if not installed[package_name] and vim.fn.executable(package_name) ~= 1 then
+                    notify("Installing missing lsp: " .. package_name)
 
-                    if has_pkg then
-                        if installed[package_name] or vim.fn.executable(package_name) == 1 then
-                            -- handled by plugin
-                            if package_name ~= "roslyn" then
-                                vim.lsp.enable(lsp_name)
-                            end
-                        else
-                            notify("Installing missing lsp: " .. package_name)
-
-                            pkg:install():once("install:success", function()
-                                enable_lsp(lsp_name)
-                            end)
-                        end
-                    else
-                        notify("Mason package not found: " .. package_name, vim.log.levels.WARN)
-                    end
+                    pkg:install():once("install:success", function()
+                        enable_lsp(pkg)
+                    end)
+                elseif not installed[package_name] then
+                    enable_lsp(pkg)
                 end
+            else
+                notify("Mason package not found: " .. package_name, vim.log.levels.WARN)
             end
         end
 
