@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$Version = "v0.1.3"
+$Version = "v0.1.4"
 $Repository = "rijulkap/dotstrap"
 
 if ($PSVersionTable.PSEdition -eq "Core" -and -not $IsWindows) {

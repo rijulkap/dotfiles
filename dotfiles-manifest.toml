@@ -128,7 +128,7 @@ windows_x64 = ["choco install ripgrep -y"]
 [tools.fd]
 description = "Fast file finder"
 tags = ["dev"]
-check = "fd"
+check = {linux_x64 = "fdfind", windows_x64 = "fd"}
 
 [tools.fd.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fd-find"]
