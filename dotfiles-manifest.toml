@@ -213,7 +213,7 @@ source = "zellij/config.kdl"
 
 [tools.zellij.configs.targets]
 linux_x64 = "~/.config/zellij/config.kdl"
-windows_x64 = "~/.config/zellij/config.kdl"
+windows_x64 = "~/AppData/Roaming/zellij/config/config.kdl"
 
 [tools.zoxide]
 description = "Smarter directory navigation"
