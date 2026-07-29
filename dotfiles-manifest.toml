@@ -197,6 +197,24 @@ source = "tmux/.tmux.conf"
 [tools.tmux.configs.targets]
 linux_x64 = "~/.tmux.conf"
 
+[tools.zellij]
+description = "Cross-platform terminal multiplexer"
+deps = ["rust"]
+tags = ["dev"]
+check = "zellij"
+
+[tools.zellij.install]
+linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked zellij']
+windows_x64 = ["cargo install --locked zellij"]
+
+[tools.zellij.configs]
+description = "Zellij configuration"
+source = "zellij/config.kdl"
+
+[tools.zellij.configs.targets]
+linux_x64 = "~/.config/zellij/config.kdl"
+windows_x64 = "~/.config/zellij/config.kdl"
+
 [tools.zoxide]
 description = "Smarter directory navigation"
 deps = ["rust"]
