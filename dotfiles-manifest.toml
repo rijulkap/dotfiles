@@ -182,6 +182,21 @@ source = "wezterm/wezterm.lua"
 linux_x64 = "~/.config/wezterm/wezterm.lua"
 windows_x64 = "~/.wezterm.lua"
 
+[tools.tmux]
+description = "Terminal multiplexer"
+tags = ["dev"]
+check = "tmux"
+
+[tools.tmux.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y tmux"]
+
+[tools.tmux.configs]
+description = "tmux configuration"
+source = "tmux/.tmux.conf"
+
+[tools.tmux.configs.targets]
+linux_x64 = "~/.tmux.conf"
+
 [tools.zoxide]
 description = "Smarter directory navigation"
 deps = ["rust"]

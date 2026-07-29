@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-readonly VERSION="v0.1.4"
+readonly VERSION="v0.1.6"
 readonly REPOSITORY="rijulkap/dotstrap"
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 

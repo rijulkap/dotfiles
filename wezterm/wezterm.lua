@@ -35,7 +35,7 @@ config.window_background_opacity = 0.95
 config.scrollback_lines = 30000
 config.default_workspace = "main"
 
-config.front_end = 'WebGpu'
+config.front_end = "WebGpu"
 
 config.max_fps = 240
 
@@ -45,6 +45,7 @@ config.keys = {
     -- System Keys
     { key = "a", mods = "LEADER|CTRL", action = act.SendKey({ key = "a", mods = "CTRL" }) },
     { key = "c", mods = "LEADER", action = act.ActivateCopyMode },
+    { key = "f", mods = "LEADER", action = act.QuickSelect },
     { key = "phys:Space", mods = "LEADER", action = act.ActivateCommandPalette },
     { key = "Q", mods = "LEADER", action = act.QuitApplication },
     { key = "Enter", mods = "LEADER", action = act.ToggleFullScreen },
@@ -59,14 +60,31 @@ config.keys = {
     { key = "q", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
     { key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
     { key = "o", mods = "LEADER", action = act.RotatePanes("Clockwise") },
-    { key = "r", mods = "LEADER", action = act.ActivateKeyTable({ name = "resize_pane", one_shot = false }) },
+    {
+        key = "r",
+        mods = "LEADER",
+        action = act.ActivateKeyTable({
+            name = "resize_pane",
+            one_shot = false,
+            timeout_milliseconds = 3000,
+        }),
+    },
 
     -- Tabs
     { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
     { key = "[", mods = "LEADER", action = act.ActivateTabRelative(-1) },
     { key = "]", mods = "LEADER", action = act.ActivateTabRelative(1) },
     { key = "n", mods = "LEADER", action = act.ShowTabNavigator },
-    { key = "m", mods = "LEADER", action = act.ActivateKeyTable({ name = "move_tab", one_shot = false }) },
+    {
+        key = "m",
+        mods = "LEADER",
+        action = act.ActivateKeyTable({
+            name = "move_tab",
+            one_shot = false,
+            timeout_milliseconds = 3000,
+        }),
+    },
+    { key = "x", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
 }
 
 for i = 1, 9 do
@@ -103,9 +121,9 @@ local SOLID_RIGHT_ARROW = wezterm.nerdfonts.ple_upper_left_triangle
 local SLASH = wezterm.nerdfonts.fae_slash
 
 -- Disable dynamic tab naming by not setting foreground process as tab name
-wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
-    local background = ""
-    local foreground = ""
+wezterm.on("format-tab-title", function(tab)
+    local background
+    local foreground
     if tab.is_active then
         background = scheme.tab_bar.active_tab.bg_color
         foreground = scheme.tab_bar.active_tab.fg_color
@@ -117,16 +135,8 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
     local edge_background = scheme.tab_bar.background
     local edge_foreground = background
 
-    local pane_zoomed = false
-    local active_pane = tab.active_pane
-    if active_pane.is_zoomed then
-        pane_zoomed = true
-    else
-        pane_zoomed = false
-    end
-
-    local slash_color = ""
-    if pane_zoomed == true then
+    local slash_color
+    if tab.active_pane.is_zoomed then
         slash_color = "#ea76cb"
     else
         slash_color = "#909090"
@@ -139,7 +149,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
         { Background = { Color = background } },
         { Foreground = { Color = foreground } },
         {
-            Text = string.format(" Tab %d ", tab.tab_id + 1),
+            Text = string.format(" Tab %d ", tab.tab_index + 1),
         },
         { Background = { Color = edge_foreground } },
         { Foreground = { Color = slash_color } },
@@ -150,9 +160,8 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
     }
 end)
 
-wezterm.on("format-window-title", function(tab, _, _, _, _)
-    -- Use a static title or base it on the tab index
-    return string.format(" Tab %d ", tab.tab_id + 1)
+wezterm.on("format-window-title", function(tab)
+    return string.format("Tab %d", tab.tab_index + 1)
 end)
 
 -- local basename = function(s)
@@ -177,8 +186,6 @@ local reduce_filepath = function(filepath)
     return table.concat(parts, "/")
 end
 
-local cwd = ""
--- Optional: Disable foreground process info in the right status bar
 wezterm.on("update-status", function(window, pane)
     -- Workspace name
     local stat = window:active_workspace()
@@ -193,17 +200,15 @@ wezterm.on("update-status", function(window, pane)
     end
 
     -- Current working directory
-    local local_cwd = pane:get_current_working_dir()
-    if local_cwd ~= nil then
-        cwd = local_cwd and reduce_filepath(local_cwd.file_path)
+    local cwd = ""
+    local cwd_url = pane:get_current_working_dir()
+    if cwd_url and cwd_url.file_path then
+        cwd = reduce_filepath(cwd_url.file_path)
     end
 
     -- -- Current command
     -- local cmd = pane:get_foreground_process_name()
     -- cmd = cmd and basename(cmd) or ""
-
-    local tab_id = window:active_tab():tab_id()
-    window:active_tab():set_title(string.format("Tab %d ", tab_id + 1))
 
     -- Time
     local time = wezterm.strftime("%H:%M:%S")
