@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-readonly VERSION="v0.1.8"
+# readonly VERSION="v0.1.8"
 readonly REPOSITORY="rijulkap/dotstrap"
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -25,7 +25,7 @@ case "$(uname -s):$(uname -m)" in
     ;;
 esac
 
-url="https://github.com/${REPOSITORY}/releases/download/${VERSION}/${asset}"
+url="https://github.com/${REPOSITORY}/releases/lastest/download/${asset}"
 destination="${SCRIPT_DIR}/dotstrap"
 temporary="${SCRIPT_DIR}/.dotstrap.download.$$"
 

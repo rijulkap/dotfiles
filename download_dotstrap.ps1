@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$Version = "v0.1.8"
+# $Version = "v0.1.8"
 $Repository = "rijulkap/dotstrap"
 
 if ($PSVersionTable.PSEdition -eq "Core" -and -not $IsWindows) {
@@ -14,7 +14,7 @@ if ($Architecture -ne [System.Runtime.InteropServices.Architecture]::X64) {
 }
 
 $Asset = "dotstrap-windows-x64.exe"
-$Url = "https://github.com/$Repository/releases/download/$Version/$Asset"
+$Url = "https://github.com/$Repository/releases/latest/download/$Asset"
 $Destination = Join-Path $PSScriptRoot "dotstrap.exe"
 $Temporary = Join-Path $PSScriptRoot ".dotstrap.download.$PID"
 

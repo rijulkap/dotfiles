@@ -1,16 +1,25 @@
 version = 1
 
-[package_managers.apt]
+[tools.apt]
 description = "Debian/Ubuntu package manager"
-platform = "linux_x64"
-check = "apt-get"
+tags = []
+check = { linux_x64 = "apt-get" }
 hint = "apt-get not found. Install a Debian-based distro or adjust the manifest."
 
-[package_managers.choco]
+[tools.choco]
 description = "Chocolatey package manager for Windows"
-platform = "windows_x64"
-check = "choco"
+tags = []
+check = { windows_x64 = "choco" }
 hint = "Chocolatey not found. Install it from https://chocolatey.org/install."
+
+[tools.unzip]
+description = "ZIP archive extractor"
+deps = ["apt"]
+tags = []
+check = { linux_x64 = "unzip" }
+
+[tools.unzip.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y unzip"]
 
 [tools.git]
 description = "Distributed version control"
@@ -91,13 +100,26 @@ windows_x64 = "~/AppData/Local/nvim"
 
 [tools.tree-sitter-cli]
 description = "Tree-sitter command line interface"
-deps = ["cpp", "rust"]
+deps = ["unzip", "choco"]
 tags = ["all"]
 check = "tree-sitter"
 
 [tools.tree-sitter-cli.install]
-linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked tree-sitter-cli']
-windows_x64 = ["cargo install --locked tree-sitter-cli"]
+linux_x64 = [
+  "curl -fLo /tmp/tree-sitter-cli.zip https://github.com/tree-sitter/tree-sitter/releases/latest/tree-sitter-cli-linux-x64.zip",
+  "rm -rf /tmp/tree-sitter-cli",
+  "mkdir -p /tmp/tree-sitter-cli",
+  "unzip -q /tmp/tree-sitter-cli.zip -d /tmp/tree-sitter-cli",
+  "sudo install -m 0755 /tmp/tree-sitter-cli/tree-sitter /usr/local/bin/tree-sitter",
+  "rm -rf /tmp/tree-sitter-cli /tmp/tree-sitter-cli.zip",
+]
+windows_x64 = [
+  '$Archive = Join-Path $env:TEMP "tree-sitter-cli.zip"; $ExtractDir = Join-Path $env:TEMP "tree-sitter-cli"',
+  'Invoke-WebRequest -Uri "https://github.com/tree-sitter/tree-sitter/releases/latest/tree-sitter-cli-windows-x64.zip" -OutFile $Archive',
+  'Remove-Item $ExtractDir -Recurse -Force -ErrorAction SilentlyContinue; Expand-Archive -Path $Archive -DestinationPath $ExtractDir -Force',
+  'Copy-Item (Join-Path $ExtractDir "tree-sitter.exe") (Join-Path $env:ChocolateyInstall "bin/tree-sitter.exe") -Force',
+  'Remove-Item $Archive, $ExtractDir -Recurse -Force',
+]
 
 [tools.lazygit]
 description = "Terminal UI for Git"
@@ -199,13 +221,24 @@ linux_x64 = "~/.tmux.conf"
 
 [tools.zellij]
 description = "Cross-platform terminal multiplexer"
-deps = ["rust"]
+deps = ["choco"]
 tags = ["dev"]
 check = "zellij"
 
 [tools.zellij.install]
-linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked zellij']
-windows_x64 = ["cargo install --locked zellij"]
+linux_x64 = [
+  "curl -fLo /tmp/zellij.tar.gz https://github.com/zellij-org/zellij/releases/latest/zellij-x86_64-unknown-linux-musl.tar.gz",
+  "tar -xzf /tmp/zellij.tar.gz -C /tmp zellij",
+  "sudo install -m 0755 /tmp/zellij /usr/local/bin/zellij",
+  "rm -f /tmp/zellij /tmp/zellij.tar.gz",
+]
+windows_x64 = [
+  '$Archive = Join-Path $env:TEMP "zellij.zip"; $ExtractDir = Join-Path $env:TEMP "zellij-release"',
+  'Invoke-WebRequest -Uri "https://github.com/zellij-org/zellij/releases/latest/v0.44.3/zellij-x86_64-pc-windows-msvc.zip" -OutFile $Archive',
+  'Remove-Item $ExtractDir -Recurse -Force -ErrorAction SilentlyContinue; Expand-Archive -Path $Archive -DestinationPath $ExtractDir -Force',
+  'Copy-Item (Join-Path $ExtractDir "zellij.exe") (Join-Path $env:ChocolateyInstall "bin/zellij.exe") -Force',
+  'Remove-Item $Archive, $ExtractDir -Recurse -Force',
+]
 
 [tools.zellij.configs]
 description = "Zellij configuration"
@@ -217,22 +250,36 @@ windows_x64 = "~/AppData/Roaming/zellij/config/config.kdl"
 
 [tools.zoxide]
 description = "Smarter directory navigation"
-deps = ["rust"]
+deps = ["apt", "choco"]
 tags = ["dev"]
 check = "zoxide"
 
 [tools.zoxide.install]
-linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked zoxide']
-windows_x64 = ["cargo install --locked zoxide"]
+linux_x64 = [
+  "curl -fLo /tmp/zoxide.deb https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide_0.10.0-1_amd64.deb",
+  "sudo apt-get install -y /tmp/zoxide.deb",
+  "rm -f /tmp/zoxide.deb",
+]
+windows_x64 = [
+  '$Archive = Join-Path $env:TEMP "zoxide.zip"; $ExtractDir = Join-Path $env:TEMP "zoxide-release"',
+  'Invoke-WebRequest -Uri "https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide-0.10.0-x86_64-pc-windows-msvc.zip" -OutFile $Archive',
+  'Remove-Item $ExtractDir -Recurse -Force -ErrorAction SilentlyContinue; Expand-Archive -Path $Archive -DestinationPath $ExtractDir -Force',
+  'Copy-Item (Join-Path $ExtractDir "zoxide.exe") (Join-Path $env:ChocolateyInstall "bin/zoxide.exe") -Force',
+  'Remove-Item $Archive, $ExtractDir -Recurse -Force',
+]
 
 [tools.yazi]
 description = "Terminal file manager"
-deps = ["rust"]
+deps = ["apt", "choco"]
 tags = []
 check = "yazi"
 
 [tools.yazi.install]
-linux_x64 = ['. "$HOME/.cargo/env" 2>/dev/null || true; cargo install --locked yazi-fm yazi-cli']
+linux_x64 = [
+  "curl -fLo /tmp/yazi.deb https://github.com/sxyazi/yazi/releases/latest/yazi-x86_64-unknown-linux-gnu.deb",
+  "sudo apt-get install -y /tmp/yazi.deb",
+  "rm -f /tmp/yazi.deb",
+]
 windows_x64 = ["choco install yazi -y"]
 
 [tools.yazi.configs]
