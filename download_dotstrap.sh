@@ -25,7 +25,7 @@ case "$(uname -s):$(uname -m)" in
     ;;
 esac
 
-url="https://github.com/${REPOSITORY}/releases/lastest/download/${asset}"
+url="https://github.com/${REPOSITORY}/releases/latest/download/${asset}"
 destination="${SCRIPT_DIR}/dotstrap"
 temporary="${SCRIPT_DIR}/.dotstrap.download.$$"
 
