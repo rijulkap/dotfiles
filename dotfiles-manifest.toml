@@ -75,6 +75,21 @@ source = "fish/config.fish"
 [tools.fish.configs.targets]
 linux_x64 = "~/.config/fish/config.fish"
 
+[tools.pwsh]
+description = "PowerShell"
+tags = ["dev"]
+check = "pwsh"
+
+[tools.pwsh.install]
+windows_x64 = ["choco install powershell-core -y"]
+
+[tools.pwsh.configs]
+description = "PowerShell profile"
+source = "pwsh/Profile.ps1"
+
+[tools.pwsh.configs.targets]
+windows_x64 = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+
 [tools.neovim]
 description = "Neovim editor"
 deps = ["tree-sitter-cli", "ripgrep", "fd", "fzf"]
