@@ -219,6 +219,23 @@ source = "wezterm/wezterm.lua"
 linux_x64 = "~/.config/wezterm/wezterm.lua"
 windows_x64 = "~/.wezterm.lua"
 
+[tools.alacritty]
+description = "GPU-accelerated terminal emulator"
+tags = []
+check = "alacritty"
+
+[tools.alacritty.install]
+linux_x64 = ["sudo apt-get update", "sudo apt-get install -y alacritty"]
+windows_x64 = ["choco install alacritty -y"]
+
+[tools.alacritty.configs]
+description = "Alacritty configuration"
+source = "alacritty/alacritty.toml"
+
+[tools.alacritty.configs.targets]
+linux_x64 = "~/.config/alacritty/alacritty.toml"
+windows_x64 = "~/AppData/Roaming/alacritty/alacritty.toml"
+
 [tools.tmux]
 description = "Terminal multiplexer"
 tags = ["dev"]
