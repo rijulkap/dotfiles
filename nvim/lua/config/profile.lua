@@ -21,7 +21,10 @@ function M.has(feature)
         return true
     end
 
-    return feature ~= "lsp" and feature ~= "treesitter" and feature ~= "formatting"
+    return feature ~= "lsp"
+        and feature ~= "treesitter"
+        and feature ~= "formatting"
+        and feature ~= "debugging"
 end
 
 return M

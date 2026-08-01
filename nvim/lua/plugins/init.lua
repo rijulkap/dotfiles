@@ -28,6 +28,9 @@ if profile.has("lsp") then
     require("plugins.lsp")
     require("plugins.roslyn")
 end
+if profile.has("debugging") then
+    require("plugins.dap")
+end
 
 -- Git
 require("plugins.gitsigns")
