@@ -18,7 +18,10 @@ local function setup_dap()
             sections = { "scopes", "breakpoints", "threads", "exceptions", "repl", "console" },
             default_section = "scopes",
         },
-        windows = { height = 18 },
+        windows = {
+            size = 18,
+            position = "below",
+        },
         switchbuf = "usetab,uselast",
     })
 
