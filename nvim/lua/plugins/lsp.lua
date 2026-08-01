@@ -39,9 +39,13 @@ local function install_missing_lsp()
     local function enable_lsp(pkg)
         local lsp_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
 
-        -- Roslyn is configured and enabled by plugins.roslyn.
-        if not lsp_name or pkg.name == "roslyn" then
+        if not lsp_name then
             return
+        end
+
+        -- Use a native roslyn_ls-derived config with multi-solution selection.
+        if pkg.name == "roslyn" then
+            lsp_name = "roslyn"
         end
 
         vim.lsp.enable(lsp_name)
