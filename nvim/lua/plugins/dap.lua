@@ -133,10 +133,12 @@ require("pluginmgr").add_plugin({
         dependencies = { "nvim-dap", "nvim-dap-view", "nvim-dap-virtual-text" },
         cmd = { "DapStart", "DapStop", "DapToggleUI" },
         keys = {
-            { "<leader>db", desc = "Debug: Toggle Breakpoint" },
-            { "<leader>dB", desc = "Debug: Conditional Breakpoint" },
-            { "<leader>dc", desc = "Debug: Start/Continue" },
+            { lhs = "<leader>db", desc = "Debug: Toggle Breakpoint" },
+            { lhs = "<leader>dB", desc = "Debug: Conditional Breakpoint" },
+            { lhs = "<leader>dc", desc = "Debug: Start/Continue" },
         },
-        config = setup_dap,
+        config = function()
+            setup_dap()
+        end,
     },
 })
