@@ -113,18 +113,30 @@ end
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/mfussenegger/nvim-dap",
+    data = { lazy = true },
 })
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/igorlfs/nvim-dap-view",
     version = vim.version.range("1.*"),
+    data = { lazy = true },
 })
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/theHamsta/nvim-dap-virtual-text",
+    data = { lazy = true },
 })
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/jay-babu/mason-nvim-dap.nvim",
-    data = { config = setup_dap },
+    data = {
+        dependencies = { "nvim-dap", "nvim-dap-view", "nvim-dap-virtual-text" },
+        cmd = { "DapStart", "DapStop", "DapToggleUI" },
+        keys = {
+            { "<leader>db", desc = "Debug: Toggle Breakpoint" },
+            { "<leader>dB", desc = "Debug: Conditional Breakpoint" },
+            { "<leader>dc", desc = "Debug: Start/Continue" },
+        },
+        config = setup_dap,
+    },
 })
