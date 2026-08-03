@@ -37,15 +37,18 @@ local function install_missing_lsp()
     end
 
     local function enable_lsp(pkg)
-        local lsp_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
+        local lsp_name
+
+        -- The custom Mason registry package does not necessarily advertise an
+        -- lspconfig name, so resolve our native Roslyn config before the guard.
+        if pkg.name == "roslyn" then
+            lsp_name = "roslyn"
+        else
+            lsp_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
+        end
 
         if not lsp_name then
             return
-        end
-
-        -- Use a native roslyn_ls-derived config with multi-solution selection.
-        if pkg.name == "roslyn" then
-            lsp_name = "roslyn"
         end
 
         vim.lsp.enable(lsp_name)
