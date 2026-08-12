@@ -1,7 +1,8 @@
 local setup_flash
 
 require("pluginmgr").add_plugin({
-    src = "https://github.com/folke/flash.nvim",
+    src = "https://github.com/pedro757/flash.nvim",
+    version = "fix/neovim-0.13-search-state",
     data = { config =function() setup_flash() end },
 })
 
