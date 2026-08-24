@@ -35,6 +35,10 @@ vim.api.nvim_create_autocmd("LspDetach", {
                 return client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight)
             end)
 
+            if not vim.api.nvim_buf_is_valid(event.buf) then
+                return
+            end
+
             if not has_highlight_client then
                 vim.lsp.util.buf_clear_references(event.buf)
                 vim.api.nvim_clear_autocmds({ group = document_highlight_group, buffer = event.buf })
