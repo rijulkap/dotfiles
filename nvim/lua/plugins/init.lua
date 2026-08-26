@@ -35,6 +35,7 @@ end
 require("plugins.gitsigns")
 
 -- Completion
+require("plugins.autopairs")
 require("plugins.luasnip")
 require("plugins.blink")
 
