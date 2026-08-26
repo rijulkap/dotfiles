@@ -51,6 +51,9 @@ require("plugins.oil")
 --misc
 require("plugins.flash")
 
+--AI
+require("plugins.ai")
+
 -- Resolve untracked Extras
 require("plugins.Extras")
 
