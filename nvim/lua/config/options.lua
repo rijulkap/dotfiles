@@ -30,7 +30,10 @@ vim.opt.sidescrolloff = 8
 vim.opt.hidden = true
 vim.opt.wrap = false
 vim.opt.showcmd = false
-vim.opt.clipboard = "unnamedplus"
+-- Avoid loading the platform clipboard provider while opening the first file.
+vim.schedule(function()
+    vim.opt.clipboard = "unnamedplus"
+end)
 vim.opt.shortmess:append({ W = true, I = true, c = true, C = true, F = true })
 vim.opt.showmode = false -- Dont show mode since we have a statusline
 vim.opt.cursorline = true

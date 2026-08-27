@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 local profile = require("config.profile")
 vim.g.lite_enabled = profile.is_lite()
 

@@ -1,9 +1,23 @@
 local setup_mason
+local setup_lspconfig
 local setup_lazydev
+
+local package_to_lsp = {
+    basedpyright = "basedpyright",
+    clangd = "clangd",
+    ["json-lsp"] = "jsonls",
+    ["lua-language-server"] = "lua_ls",
+    roslyn = "roslyn",
+    ruff = "ruff",
+    ["rust-analyzer"] = "rust_analyzer",
+    tinymist = "tinymist",
+    ["typescript-language-server"] = "ts_ls",
+}
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/mason-org/mason.nvim",
     data = {
+        event = "VimEnter",
         config = function()
             setup_mason()
         end,
@@ -12,6 +26,11 @@ require("pluginmgr").add_plugin({
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/neovim/nvim-lspconfig",
+    data = {
+        config = function()
+            setup_lspconfig()
+        end,
+    },
 })
 
 require("pluginmgr").add_plugin({
@@ -25,7 +44,41 @@ require("pluginmgr").add_plugin({
     },
 })
 
-local function install_missing_lsp()
+local function configured_tools()
+    local tools = {}
+    local seen = {}
+
+    for _, names in ipairs({ vim.g.lsps or {}, vim.g.formatters or {} }) do
+        for _, name in ipairs(names) do
+            if not seen[name] then
+                seen[name] = true
+                tools[#tools + 1] = name
+            end
+        end
+    end
+
+    return tools
+end
+
+local function package_is_installed(name)
+    local receipt = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", name, "mason-receipt.json")
+    return vim.uv.fs_stat(receipt) ~= nil
+end
+
+local function install_missing_tools()
+    local missing = {}
+    for _, name in ipairs(configured_tools()) do
+        if not package_is_installed(name) and vim.fn.executable(name) ~= 1 then
+            missing[#missing + 1] = name
+        end
+    end
+
+    -- Keep normal startups local and quiet. The registry is only refreshed
+    -- when there is actually something to install.
+    if #missing == 0 then
+        return
+    end
+
     local ok, mr = pcall(require, "mason-registry")
     if not ok then
         vim.notify("mason-registry not found", vim.log.levels.ERROR)
@@ -36,17 +89,8 @@ local function install_missing_lsp()
         vim.notify(msg, level or vim.log.levels.INFO)
     end
 
-    local function enable_lsp(pkg)
-        local lsp_name
-
-        -- The custom Mason registry package does not necessarily advertise an
-        -- lspconfig name, so resolve our native Roslyn config before the guard.
-        if pkg.name == "roslyn" then
-            lsp_name = "roslyn"
-        else
-            lsp_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
-        end
-
+    local function enable_lsp(package_name)
+        local lsp_name = package_to_lsp[package_name]
         if not lsp_name then
             return
         end
@@ -55,51 +99,27 @@ local function install_missing_lsp()
     end
 
     mr.refresh(function()
-        local installed = {}
-        for _, name in ipairs(mr.get_installed_package_names()) do
-            installed[name] = true
-
-            local has_pkg, pkg = pcall(mr.get_package, name)
-            if has_pkg then
-                enable_lsp(pkg)
-            end
-        end
-
-        local seen = {}
-
-        for _, package_name in ipairs(vim.g.lsps or {}) do
-            seen[package_name] = true
-
+        for _, package_name in ipairs(missing) do
             local has_pkg, pkg = pcall(mr.get_package, package_name)
-
             if has_pkg then
-                if not installed[package_name] and vim.fn.executable(package_name) ~= 1 then
-                    notify("Installing missing lsp: " .. package_name)
-
-                    pkg:install():once("install:success", function()
-                        enable_lsp(pkg)
-                    end)
-                elseif not installed[package_name] then
-                    enable_lsp(pkg)
-                end
+                notify("Installing missing tool: " .. package_name)
+                pkg:install():once("install:success", function()
+                    enable_lsp(package_name)
+                end)
             else
                 notify("Mason package not found: " .. package_name, vim.log.levels.WARN)
             end
         end
-
-        for _, tool in ipairs(vim.g.formatters or {}) do
-            if not seen[tool] then
-                seen[tool] = true
-
-                local has_pkg, pkg = pcall(mr.get_package, tool)
-                if has_pkg and not pkg:is_installed() then
-                    pkg:install()
-                elseif not has_pkg then
-                    notify("Mason tool not found: " .. tool, vim.log.levels.WARN)
-                end
-            end
-        end
     end)
+end
+
+setup_lspconfig = function()
+    for _, package_name in ipairs(vim.g.lsps or {}) do
+        local lsp_name = package_to_lsp[package_name]
+        if lsp_name then
+            vim.lsp.enable(lsp_name)
+        end
+    end
 end
 
 setup_mason = function()
@@ -110,14 +130,9 @@ setup_mason = function()
         },
     })
 
-    -- Let the dashboard render before refreshing registries and installing
-    -- tools. This still runs without waiting for a real file buffer.
-    vim.api.nvim_create_autocmd("VimEnter", {
-        once = true,
-        callback = function()
-            vim.defer_fn(install_missing_lsp, 100)
-        end,
-    })
+    -- A filesystem-only check is cheap; registry refresh/network work only
+    -- happens when one of the configured tools is missing.
+    vim.defer_fn(install_missing_tools, 100)
 end
 
 setup_lazydev = function()
