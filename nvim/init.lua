@@ -13,7 +13,7 @@ else
     if profile.has("lsp") then
         require("lsp")
     end
-    -- require("marks") --currently using snacks
+    require("marks") --currently using snacks
     require("config.plugins")
     require("winbar")
     require("statusline")

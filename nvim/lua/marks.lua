@@ -1,61 +1,40 @@
-local ns = vim.api.nvim_create_namespace("rijulkap/marks")
-
----@param bufnr integer
----@param mark vim.fn.getmarklist.ret.item
-local function decor_mark(bufnr, mark)
-    vim.api.nvim_buf_set_extmark(bufnr, ns, mark.pos[2] - 1, 0, {
-        sign_text = mark.mark:sub(2),
-        sign_hl_group = "DiagnosticSignOk",
-        virt_text_pos = "right_align",
-        priority = 2,
-    })
+local function redraw_marks()
+    -- Snacks clears its status-column cache every 50 ms, but does not redraw
+    -- afterward. Redraw once the cached mark state has expired.
+    vim.defer_fn(function()
+        -- An uppercase mark may have moved from another visible buffer.
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            vim.api.nvim__redraw({ win = win, range = { 0, -1 } })
+        end
+        vim.api.nvim__redraw({ flush = true })
+    end, 60)
 end
 
-vim.api.nvim_set_decoration_provider(ns, {
-    on_win = function(_, _, bufnr, _, _)
-        -- Only enable mark signs for buffers with a filename.
-        if vim.api.nvim_buf_get_name(bufnr) == "" then
-            return
+---@param mark string
+local function toggle_mark(mark)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local row, col = cursor[1], cursor[2]
+    local is_global = mark:match("^[A-Z]$") ~= nil
+    local old_pos = is_global and vim.api.nvim_get_mark(mark, {}) or vim.api.nvim_buf_get_mark(bufnr, mark)
+    local is_same_line = old_pos[1] == row and (not is_global or old_pos[3] == bufnr)
+
+    if is_same_line then
+        if is_global then
+            vim.api.nvim_del_mark(mark)
+        else
+            vim.api.nvim_buf_del_mark(bufnr, mark)
         end
-
-        vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
-
-        local current_file = vim.api.nvim_buf_get_name(bufnr)
-
-        -- Global marks
-        for _, mark in ipairs(vim.fn.getmarklist()) do
-            if mark.mark:match("^.[a-zA-Z]$") then
-                local mark_file = vim.fn.fnamemodify(mark.file, ":p:a")
-                if current_file == mark_file then
-                    decor_mark(bufnr, mark)
-                end
-            end
-        end
-
-        -- Local marks
-        for _, mark in ipairs(vim.fn.getmarklist(bufnr)) do
-            if mark.mark:match("^.[a-zA-Z]$") then
-                decor_mark(bufnr, mark)
-            end
-        end
-    end,
-})
-
--- Redraw screen when marks are changed via `m` commands
-vim.on_key(function(_, typed)
-    if typed:sub(1, 1) ~= "m" then
-        return
+    else
+        -- nvim_buf_set_mark handles both local and global mark names.
+        vim.api.nvim_buf_set_mark(bufnr, mark, row, col, {})
     end
 
-    local mark = typed:sub(2)
+    redraw_marks()
+end
 
-    vim.schedule(function()
-        if mark:match("[A-Z]") then
-            for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-                vim.api.nvim__redraw({ win = win, range = { 0, -1 } })
-            end
-        else
-            vim.api.nvim__redraw({ range = { 0, -1 } })
-        end
-    end)
-end, ns)
+for mark in ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"):gmatch(".") do
+    vim.keymap.set("n", "m" .. mark, function()
+        toggle_mark(mark)
+    end, { desc = "Toggle mark " .. mark })
+end
