@@ -42,6 +42,7 @@ require("pluginmgr").add_plugin({
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
     version = "main",
     data = {
+        build = ":TSUpdate",
         config = function()
             setup_ts()
         end,
@@ -66,24 +67,24 @@ setup_ts = function()
             end, 100)
         end,
     })
-    vim.api.nvim_create_autocmd("PackChanged", {
-        callback = function(ev)
-            local name, kind = ev.data.spec.name, ev.data.kind
-            if name == "nvim-treesitter" and kind == "update" then
-                if not ev.data.active then
-                    vim.cmd.packadd("nvim-treesitter")
-                end
-                vim.cmd("TSUpdate")
-            end
-        end,
-    })
-
     vim.api.nvim_create_autocmd("FileType", {
         pattern = filetypes,
-        callback = function()
-            vim.treesitter.start()
+        callback = function(event)
+            local lang = vim.treesitter.language.get_lang(vim.bo[event.buf].filetype)
+            local parser = lang and vim.treesitter.get_parser(event.buf, lang)
+
+            -- Leave the filetype's standard indentexpr in place when the
+            -- parser is missing or has no Tree-sitter indentation queries.
+            if not parser then
+                return
+            end
+
+            pcall(vim.treesitter.start, event.buf, lang)
             -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            local query_ok, indent_query = pcall(vim.treesitter.query.get, lang, "indents")
+            if query_ok and indent_query then
+                vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
         end,
     })
 end
