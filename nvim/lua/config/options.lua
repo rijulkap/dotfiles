@@ -8,13 +8,15 @@ vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
--- vim.opt.signcolumn = "yes:2"
+vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "›", precedes = "‹" }
+vim.opt.showbreak = "↪ "
+vim.opt.fillchars:append({ eob = " ", fold = " ", foldopen = "", foldclose = "", foldsep = " " })
 vim.opt.inccommand = "nosplit"
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true
@@ -34,6 +36,7 @@ vim.opt.showmode = false -- Dont show mode since we have a statusline
 vim.opt.cursorline = true
 vim.opt.smoothscroll = true
 vim.opt.termguicolors = true -- Enable true colors
+vim.opt.winborder = "rounded"
 vim.opt.confirm = true
 vim.opt.shada = [['20,<10,s5,h]]
 

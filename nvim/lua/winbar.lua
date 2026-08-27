@@ -1,10 +1,5 @@
 local M = {}
 local devicons = require("nvim-web-devicons")
-local mocha = require("catppuccin.palettes").get_palette("mocha")
-
-vim.api.nvim_set_hl(0, "WinBarDir", { fg = mocha.lavender, bold = true })
-vim.api.nvim_set_hl(0, "WinBar", { fg = mocha.blue, bg = mocha.crust }) -- crust = darkest bg
-vim.api.nvim_set_hl(0, "WinBarFile", { fg = mocha.peach, bold = true })
 
 local function get_last_segments(path, count)
     path = path:gsub("\\", "/")
@@ -67,7 +62,7 @@ function M.render()
             if use_short and i == 1 then
                 icon = ""
             end
-            table.insert(rendered, string.format("%%#%s#%s %%#Winbar#%s", hl, icon, segment))
+            table.insert(rendered, string.format("%%#WinBarDir#%s %s", icon, segment))
         end
     end
 
