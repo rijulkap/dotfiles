@@ -33,8 +33,37 @@ local function toggle_mark(mark)
     redraw_marks()
 end
 
+---@param include_global boolean
+local function delete_marks(include_global)
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    for mark in ("abcdefghijklmnopqrstuvwxyz"):gmatch(".") do
+        if vim.api.nvim_buf_get_mark(bufnr, mark)[1] > 0 then
+            vim.api.nvim_buf_del_mark(bufnr, mark)
+        end
+    end
+
+    if include_global then
+        for mark in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):gmatch(".") do
+            if vim.api.nvim_get_mark(mark, {})[1] > 0 then
+                vim.api.nvim_del_mark(mark)
+            end
+        end
+    end
+
+    redraw_marks()
+end
+
 for mark in ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"):gmatch(".") do
     vim.keymap.set("n", "m" .. mark, function()
         toggle_mark(mark)
     end, { desc = "Toggle mark " .. mark })
 end
+
+vim.keymap.set("n", "<leader>md", function()
+    delete_marks(false)
+end, { desc = "Delete buffer marks" })
+
+vim.keymap.set("n", "<leader>mD", function()
+    delete_marks(true)
+end, { desc = "Delete all named marks" })
