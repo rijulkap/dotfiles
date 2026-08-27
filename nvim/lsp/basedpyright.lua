@@ -4,6 +4,7 @@ return {
             disableOrganizeImports = true,
             typeCheckingMode = "standard",
             analysis = {
+                diagnosticMode = "openFilesOnly",
                 ignore = { "*" },
             },
         },
