@@ -5,6 +5,77 @@ local loaded = {}
 local plugins_by_name = {}
 
 local group = vim.api.nvim_create_augroup("LazyPlugins", { clear = true })
+local build_group = vim.api.nvim_create_augroup("PluginBuildHooks", { clear = true })
+
+local function run_job(command, cwd)
+    local output = {}
+    local function collect(_, data)
+        for _, line in ipairs(data or {}) do
+            if line ~= "" then
+                table.insert(output, line)
+            end
+        end
+    end
+
+    local job = vim.fn.jobstart(command, {
+        cwd = cwd,
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stdout = collect,
+        on_stderr = collect,
+    })
+    if job <= 0 then
+        error("failed to start build command")
+    end
+
+    local exit_code = vim.fn.jobwait({ job })[1]
+    if exit_code ~= 0 then
+        local details = #output > 0 and ("\n" .. table.concat(output, "\n")) or ""
+        error(("build command exited with code %s%s"):format(exit_code, details))
+    end
+end
+
+local function run_build(event)
+    local build = event.spec.data and event.spec.data.build
+    if not build then
+        return
+    end
+
+    local needs_plugin = type(build) == "function" or (type(build) == "string" and vim.startswith(build, ":"))
+    if needs_plugin and not event.active then
+        vim.cmd.packadd(event.spec.name)
+    end
+
+    if type(build) == "function" then
+        build(event)
+    elseif type(build) == "string" then
+        if vim.startswith(build, ":") then
+            vim.cmd(build:sub(2))
+        else
+            run_job(build, event.path)
+        end
+    elseif type(build) == "table" then
+        run_job(build, event.path)
+    else
+        error(("unsupported build hook type %q"):format(type(build)))
+    end
+end
+
+vim.api.nvim_create_autocmd("PackChanged", {
+    group = build_group,
+    callback = function(event)
+        if event.data.kind ~= "install" and event.data.kind ~= "update" then
+            return
+        end
+
+        local ok, err = xpcall(run_build, debug.traceback, event.data)
+        if not ok then
+            vim.schedule(function()
+                vim.notify(("Build failed for %s:\n%s"):format(event.data.spec.name, err), vim.log.levels.ERROR)
+            end)
+        end
+    end,
+})
 
 local function load_plugin(plugin)
     local name = plugin.spec.name
