@@ -161,22 +161,17 @@ end
 --     return string.format("%%#%s#%s  %s", M.get_or_create_hl("Special"), "", require("dap").status())
 -- end
 
----@type table<string, string?>
-local progress_status = {
-    client = nil,
-    kind = nil,
-    title = nil,
-}
-
 local diag_aug = vim.api.nvim_create_augroup("rijul/statusline_diagnostics", { clear = true })
 local lsp_names_cache = {}
 local filetype_cache = {}
 
 local function recompute_lsp_names(bufnr)
-    local names = {}
+    local attached = {}
     for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-        names[#names + 1] = client.name
+        attached[client.name] = true
     end
+    local names = vim.tbl_keys(attached)
+    table.sort(names)
 
     lsp_names_cache[bufnr] = #names > 0
             and string.format(
@@ -210,6 +205,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = diag_aug,
     callback = function(args)
         recompute_lsp_names(args.buf)
+        vim.schedule(vim.cmd.redrawstatus)
     end,
 })
 
@@ -219,6 +215,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
         vim.schedule(function()
             if vim.api.nvim_buf_is_valid(args.buf) then
                 recompute_lsp_names(args.buf)
+                vim.cmd.redrawstatus()
             end
         end)
     end,
@@ -231,53 +228,68 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufFilePost", "FileType" }, {
     end,
 })
 
+local function truncate_middle(text, max_width)
+    text = tostring(text or ""):gsub("[\r\n]+", " "):gsub("%s+", " ")
+    if vim.fn.strdisplaywidth(text) <= max_width then
+        return text
+    end
+
+    local keep = max_width - 1
+    local head = math.floor(keep * 0.4)
+    local tail = keep - head
+    local chars = vim.fn.strchars(text)
+    return vim.fn.strcharpart(text, 0, head) .. "…" .. vim.fn.strcharpart(text, chars - tail, tail)
+end
+
 vim.api.nvim_create_autocmd("LspProgress", {
     group = diag_aug,
-    desc = "Update LSP progress in statusline",
-    pattern = { "begin", "end" },
+    desc = "Show LSP progress outside the statusline",
     callback = function(args)
-        if not args.data then
+        local data = args.data
+        local params = data and data.params
+        local value = params and params.value
+        if not data or not data.client_id or not value then
             return
         end
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        local client = vim.lsp.get_client_by_id(data.client_id)
         if not client then
             return
         end
-        progress_status = {
-            client = client.name,
-            kind = args.data.params.value.kind,
-            title = args.data.params.value.title,
-        }
 
-        if progress_status.kind == "end" then
-            progress_status.title = nil
-            vim.defer_fn(function()
-                vim.cmd.redrawstatus()
-            end, 3000)
-        else
-            vim.cmd.redrawstatus()
+        local ok, snacks = pcall(require, "snacks")
+        if not ok then
+            return
         end
+
+        local id = ("lsp-progress:%d:%s"):format(data.client_id, tostring(params.token))
+        if value.kind == "end" then
+            snacks.notifier.hide(id)
+            return
+        end
+
+        local max_width = math.max(30, math.min(80, math.floor(vim.o.columns * 0.35)))
+        local title = truncate_middle(client.name .. " · " .. (value.title or "Working"), max_width)
+        local message = value.message
+        if not message or message == "" then
+            message = value.title or "Working"
+        end
+        if value.percentage then
+            message = ("%d%% · %s"):format(value.percentage, message)
+        end
+
+        snacks.notifier(truncate_middle(message, max_width), vim.log.levels.INFO, {
+            id = id,
+            title = title,
+            icon = icons.diagnostics.Spinner,
+            timeout = false,
+            style = "compact",
+            history = false,
+        })
     end,
 })
 
---- The latest LSP progress message.
----@return string?
-function M.lsp_progress_component()
-    if not progress_status.client or not progress_status.title then
-        return nil
-    end
-    if vim.startswith(vim.api.nvim_get_mode().mode, "i") then
-        return nil
-    end
-
-    return table.concat({
-        string.format("%%#%s#%s ", M.get_or_create_hl("Error"), icons.diagnostics.Spinner),
-        string.format("%%#%s#%s  ", M.get_or_create_hl("Error"), progress_status.client),
-        string.format("%%#%s#%s...", M.get_or_create_hl("Error"), progress_status.title),
-    })
-end
-
---- LSP client names (when there is no progress event).
+--- LSP clients attached to the current buffer.
 ---@return string
 function M.lsp_names_component()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -476,7 +488,8 @@ function M.render()
             M.python_venv_component(),
         })
         local right = concat_components({
-            M.lsp_progress_component() or concat_components({ M.diagnostics_component(), M.lsp_names_component() }),
+            M.diagnostics_component(),
+            M.lsp_names_component(),
             M.filetype_component(),
             M.eol_encoding_component(),
             M.position_component(),
