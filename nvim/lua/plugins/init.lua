@@ -51,6 +51,7 @@ require("plugins.oil")
 
 --misc
 require("plugins.flash")
+require("plugins.grugfar")
 
 --AI
 require("plugins.ai")
