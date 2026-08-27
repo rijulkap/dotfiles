@@ -114,7 +114,7 @@ check = "nvim"
 
 [tools.neovim.install]
 linux_x64 = [
-  "curl -fLo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage",
+  "curl -fLo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage",
   "chmod +x /tmp/nvim.appimage",
   "sudo install /tmp/nvim.appimage /usr/local/bin/nvim",
   "rm -f /tmp/nvim.appimage",
@@ -137,7 +137,7 @@ check = "tree-sitter"
 
 [tools.tree-sitter-cli.install]
 linux_x64 = [
-  "curl -fLo /tmp/tree-sitter-cli.zip https://github.com/tree-sitter/tree-sitter/releases/latest/tree-sitter-cli-linux-x64.zip",
+  "curl -fLo /tmp/tree-sitter-cli.zip https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-linux-x64.zip",
   "rm -rf /tmp/tree-sitter-cli",
   "mkdir -p /tmp/tree-sitter-cli",
   "unzip -q /tmp/tree-sitter-cli.zip -d /tmp/tree-sitter-cli",
@@ -146,7 +146,7 @@ linux_x64 = [
 ]
 windows_x64 = [
   '$Archive = Join-Path $env:TEMP "tree-sitter-cli.zip"; $ExtractDir = Join-Path $env:TEMP "tree-sitter-cli"',
-  'Invoke-WebRequest -Uri "https://github.com/tree-sitter/tree-sitter/releases/latest/tree-sitter-cli-windows-x64.zip" -OutFile $Archive',
+  'Invoke-WebRequest -Uri "https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-windows-x64.zip" -OutFile $Archive',
   'Remove-Item $ExtractDir -Recurse -Force -ErrorAction SilentlyContinue; Expand-Archive -Path $Archive -DestinationPath $ExtractDir -Force',
   'Copy-Item (Join-Path $ExtractDir "tree-sitter.exe") (Join-Path $env:ChocolateyInstall "bin/tree-sitter.exe") -Force',
   'Remove-Item $Archive, $ExtractDir -Recurse -Force',
