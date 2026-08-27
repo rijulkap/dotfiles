@@ -65,6 +65,10 @@ end
 local config = vim.deepcopy(vim.lsp.config.roslyn_ls)
 config.name = "roslyn"
 config.on_init = on_init
+config.settings["csharp|background_analysis"] = {
+    dotnet_analyzer_diagnostics_scope = "openFiles",
+    dotnet_compiler_diagnostics_scope = "openFiles",
+}
 
 local function switch_target()
     local bufnr = vim.api.nvim_get_current_buf()
