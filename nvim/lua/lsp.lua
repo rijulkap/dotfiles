@@ -329,59 +329,15 @@ local default_diagnostic_config = {
 
 vim.diagnostic.config(default_diagnostic_config)
 
--- local datapath = vim.fn.stdpath("data")
-
+-- lspconfig / custom lsp config names here
 vim.g.lsps = {
     "basedpyright",
     "clangd",
-    "json-lsp",
-    "lua-language-server",
+    "jsonls",
+    "lua_ls",
     "ruff",
-    "rust-analyzer",
+    "rust_analyzer",
     "tinymist",
-    "roslyn",
-    "typescript-language-server",
+    { name = "roslyn", replace = "roslyn_ls" },
+    "ts_ls",
 }
-
--- Set Toggles
--- Snacks.toggle
---     .new({
---         id = "Virtual diagnostics (Lines)",
---         name = "Virtual diagnostics (Lines)",
---         get = function()
---             if vim.diagnostic.config().virtual_lines then
---                 return true
---             else
---                 return false
---             end
---         end,
---         set = function(state)
---             if state == true then
---                 vim.diagnostic.config({ virtual_lines = def_virtual_lines.isTrue })
---             else
---                 vim.diagnostic.config({ virtual_lines = def_virtual_lines.isFalse })
---             end
---         end,
---     })
---     :map("<leader>uvl")
---
--- Snacks.toggle
---     .new({
---         id = "Virtual diagnostics (Text)",
---         name = "Virtual diagnostics (Text)",
---         get = function()
---             if vim.diagnostic.config().virtual_text then
---                 return true
---             else
---                 return false
---             end
---         end,
---         set = function(state)
---             if state == true then
---                 vim.diagnostic.config({ virtual_text = def_virtual_text.isTrue })
---             else
---                 vim.diagnostic.config({ virtual_text = def_virtual_text.isFalse })
---             end
---         end,
---     })
---     :map("<leader>uvt")
