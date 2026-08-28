@@ -18,6 +18,7 @@ local languages = {
     typescript = { "typescript" },
     vim = { "vim" },
     vimdoc = {},
+    yaml = {"yaml"}
 }
 
 local parsers = vim.tbl_keys(languages)
