@@ -129,7 +129,7 @@ setup_snacks = function()
     vim.keymap.set("n", "<leader>bD", function()
         Snacks.bufdelete.other()
     end, { desc = "Delete Other Buffers" })
-    vim.keymap.set("n", "<leader>cR", function()
+    vim.keymap.set("n", "<leader>lR", function()
         Snacks.rename.rename_file()
     end, { desc = "Rename File" })
 
