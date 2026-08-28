@@ -9,11 +9,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "typst", "markdown" },
     callback = function(event)
-        if vim.bo.buftype ~= "nofile" then
-            vim.opt_local.spell = true
-        end
+        -- if vim.bo.buftype ~= "nofile" then
+        --     vim.opt_local.spell = true
+        -- end
         vim.opt_local.wrap = true
-        vim.opt_local.spelllang = "en_us"
+        -- vim.opt_local.spelllang = "en_us"
         vim.keymap.set(
             "n",
             "k",
