@@ -1,24 +1,18 @@
 local setup_mason
-local setup_mason_lspconfig
-local setup_lspconfig
 local setup_lazydev
 
-local function lsp_entries()
-    local entries = {}
-    for _, entry in ipairs(vim.g.lsps or {}) do
-        entries[#entries + 1] = type(entry) == "string" and { name = entry } or entry
-    end
-    return entries
+local function mason_package_name(lsp_name)
+    local mappings = require("mason-lspconfig").get_mappings()
+    return mappings.lspconfig_to_package[lsp_name]
 end
 
-local function mason_package_name(entry)
-    if entry.package then
-        return entry.package
+local mason_lsps = {}
+for _, entry in ipairs(vim.g.lsps or {}) do
+    if type(entry) == "string" then
+        mason_lsps[#mason_lsps + 1] = entry
+    elseif not entry.Condition or entry.Condition() then
+        mason_lsps[#mason_lsps + 1] = entry.name
     end
-
-    local lsp_name = entry.replace or entry.name
-    local mappings = require("mason-lspconfig").get_mappings()
-    return mappings.lspconfig_to_package[lsp_name] or lsp_name
 end
 
 require("pluginmgr").add_plugin({
@@ -33,11 +27,6 @@ require("pluginmgr").add_plugin({
 
 require("pluginmgr").add_plugin({
     src = "https://github.com/neovim/nvim-lspconfig",
-    data = {
-        config = function()
-            setup_lspconfig()
-        end,
-    },
 })
 
 require("pluginmgr").add_plugin({
@@ -45,7 +34,7 @@ require("pluginmgr").add_plugin({
     data = {
         dependencies = { "mason.nvim", "nvim-lspconfig" },
         config = function()
-            setup_mason_lspconfig()
+            require("mason-lspconfig").setup()
         end,
     },
 })
@@ -65,9 +54,9 @@ local function configured_tools()
     local tools = {}
     local seen = {}
 
-    for _, entry in ipairs(lsp_entries()) do
-        local package_name = mason_package_name(entry)
-        if not seen[package_name] then
+    for _, lsp_name in ipairs(mason_lsps) do
+        local package_name = mason_package_name(lsp_name)
+        if package_name and not seen[package_name] then
             seen[package_name] = true
             tools[#tools + 1] = package_name
         end
@@ -90,7 +79,7 @@ end
 local function install_missing_tools()
     local missing = {}
     for _, name in ipairs(configured_tools()) do
-        if not package_is_installed(name) and vim.fn.executable(name) ~= 1 then
+        if not package_is_installed(name) then
             missing[#missing + 1] = name
         end
     end
@@ -111,23 +100,12 @@ local function install_missing_tools()
         vim.notify(msg, level or vim.log.levels.INFO)
     end
 
-    local function enable_lsp(package_name)
-        for _, entry in ipairs(lsp_entries()) do
-            if mason_package_name(entry) == package_name then
-                vim.lsp.enable(entry.name)
-                return
-            end
-        end
-    end
-
     mr.refresh(function()
         for _, package_name in ipairs(missing) do
             local has_pkg, pkg = pcall(mr.get_package, package_name)
             if has_pkg then
                 notify("Installing missing tool: " .. package_name)
-                pkg:install():once("install:success", function()
-                    enable_lsp(package_name)
-                end)
+                pkg:install()
             else
                 notify("Mason package not found: " .. package_name, vim.log.levels.WARN)
             end
@@ -135,32 +113,8 @@ local function install_missing_tools()
     end)
 end
 
-setup_lspconfig = function()
-    for _, entry in ipairs(lsp_entries()) do
-        vim.lsp.enable(entry.name)
-    end
-end
-
-setup_mason_lspconfig = function()
-    local exclude = {}
-    for _, entry in ipairs(lsp_entries()) do
-        if entry.replace then
-            exclude[#exclude + 1] = entry.replace
-        end
-    end
-
-    require("mason-lspconfig").setup({
-        automatic_enable = { exclude = exclude },
-    })
-end
-
 setup_mason = function()
-    require("mason").setup({
-        registries = {
-            "github:mason-org/mason-registry",
-            "github:Crashdummyy/mason-registry",
-        },
-    })
+    require("mason").setup({})
 
     -- A filesystem-only check is cheap; registry refresh/network work only
     -- happens when one of the configured tools is missing.

@@ -60,19 +60,20 @@ local function on_init(client)
     end)
 end
 
--- Inherit native handlers, capabilities, settings and root detection. Only
--- replace initialization so multiple solutions can be selected explicitly.
-local config = vim.deepcopy(vim.lsp.config.roslyn_ls)
-config.name = "roslyn"
-config.on_init = on_init
-config.settings["csharp|background_analysis"] = {
-    dotnet_analyzer_diagnostics_scope = "openFiles",
-    dotnet_compiler_diagnostics_scope = "openFiles",
+-- Override nvim-lspconfig's native Roslyn config after its defaults load.
+local config = {
+    on_init = on_init,
+    settings = {
+        ["csharp|background_analysis"] = {
+            dotnet_analyzer_diagnostics_scope = "openFiles",
+            dotnet_compiler_diagnostics_scope = "openFiles",
+        },
+    },
 }
 
 local function switch_target()
     local bufnr = vim.api.nvim_get_current_buf()
-    local client = vim.lsp.get_clients({ name = "roslyn", bufnr = bufnr })[1]
+    local client = vim.lsp.get_clients({ name = "roslyn_ls", bufnr = bufnr })[1]
     if not client then
         vim.notify("Roslyn is not attached to this buffer", vim.log.levels.WARN, { title = "roslyn" })
         return
@@ -97,7 +98,7 @@ local function switch_target()
         local root_dir = vim.fs.dirname(solution)
         selected_solutions[root_dir] = solution
 
-        local target_config = vim.deepcopy(config)
+        local target_config = vim.deepcopy(client.config)
         target_config.root_dir = root_dir
         target_config.on_init = function(new_client)
             open_solution(new_client, solution)
