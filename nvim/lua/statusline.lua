@@ -151,16 +151,6 @@ function M.diff_component()
     )
 end
 
---- The current debugging status (if any).
--- ---@return string?
--- function M.dap_component()
---     if not package.loaded["dap"] or require("dap").status() == "" then
---         return nil
---     end
---     -- return string.format('%%#%s#%s  %s', M.get_or_create_hl 'Special', icons.misc.bug, require('dap').status())
---     return string.format("%%#%s#%s  %s", M.get_or_create_hl("Special"), "", require("dap").status())
--- end
-
 local diag_aug = vim.api.nvim_create_augroup("rijul/statusline_diagnostics", { clear = true })
 local lsp_names_cache = {}
 local filetype_cache = {}
@@ -225,67 +215,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufFilePost", "FileType" }, {
     group = diag_aug,
     callback = function(args)
         recompute_filetype(args.buf)
-    end,
-})
-
-local function truncate_middle(text, max_width)
-    text = tostring(text or ""):gsub("[\r\n]+", " "):gsub("%s+", " ")
-    if vim.fn.strdisplaywidth(text) <= max_width then
-        return text
-    end
-
-    local keep = max_width - 1
-    local head = math.floor(keep * 0.4)
-    local tail = keep - head
-    local chars = vim.fn.strchars(text)
-    return vim.fn.strcharpart(text, 0, head) .. "…" .. vim.fn.strcharpart(text, chars - tail, tail)
-end
-
-vim.api.nvim_create_autocmd("LspProgress", {
-    group = diag_aug,
-    desc = "Show LSP progress outside the statusline",
-    callback = function(args)
-        local data = args.data
-        local params = data and data.params
-        local value = params and params.value
-        if not data or not data.client_id or not value then
-            return
-        end
-
-        local client = vim.lsp.get_client_by_id(data.client_id)
-        if not client then
-            return
-        end
-
-        local ok, snacks = pcall(require, "snacks")
-        if not ok then
-            return
-        end
-
-        local id = ("lsp-progress:%d:%s"):format(data.client_id, tostring(params.token))
-        if value.kind == "end" then
-            snacks.notifier.hide(id)
-            return
-        end
-
-        local max_width = math.max(30, math.min(80, math.floor(vim.o.columns * 0.35)))
-        local title = truncate_middle(client.name .. " · " .. (value.title or "Working"), max_width)
-        local message = value.message
-        if not message or message == "" then
-            message = value.title or "Working"
-        end
-        if value.percentage then
-            message = ("%d%% · %s"):format(value.percentage, message)
-        end
-
-        snacks.notifier(truncate_middle(message, max_width), vim.log.levels.INFO, {
-            id = id,
-            title = title,
-            icon = icons.diagnostics.Spinner,
-            timeout = false,
-            style = "compact",
-            history = false,
-        })
     end,
 })
 

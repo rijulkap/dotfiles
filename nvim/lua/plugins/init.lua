@@ -40,8 +40,6 @@ require("plugins.luasnip")
 require("plugins.blink")
 
 -- UI
-require("plugins.bufferline")
-require("plugins.lualine")
 if profile.has("treesitter") then
     require("plugins.markdown-stuff")
 end
