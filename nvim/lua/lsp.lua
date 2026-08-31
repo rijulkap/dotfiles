@@ -119,7 +119,7 @@ local function update_qflist(opts)
         table.insert(items, {
             bufnr = diag.bufnr,
             lnum = diag.lnum + 1, -- Quickfix expects 1-based lines
-            col = diag.col + 1,   -- Same for columns
+            col = diag.col + 1, -- Same for columns
             text = prefix .. diag.message,
             severity = diag.severity,
         })
@@ -331,9 +331,15 @@ vim.diagnostic.config(default_diagnostic_config)
 
 ---@class MasonLsp
 ---@field name string Native LSP config name
----@field Condition? fun(): boolean Whether Mason should install this LSP
+---
+---@class MasonInstallResult
+---@field install boolean
+---
+---@field MasonInstallCondition? fun(): MasonInstallResult Whether Mason should install this LSP, and if it should be enabled
 
--- LSPs Mason should install; mason-lspconfig enables installed servers.
+-- List of all defualt LSPs
+-- All Mason installed lsps will be auto enabled using mason-lspconfig
+-- If Confition == false, the lsp is manually enabled
 ---@type (string|MasonLsp)[]
 vim.g.lsps = {
     "basedpyright",
@@ -345,8 +351,11 @@ vim.g.lsps = {
     "tinymist",
     {
         name = "roslyn_ls",
-        Condition = function()
-            return vim.fn.executable("dotnet") == 1
+        MasonInstallCondition = function()
+            local dotnet = vim.fn.executable("dotnet") == 1
+            return {
+                install = dotnet,
+            }
         end,
     },
     "ts_ls",

@@ -10,8 +10,19 @@ local mason_lsps = {}
 for _, entry in ipairs(vim.g.lsps or {}) do
     if type(entry) == "string" then
         mason_lsps[#mason_lsps + 1] = entry
-    elseif not entry.Condition or entry.Condition() then
+    elseif not entry.MasonInstallCondition or entry.MasonInstallCondition().install then
         mason_lsps[#mason_lsps + 1] = entry.name
+    end
+end
+
+local function enable_non_Mason_tools()
+    for _, entry in ipairs(vim.g.lsps or {}) do
+        if entry.MasonInstallCondition then
+            local cond = entry.MasonInstallCondition()
+            if not cond.install then
+                vim.lsp.enable(entry)
+            end
+        end
     end
 end
 
@@ -35,6 +46,9 @@ require("pluginmgr").add_plugin({
         dependencies = { "mason.nvim", "nvim-lspconfig" },
         config = function()
             require("mason-lspconfig").setup()
+
+            -- manually enable all tools not installed using mason
+            enable_non_Mason_tools()
         end,
     },
 })
