@@ -17,6 +17,18 @@ vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "›", precedes = "‹" }
 vim.opt.showbreak = "↪ "
 vim.opt.fillchars:append({ eob = " ", fold = " ", foldopen = "", foldclose = "", foldsep = " " })
+vim.opt.diffopt = {
+    "internal",
+    "filler",
+    "closeoff",
+    "vertical",
+    "indent-heuristic",
+    "algorithm:histogram",
+    "linematch:60",
+    "inline:word",
+    "context:3",
+    "foldcolumn:0",
+}
 vim.opt.inccommand = "nosplit"
 vim.opt.scrolloff = 10
 vim.opt.hlsearch = true

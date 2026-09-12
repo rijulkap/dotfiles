@@ -11,6 +11,8 @@ require("pluginmgr").add_plugin({
 
 -- now define the function
 setup_colorcheme = function()
+    local color_utils = require("catppuccin.utils.colors")
+
     require("catppuccin").setup({
         integrations = {
             dashboard = true,
@@ -61,6 +63,10 @@ setup_colorcheme = function()
                 WinBarDir = { fg = colors.lavender, bg = colors.crust, bold = true },
                 WinBarFile = { fg = colors.peach, bg = colors.crust, bold = true },
                 WinbarSeparatorDim = { fg = colors.overlay1, bg = "NONE" },
+
+                -- Neovim 0.12+ distinguishes added inline text from other
+                -- changed text. Use only a background so syntax colours remain visible.
+                DiffTextAdd = { bg = color_utils.darken(colors.green, 0.30, colors.base), bold = true },
             }
         end,
     })

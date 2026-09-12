@@ -57,7 +57,8 @@ end
 local function setup_lsp_folding(client, bufnr)
     if client:supports_method("textDocument/foldingRange") then
         for _, win in ipairs(vim.api.nvim_list_wins()) do
-            if vim.api.nvim_win_get_buf(win) == bufnr then
+            -- Diff mode owns folding; changing one pane breaks its alignment.
+            if vim.api.nvim_win_get_buf(win) == bufnr and not vim.wo[win].diff then
                 vim.wo[win].foldmethod = "expr"
                 vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
             end
@@ -131,12 +132,14 @@ local function update_qflist(opts)
     })
 end
 
-local function loclist_is_open()
-    return vim.fn.getloclist(0, { winid = 0 }).winid ~= 0
+local function loclist_is_open(title)
+    local loclist = vim.fn.getloclist(0, { winid = 0, title = 0 })
+    return loclist.winid ~= 0 and (title == nil or loclist.title == title)
 end
 
-local function qflist_is_open()
-    return vim.fn.getqflist({ winid = 0 }).winid ~= 0
+local function qflist_is_open(title)
+    local qflist = vim.fn.getqflist({ winid = 0, title = 0 })
+    return qflist.winid ~= 0 and (title == nil or qflist.title == title)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -211,12 +214,12 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
 
             if vim.api.nvim_win_is_valid(winid) then
                 vim.api.nvim_win_call(winid, function()
-                    if loclist_is_open() then
+                    if loclist_is_open("Buffer Diagnostics") then
                         update_loclist({ severity = vim.diagnostic.severity.WARN })
                     end
                 end)
             end
-            if qflist_is_open() then
+            if qflist_is_open("Workspace Diagnostics") then
                 update_qflist({ severity = vim.diagnostic.severity.WARN })
             end
         end, 75)
