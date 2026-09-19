@@ -27,6 +27,9 @@ setup_blink = function()
         -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- adjusts spacing to ensure icons are aligned
         completion = {
+            keyword = {
+                range = "full",
+            },
             menu = {
                 winblend = vim.o.pumblend,
                 draw = {

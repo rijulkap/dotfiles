@@ -119,7 +119,12 @@ linux_x64 = [
   "sudo install /tmp/nvim.appimage /usr/local/bin/nvim",
   "rm -f /tmp/nvim.appimage",
 ]
-windows_x64 = ["choco install neovim -y"]
+windows_x64 = [
+  '$Installer = Join-Path $env:TEMP "nvim-win64.msi"',
+  'Invoke-WebRequest -Uri "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.msi" -OutFile $Installer',
+  '$Process = Start-Process msiexec.exe -ArgumentList "/i", $Installer, "/quiet", "/norestart" -Wait -PassThru; if ($Process.ExitCode -notin 0, 1641, 3010) { throw "Neovim installer failed with exit code $($Process.ExitCode)" }',
+  'Remove-Item $Installer -Force',
+]
 
 [tools.neovim.configs]
 description = "Neovim configuration directory"
