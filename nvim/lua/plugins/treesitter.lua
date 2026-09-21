@@ -18,7 +18,7 @@ local languages = {
     typescript = { "typescript" },
     vim = { "vim" },
     vimdoc = {},
-    yaml = {"yaml"}
+    yaml = { "yaml" },
 }
 
 local parsers = vim.tbl_keys(languages)
@@ -54,7 +54,7 @@ setup_ts_context = function()
     require("treesitter-context").setup()
     vim.keymap.set("n", "[c", function()
         require("treesitter-context").go_to_context(vim.v.count1)
-    end, { silent = true })
+    end, { desc = "Jump to TS Context", silent = true })
 end
 
 setup_ts = function()
