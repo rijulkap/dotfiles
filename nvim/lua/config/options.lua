@@ -42,6 +42,10 @@ vim.opt.sidescrolloff = 8
 vim.opt.hidden = true
 vim.opt.wrap = false
 vim.opt.showcmd = false
+if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
+    vim.g.clipboard = "osc52"
+end
+
 -- Avoid loading the platform clipboard provider while opening the first file.
 vim.schedule(function()
     vim.opt.clipboard = "unnamedplus"
