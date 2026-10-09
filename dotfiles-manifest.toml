@@ -3,7 +3,7 @@ version = 1
 [tools.apt]
 description = "Debian/Ubuntu package manager"
 tags = []
-check = { linux_x64 = "apt-get" }
+check = { linux_x64 = "apt-get", linux_arm64 = "apt-get" }
 hint = "apt-get not found. Install a Debian-based distro or adjust the manifest."
 
 [tools.choco]
@@ -16,10 +16,11 @@ hint = "Chocolatey not found. Install it from https://chocolatey.org/install."
 description = "ZIP archive extractor"
 deps = ["apt"]
 tags = []
-check = { linux_x64 = "unzip" }
+check = { linux_x64 = "unzip", linux_arm64 = "unzip" }
 
 [tools.unzip.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y unzip"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y unzip"]
 
 [tools.git]
 description = "Distributed version control"
@@ -28,6 +29,7 @@ check = "git"
 
 [tools.git.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y git"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y git"]
 windows_x64 = ["choco install git -y"]
 
 [tools.git.configs]
@@ -36,6 +38,7 @@ source = "git/.gitconfig"
 
 [tools.git.configs.targets]
 linux_x64 = "~/.gitconfig"
+linux_arm64 = "~/.gitconfig"
 windows_x64 = "~/.gitconfig"
 
 [tools.delta]
@@ -52,6 +55,13 @@ linux_x64 = [
   "sudo apt-get install -y /tmp/git-delta.deb",
   "rm -f /tmp/git-delta.deb",
 ]
+linux_arm64 = [
+  '''DELTA_TAG=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p' | head -n1)''',
+  'test -n "$DELTA_TAG"',
+  'DELTA_VERSION="${DELTA_TAG#v}"; curl -fLo /tmp/git-delta.deb "https://github.com/dandavison/delta/releases/download/${DELTA_TAG}/git-delta_${DELTA_VERSION}_arm64.deb"',
+  "sudo apt-get install -y /tmp/git-delta.deb",
+  "rm -f /tmp/git-delta.deb",
+]
 windows_x64 = ["choco install delta -y"]
 
 [tools.rust]
@@ -61,6 +71,7 @@ check = "cargo"
 
 [tools.rust.install]
 linux_x64 = ["curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"]
+linux_arm64 = ["curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"]
 windows_x64 = [
   'Invoke-WebRequest -Uri "https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe" -OutFile "$env:TEMP/rustup-init.exe"',
   'Start-Process -FilePath "$env:TEMP/rustup-init.exe" -ArgumentList "-y" -Wait',
@@ -74,6 +85,7 @@ check = "clang"
 
 [tools.cpp.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y build-essential make cmake clang llvm"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y build-essential make cmake clang llvm"]
 windows_x64 = ["choco install mingw make cmake llvm -y"]
 
 [tools.fish]
@@ -83,6 +95,7 @@ check = "fish"
 
 [tools.fish.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fish"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y fish"]
 
 [tools.fish.configs]
 description = "Fish shell configuration"
@@ -90,6 +103,7 @@ source = "fish/config.fish"
 
 [tools.fish.configs.targets]
 linux_x64 = "~/.config/fish/config.fish"
+linux_arm64 = "~/.config/fish/config.fish"
 
 [tools.pwsh]
 description = "PowerShell"
@@ -119,6 +133,12 @@ linux_x64 = [
   "sudo install /tmp/nvim.appimage /usr/local/bin/nvim",
   "rm -f /tmp/nvim.appimage",
 ]
+linux_arm64 = [
+  "curl -fLo /tmp/nvim.appimage https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-arm64.appimage",
+  "chmod +x /tmp/nvim.appimage",
+  "sudo install /tmp/nvim.appimage /usr/local/bin/nvim",
+  "rm -f /tmp/nvim.appimage",
+]
 windows_x64 = [
   '$Installer = Join-Path $env:TEMP "nvim-win64.msi"',
   'Invoke-WebRequest -Uri "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.msi" -OutFile $Installer',
@@ -132,6 +152,7 @@ source = "nvim"
 
 [tools.neovim.configs.targets]
 linux_x64 = "~/.config/nvim"
+linux_arm64 = "~/.config/nvim"
 windows_x64 = "~/AppData/Local/nvim"
 
 [tools.tree-sitter-cli]
@@ -143,6 +164,14 @@ check = "tree-sitter"
 [tools.tree-sitter-cli.install]
 linux_x64 = [
   "curl -fLo /tmp/tree-sitter-cli.zip https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-linux-x64.zip",
+  "rm -rf /tmp/tree-sitter-cli",
+  "mkdir -p /tmp/tree-sitter-cli",
+  "unzip -q /tmp/tree-sitter-cli.zip -d /tmp/tree-sitter-cli",
+  "sudo install -m 0755 /tmp/tree-sitter-cli/tree-sitter /usr/local/bin/tree-sitter",
+  "rm -rf /tmp/tree-sitter-cli /tmp/tree-sitter-cli.zip",
+]
+linux_arm64 = [
+  "curl -fLo /tmp/tree-sitter-cli.zip https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-linux-arm64.zip",
   "rm -rf /tmp/tree-sitter-cli",
   "mkdir -p /tmp/tree-sitter-cli",
   "unzip -q /tmp/tree-sitter-cli.zip -d /tmp/tree-sitter-cli",
@@ -167,7 +196,15 @@ check = "lazygit"
 linux_x64 = [
   '''LAZYGIT_VERSION=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | sed -n 's/.*"tag_name": "v\([^"]*\)".*/\1/p' | head -n1)''',
   'test -n "$LAZYGIT_VERSION"',
-  'curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"',
+  'curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_linux_x86_64.tar.gz"',
+  "tar -C /tmp -xf /tmp/lazygit.tar.gz lazygit",
+  "sudo install /tmp/lazygit /usr/local/bin/lazygit",
+  "rm -f /tmp/lazygit /tmp/lazygit.tar.gz",
+]
+linux_arm64 = [
+  '''LAZYGIT_VERSION=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | sed -n 's/.*"tag_name": "v\([^"]*\)".*/\1/p' | head -n1)''',
+  'test -n "$LAZYGIT_VERSION"',
+  'curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_linux_arm64.tar.gz"',
   "tar -C /tmp -xf /tmp/lazygit.tar.gz lazygit",
   "sudo install /tmp/lazygit /usr/local/bin/lazygit",
   "rm -f /tmp/lazygit /tmp/lazygit.tar.gz",
@@ -181,15 +218,17 @@ check = "rg"
 
 [tools.ripgrep.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y ripgrep"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y ripgrep"]
 windows_x64 = ["choco install ripgrep -y"]
 
 [tools.fd]
 description = "Fast file finder"
 tags = ["dev"]
-check = {linux_x64 = "fdfind", windows_x64 = "fd"}
+check = {linux_x64 = "fdfind", linux_arm64 = "fdfind", windows_x64 = "fd"}
 
 [tools.fd.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fd-find"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y fd-find"]
 windows_x64 = ["choco install fd -y"]
 
 [tools.fzf]
@@ -199,6 +238,7 @@ check = "fzf"
 
 [tools.fzf.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y fzf"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y fzf"]
 windows_x64 = ["choco install fzf -y"]
 
 [tools.starship]
@@ -208,6 +248,7 @@ check = "starship"
 
 [tools.starship.install]
 linux_x64 = ["curl -sS https://starship.rs/install.sh | sh -s -- -y"]
+linux_arm64 = ["curl -sS https://starship.rs/install.sh | sh -s -- -y"]
 windows_x64 = ["choco install starship -y"]
 
 [tools.starship.configs]
@@ -216,6 +257,7 @@ source = "starship/starship.toml"
 
 [tools.starship.configs.targets]
 linux_x64 = "~/.config/starship.toml"
+linux_arm64 = "~/.config/starship.toml"
 windows_x64 = "~/.config/starship.toml"
 
 [tools.wezterm]
@@ -230,6 +272,12 @@ linux_x64 = [
   "sudo apt-get update",
   "sudo apt-get install -y wezterm-nightly",
 ]
+linux_arm64 = [
+  "curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg",
+  "echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null",
+  "sudo apt-get update",
+  "sudo apt-get install -y wezterm-nightly",
+]
 windows_x64 = ["choco install wezterm -y"]
 
 [tools.wezterm.configs]
@@ -238,6 +286,7 @@ source = "wezterm/wezterm.lua"
 
 [tools.wezterm.configs.targets]
 linux_x64 = "~/.config/wezterm/wezterm.lua"
+linux_arm64 = "~/.config/wezterm/wezterm.lua"
 windows_x64 = "~/.wezterm.lua"
 
 [tools.alacritty]
@@ -247,6 +296,7 @@ check = "alacritty"
 
 [tools.alacritty.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y alacritty"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y alacritty"]
 windows_x64 = ["choco install alacritty -y"]
 
 [tools.alacritty.configs]
@@ -255,6 +305,7 @@ source = "alacritty/alacritty.toml"
 
 [tools.alacritty.configs.targets]
 linux_x64 = "~/.config/alacritty/alacritty.toml"
+linux_arm64 = "~/.config/alacritty/alacritty.toml"
 windows_x64 = "~/AppData/Roaming/alacritty/alacritty.toml"
 
 [tools.tmux]
@@ -264,6 +315,7 @@ check = "tmux"
 
 [tools.tmux.install]
 linux_x64 = ["sudo apt-get update", "sudo apt-get install -y tmux"]
+linux_arm64 = ["sudo apt-get update", "sudo apt-get install -y tmux"]
 
 [tools.tmux.configs]
 description = "tmux configuration"
@@ -271,6 +323,7 @@ source = "tmux/.tmux.conf"
 
 [tools.tmux.configs.targets]
 linux_x64 = "~/.tmux.conf"
+linux_arm64 = "~/.tmux.conf"
 
 [tools.zellij]
 description = "Cross-platform terminal multiplexer"
@@ -280,7 +333,13 @@ check = "zellij"
 
 [tools.zellij.install]
 linux_x64 = [
-  "curl -fLo /tmp/zellij.tar.gz https://github.com/zellij-org/zellij/releases/latest/zellij-x86_64-unknown-linux-musl.tar.gz",
+  "curl -fLo /tmp/zellij.tar.gz https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz",
+  "tar -xzf /tmp/zellij.tar.gz -C /tmp zellij",
+  "sudo install -m 0755 /tmp/zellij /usr/local/bin/zellij",
+  "rm -f /tmp/zellij /tmp/zellij.tar.gz",
+]
+linux_arm64 = [
+  "curl -fLo /tmp/zellij.tar.gz https://github.com/zellij-org/zellij/releases/latest/download/zellij-aarch64-unknown-linux-musl.tar.gz",
   "tar -xzf /tmp/zellij.tar.gz -C /tmp zellij",
   "sudo install -m 0755 /tmp/zellij /usr/local/bin/zellij",
   "rm -f /tmp/zellij /tmp/zellij.tar.gz",
@@ -299,6 +358,7 @@ source = "zellij/config.kdl"
 
 [tools.zellij.configs.targets]
 linux_x64 = "~/.config/zellij/config.kdl"
+linux_arm64 = "~/.config/zellij/config.kdl"
 windows_x64 = "~/AppData/Roaming/zellij/config/config.kdl"
 
 [tools.zoxide]
@@ -310,6 +370,11 @@ check = "zoxide"
 [tools.zoxide.install]
 linux_x64 = [
   "curl -fLo /tmp/zoxide.deb https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide_0.10.0-1_amd64.deb",
+  "sudo apt-get install -y /tmp/zoxide.deb",
+  "rm -f /tmp/zoxide.deb",
+]
+linux_arm64 = [
+  "curl -fLo /tmp/zoxide.deb https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide_0.10.0-1_arm64.deb",
   "sudo apt-get install -y /tmp/zoxide.deb",
   "rm -f /tmp/zoxide.deb",
 ]
@@ -329,7 +394,12 @@ check = "yazi"
 
 [tools.yazi.install]
 linux_x64 = [
-  "curl -fLo /tmp/yazi.deb https://github.com/sxyazi/yazi/releases/latest/yazi-x86_64-unknown-linux-gnu.deb",
+  "curl -fLo /tmp/yazi.deb https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.deb",
+  "sudo apt-get install -y /tmp/yazi.deb",
+  "rm -f /tmp/yazi.deb",
+]
+linux_arm64 = [
+  "curl -fLo /tmp/yazi.deb https://github.com/sxyazi/yazi/releases/latest/download/yazi-aarch64-unknown-linux-gnu.deb",
   "sudo apt-get install -y /tmp/yazi.deb",
   "rm -f /tmp/yazi.deb",
 ]
@@ -341,6 +411,7 @@ source = "yazi"
 
 [tools.yazi.configs.targets]
 linux_x64 = "~/.config/yazi"
+linux_arm64 = "~/.config/yazi"
 windows_x64 = "~/AppData/Roaming/yazi/config"
 
 [tools.vscode]
@@ -359,6 +430,16 @@ linux_x64 = [
   "sudo apt-get update",
   "sudo apt-get install -y code",
 ]
+linux_arm64 = [
+  "sudo apt-get update",
+  "sudo apt-get install -y wget gpg apt-transport-https",
+  "wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg",
+  "sudo install -D -o root -g root -m 644 /tmp/packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg",
+  '''echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null''',
+  "rm -f /tmp/packages.microsoft.gpg",
+  "sudo apt-get update",
+  "sudo apt-get install -y code",
+]
 windows_x64 = ["choco install vscode -y"]
 
 [tools.jetbrains-mono]
@@ -367,6 +448,13 @@ tags = ["dev"]
 
 [tools.jetbrains-mono.install]
 linux_x64 = [
+  'mkdir -p "$HOME/.local/share/fonts/JetBrainsMono"',
+  "curl -fLo /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip",
+  'unzip -o /tmp/JetBrainsMono.zip -d "$HOME/.local/share/fonts/JetBrainsMono"',
+  "rm -f /tmp/JetBrainsMono.zip",
+  "fc-cache -fv",
+]
+linux_arm64 = [
   'mkdir -p "$HOME/.local/share/fonts/JetBrainsMono"',
   "curl -fLo /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip",
   'unzip -o /tmp/JetBrainsMono.zip -d "$HOME/.local/share/fonts/JetBrainsMono"',
